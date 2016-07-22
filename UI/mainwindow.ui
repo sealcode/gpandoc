@@ -6,23 +6,68 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>399</width>
-    <height>376</height>
+    <width>470</width>
+    <height>470</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>380</height>
+   </size>
+  </property>
+  <property name="font">
+   <font>
+    <family>DejaVu Serif</family>
+    <weight>50</weight>
+    <bold>false</bold>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string notr="true">GPANDOC</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QHBoxLayout" name="horizontalLayout_1">
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="label_1">
+          <property name="font">
+           <font>
+            <family>DejaVu Serif</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
           <property name="text">
-           <string>1. Pliki</string>
+           <string>1. Wybierz pliki do zaimportowania:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_1">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_1">
+          <property name="font">
+           <font>
+            <family>DejaVu Serif</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Wybierz pliki</string>
           </property>
          </widget>
         </item>
@@ -39,17 +84,10 @@
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QPushButton" name="pushButton">
-          <property name="text">
-           <string>Wybierz pliki</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
@@ -62,6 +100,25 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="font">
+           <font>
+            <family>DejaVu Serif</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="locale">
+           <locale language="Polish" country="Poland"/>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="text">
+           <string>Lista wybranych plików:</string>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_4">
@@ -77,19 +134,99 @@
          </spacer>
         </item>
         <item>
-         <widget class="QCheckBox" name="checkBox">
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_1">
+          <property name="font">
+           <font>
+            <family>DejaVu Serif</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="locale">
+           <locale language="Polish" country="Poland"/>
+          </property>
           <property name="text">
-           <string>Łącz w całość</string>
+           <string>Łącz dokumenty</string>
+          </property>
+          <property name="tristate">
+           <bool>true</bool>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
       <item>
        <widget class="QListWidget" name="listWidget">
+        <property name="frameShape">
+         <enum>QFrame::Box</enum>
+        </property>
         <item>
          <property name="text">
           <string>Lista plików</string>
+         </property>
+         <property name="flags">
+          <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Lista plików2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>New Item</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>New Item</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>New Item</string>
          </property>
         </item>
        </widget>
@@ -97,14 +234,39 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="label_4">
+          <property name="font">
+           <font>
+            <family>DejaVu Serif</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
           <property name="text">
-           <string>2. Przepis</string>
+           <string>2. Przepis (format, czcionka, marginesy itp):</string>
           </property>
          </widget>
         </item>
         <item>
+         <spacer name="horizontalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QPushButton" name="pushButton_2">
+          <property name="font">
+           <font>
+            <family>DejaVu Serif</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>Wybierz przepis</string>
           </property>
@@ -113,9 +275,84 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,0,0,0">
+        <property name="spacing">
+         <number>6</number>
+        </property>
+        <property name="sizeConstraint">
+         <enum>QLayout::SetFixedSize</enum>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
         <item>
-         <spacer name="horizontalSpacer">
+         <spacer name="horizontalSpacer_9">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Lista gotowych przepisów:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_10">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_11">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="sizeIncrement">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <spacer name="horizontalSpacer_12">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -128,10 +365,13 @@
          </spacer>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2"/>
-        </item>
-        <item>
          <widget class="QPushButton" name="pushButton_3">
+          <property name="font">
+           <font>
+            <family>DejaVu Serif</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>Zapisz</string>
           </property>
@@ -142,23 +382,13 @@
      </layout>
     </item>
    </layout>
-   <zorder>pushButton_2</zorder>
-   <zorder>label</zorder>
-   <zorder>pushButton</zorder>
-   <zorder>label</zorder>
-   <zorder>pushButton</zorder>
-   <zorder>pushButton</zorder>
-   <zorder>label</zorder>
-   <zorder>label_2</zorder>
-   <zorder>pushButton_2</zorder>
-   <zorder></zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>399</width>
+     <width>470</width>
      <height>19</height>
     </rect>
    </property>
