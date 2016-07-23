@@ -1,5 +1,5 @@
 import sys
-from mainwindow_ui import*
+from ui import*
 from PyQt5 import QtWidgets
 
 app = QtWidgets.QApplication(sys.argv)
