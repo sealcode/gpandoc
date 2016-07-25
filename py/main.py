@@ -1,8 +1,11 @@
 import sys
-from ui import*
+sys.path.insert(0, 'ui/')
+import mainwindow_ui
+
 from PyQt5 import QtWidgets
 
 app = QtWidgets.QApplication(sys.argv)
-window = Ui_MainWindow()
+window = mainwindow_ui.UI_MainWindow()
+
 
 sys.exit(app.exec_())
