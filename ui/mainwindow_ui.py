@@ -7,11 +7,12 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QPushButton
+from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QPushButton, QListWidget, QListWidgetItem
+from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator
 from PyQt5.QtGui import QIcon
 
 class UI_MainWindow(QMainWindow):
-    
+
     def __init__(self):
         super().__init__()
         self.init_ui()
@@ -142,7 +143,25 @@ class UI_MainWindow(QMainWindow):
         self.push_button_2.setText(_translate("main_window", "Wybierz przepis"))
         self.push_button_3.setText(_translate("main_window", "Zapisz"))
 
+        self.push_button_1.clicked.connect(self.load_files)
         self.check_box_1.setText(_translate("main_window", "Łącz dokumenty"))
 
 
         self.show()
+    def add_to_list(self, list_of_files):
+        while list_of_files:
+            self.list_widget.addItem(list_of_files.pop())
+
+
+    def load_files(self):
+        list_of_files = []
+        file_names, _ = QFileDialog.getOpenFileNames(self, "Open Images", '', "Files (*.txt *.cpp, *.py *.doc *.pdf);;All Files (*)")
+
+        for file_name in file_names:
+            list_of_files.append(file_name)
+        print(list_of_files)
+        self.add_to_list(list_of_files)
+
+
+
+
