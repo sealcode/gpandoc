@@ -74,9 +74,9 @@ class UI_MainWindow(QMainWindow):
         self.list_widget = QtWidgets.QListWidget(self.central_widget)
         self.list_widget.setAcceptDrops(True)
 
-
-        self.list_widget.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
+      #  self.list_widget.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         self.list_widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.list_widget.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
 
         self.list_widget.setObjectName("list_widget")
@@ -162,7 +162,7 @@ class UI_MainWindow(QMainWindow):
 
     def load_files(self):
         list_of_files = []
-        file_names, _ = QFileDialog.getOpenFileNames(self, "Open Images", '', "Files (*.txt *.cpp, *.py *.doc *.pdf);;All Files (*)")
+        file_names, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '', "Files (*.txt *.cpp, *.py *.doc *.pdf);;All Files (*)")
 
         for file_name in file_names:
             list_of_files.append(file_name)
