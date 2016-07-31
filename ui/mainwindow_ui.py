@@ -7,8 +7,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QPushButton, QListWidget, QListWidgetItem
-from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator
+from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QPushButton, QListWidget, QListWidgetItem, QAbstractItemView
+from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType
 from PyQt5.QtGui import QIcon
 
 class UI_MainWindow(QMainWindow):
@@ -72,6 +72,13 @@ class UI_MainWindow(QMainWindow):
         self.status_bar.setObjectName("status_bar")
 
         self.list_widget = QtWidgets.QListWidget(self.central_widget)
+        self.list_widget.setAcceptDrops(True)
+
+
+        self.list_widget.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
+        self.list_widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+
+
         self.list_widget.setObjectName("list_widget")
 
         # create fonts
