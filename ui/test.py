@@ -1,12 +1,12 @@
-from PyQt5 import QtWidgets, QtWidgets, QtCore
+from PyQt4 import QtGui, QtCore
 import sys, os
 
-class ThumbListWidget(QtWidgets.QListWidget):
+class ThumbListWidget(QtGui.QListWidget):
     def __init__(self, type, parent=None):
         super(ThumbListWidget, self).__init__(parent)
         self.setIconSize(QtCore.QSize(124, 124))
-        self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
-        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.setAcceptDrops(True)
 
     def dragEnterEvent(self, event):
@@ -36,28 +36,28 @@ class ThumbListWidget(QtWidgets.QListWidget):
             super(ThumbListWidget, self).dropEvent(event)
 
 
-class Dialog_01(QtWidgets.QMainWindow):
+class Dialog_01(QtGui.QMainWindow):
     def __init__(self):
-        super(QtWidgets.QMainWindow,self).__init__()
+        super(QtGui.QMainWindow,self).__init__()
         self.listItems={}
 
-        myQWidget = QtWidgets.QWidget()
-        myBoxLayout = QtWidgets.QVBoxLayout()
+        myQWidget = QtGui.QWidget()
+        myBoxLayout = QtGui.QVBoxLayout()
         myQWidget.setLayout(myBoxLayout)
         self.setCentralWidget(myQWidget)
 
         self.listWidgetA = ThumbListWidget(self)
         for i in range(12):
-            QtWidgets.QListWidgetItem( 'Item '+str(i), self.listWidgetA )
+            QtGui.QListWidgetItem( 'Item '+ str(i), self.listWidgetA )
         myBoxLayout.addWidget(self.listWidgetA)
 
         self.listWidgetB = ThumbListWidget(self)
         myBoxLayout.addWidget(self.listWidgetB)
 
-        #self.connect(self.listWidgetA, QtWidgets.SIGNAL("dropped"), self.items_dropped)
+        self.connect(self.listWidgetA, QtCore.SIGNAL("dropped"), self.items_dropped)
         self.listWidgetA.currentItemChanged.connect(self.item_clicked)
 
-       # self.connect(self.listWidgetB, QtWidgets.SIGNAL("dropped"), self.items_dropped)
+        self.connect(self.listWidgetB, QtCore.SIGNAL("dropped"), self.items_dropped)
         self.listWidgetB.currentItemChanged.connect(self.item_clicked)
 
     def items_dropped(self, arg):
@@ -67,8 +67,8 @@ class Dialog_01(QtWidgets.QMainWindow):
         print( arg)
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
+    app = QtGui.QApplication(sys.argv)
     dialog_1 = Dialog_01()
     dialog_1.show()
     dialog_1.resize(480,320)
-    sys.exit(app.exec_())
+    sys.exit(app.exec_()) 

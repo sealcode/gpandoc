@@ -7,9 +7,43 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QPushButton, QListWidget, QListWidgetItem, QAbstractItemView
-from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType
+from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, \
+                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView
+from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, QModelIndex
 from PyQt5.QtGui import QIcon
+
+class mListWidget(QListWidget):
+    def __init__(self, parent):
+        super(mListWidget, self).__init__(parent)
+        self.setAcceptDrops(True)
+        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+        else:
+            super(mListWidget, self).dragEnterEvent(event)
+
+
+    def dragLeaveEvent(self, event):
+        for selected_item in self.selectedItems():
+            self.takeItem(self.row(selected_item))
+
+
+    def dragMoveEvent(self, event):
+            super(mListWidget, self).dragMoveEvent(event)
+
+
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls():
+            for url in event.mimeData().urls():
+                self.addItem(url.path())
+            event.acceptProposedAction()
+        else:
+            super(mListWidget, self).dropEvent(event)
+
 
 class UI_MainWindow(QMainWindow):
 
@@ -71,14 +105,7 @@ class UI_MainWindow(QMainWindow):
         self.status_bar = QtWidgets.QStatusBar(main_window)
         self.status_bar.setObjectName("status_bar")
 
-        self.list_widget = QtWidgets.QListWidget(self.central_widget)
-        self.list_widget.setAcceptDrops(True)
-
-      #  self.list_widget.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
-        self.list_widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.list_widget.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-
-
+        self.list_widget = mListWidget(self.central_widget)
         self.list_widget.setObjectName("list_widget")
 
         # create fonts
