@@ -8,8 +8,8 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, \
-                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition
-from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug
+                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction
+from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt
 from PyQt5.QtGui import QIcon
 
 class mListWidget(QListWidget):
@@ -20,6 +20,11 @@ class mListWidget(QListWidget):
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
+        quit_action = QAction("E&xit", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
+        self.addAction(quit_action)
+        self.setContextMenuPolicy(Qt.ActionsContextMenu)
+        self.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz, lub przeciągnij je i upuść na liście")
+
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
