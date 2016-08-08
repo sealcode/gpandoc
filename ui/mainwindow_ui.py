@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mainwindow.ui'
-#
-# Created by: PyQt5 UI code generator 5.5.1
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction
@@ -20,6 +14,8 @@ class mListWidget(QListWidget):
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
+
+        ### Actions for mouse right click ###
         quit_action_1 = QAction("Zamknij", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
         quit_action_2 = QAction("Czyść", self, triggered=self.clearAllItems)
         quit_action_3 = QAction("Zaznacz wszystko", self, shortcut="Ctrl+A", triggered=self.selectItems)
@@ -29,9 +25,24 @@ class mListWidget(QListWidget):
         self.addAction(quit_action_2)
         self.addAction(quit_action_1)
 
+        # Info for users how to add files
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz, lub przeciągnij je i upuść na liście")
 
+
+    # clear current selected item
+    def clearSelectedItems(self):
+        for selected_item in self.selectedItems():
+            self.takeItem(self.row(selected_item))
+
+
+    # clear all files on the list
+    def clearAllItems(self):
+        self.clear()
+
+    # select all files on the list
+    def selectItems(self):
+        self.selectAll();
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -39,24 +50,10 @@ class mListWidget(QListWidget):
         else:
             super(mListWidget, self).dragEnterEvent(event)
 
-    #def dragLeaveEvent(self, event):
-        #if():
-         #   for selected_item in self.selectedItems():
-          #      self.takeItem(self.row(selected_item))
-
-    def clearSelectedItems(self):
-        for selected_item in self.selectedItems():
-            self.takeItem(self.row(selected_item))
-
-    def clearAllItems(self):
-        self.clear()
-
-    def selectItems(self):
-        self.selectAll();
-
+    # event
     def dragMoveEvent(self, event):
             super(mListWidget, self).dragMoveEvent(event)
-
+    # event
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
             for url in event.mimeData().urls():
@@ -106,8 +103,8 @@ class UI_MainWindow(QMainWindow):
         self.label_1.setObjectName("label_1")
         self.label_2 = QtWidgets.QLabel(self.central_widget)
         self.label_2.setObjectName("label_2")
-        self.label_4 = QtWidgets.QLabel(self.central_widget)
-        self.label_4.setObjectName("label_4")
+        self.label_3 = QtWidgets.QLabel(self.central_widget)
+        self.label_3.setObjectName("label_3")
 
         self.push_button_1 = QtWidgets.QPushButton(self.central_widget)
         self.push_button_1.setObjectName("push_button_1")
@@ -136,7 +133,7 @@ class UI_MainWindow(QMainWindow):
 
         self.label_1.setFont(font_1)
         self.label_2.setFont(font_1)
-        self.label_4.setFont(font_1)
+        self.label_3.setFont(font_1)
 
         self.check_box_1.setFont(font_1)
 
@@ -150,7 +147,7 @@ class UI_MainWindow(QMainWindow):
         self.horizontal_layout_1.addWidget(self.push_button_1)
         self.horizontal_layout_2.addWidget(self.label_2)
         self.horizontal_layout_2.addWidget(self.check_box_1)
-        self.horizontal_layout_3.addWidget(self.label_4)
+        self.horizontal_layout_3.addWidget(self.label_3)
         self.horizontal_layout_3.addWidget(self.push_button_2)
         self.horizontal_layout_5.addWidget(self.push_button_3)
 
@@ -182,7 +179,7 @@ class UI_MainWindow(QMainWindow):
 
         self.label_1.setText(_translate("main_window", "1. Wybierz pliki do zaimportowania:"))
         self.label_2.setText(_translate("main_window", "Lista wybranych plików:"))
-        self.label_4.setText(_translate("main_window", "2. Przepis (format, czcionka, marginesy itp):"))
+        self.label_3.setText(_translate("main_window", "2. Przepis (format, czcionka, marginesy itp):"))
 
         self.push_button_1.setText(_translate("main_window", "Wybierz pliki"))
         self.push_button_2.setText(_translate("main_window", "Wybierz przepis"))
