@@ -20,8 +20,12 @@ class mListWidget(QListWidget):
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-        quit_action = QAction("E&xit", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
+        quit_action = QAction("Zamknij", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
+        quit_action_2 = QAction("Czyść", self, triggered=self.clearItems)
+        quit_action_3 = QAction("Zaznacz wszystko", self, shortcut="Ctrl+A", triggered=self.selectItems)
+        self.addAction(quit_action_2)
         self.addAction(quit_action)
+
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz, lub przeciągnij je i upuść na liście")
 
@@ -37,6 +41,11 @@ class mListWidget(QListWidget):
          #   for selected_item in self.selectedItems():
           #      self.takeItem(self.row(selected_item))
 
+    def clearItems(self):
+        self.clear()
+
+    def selectItems(self):
+        self.selectAll();
 
     def dragMoveEvent(self, event):
             super(mListWidget, self).dragMoveEvent(event)
