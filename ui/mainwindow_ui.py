@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import sys
+sys.path.insert(0, '/')
+import recipes_ui
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, \
-                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction
+                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction,QDialog
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt
 from PyQt5.QtGui import QIcon
+
 
 class mListWidget(QListWidget):
     def __init__(self, parent):
@@ -173,7 +177,6 @@ class UI_MainWindow(QMainWindow):
 
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
-
     def retranslate_ui(self, main_window):
         _translate = QtCore.QCoreApplication.translate
 
@@ -186,6 +189,7 @@ class UI_MainWindow(QMainWindow):
         self.push_button_3.setText(_translate("main_window", "Zapisz"))
 
         self.push_button_1.clicked.connect(self.load_files)
+        self.push_button_2.clicked.connect(self.select_recipe)
         self.check_box_1.setText(_translate("main_window", "Łącz dokumenty"))
         self.show()
 
@@ -203,6 +207,12 @@ class UI_MainWindow(QMainWindow):
             list_of_files.append(file_name)
         print(list_of_files)
         self.add_to_list(list_of_files)
+
+    def select_recipe(self):
+        dialog = QDialog()
+        dialog.ui = recipes_ui.Ui_Dialog()
+        dialog.ui.setupUi(dialog)
+        dialog.exec_()
 
 
 
