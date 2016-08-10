@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
-sys.path.insert(0, '/')
 import recipes_ui
+import yaml
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, \
@@ -210,7 +210,7 @@ class UI_MainWindow(QMainWindow):
 
     def select_recipe(self):
         dialog = QDialog()
-        dialog.ui = recipes_ui.Ui_Dialog()
+        dialog.ui = recipes_ui.Ui_Dialog(self)
         dialog.ui.setupUi(dialog)
         dialog.exec_()
 

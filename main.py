@@ -1,6 +1,8 @@
 import sys
+
 sys.path.insert(0, 'ui/')
 import mainwindow_ui
+import recipes_ui
 
 from PyQt5 import QtWidgets
 
