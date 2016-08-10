@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction
@@ -34,7 +35,6 @@ class mListWidget(QListWidget):
     def clearSelectedItems(self):
         for selected_item in self.selectedItems():
             self.takeItem(self.row(selected_item))
-
 
     # clear all files on the list
     def clearAllItems(self):
