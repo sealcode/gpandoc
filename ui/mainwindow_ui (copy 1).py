@@ -73,7 +73,7 @@ class UI_MainWindow(QMainWindow):
         self.init_ui()
         
     def init_ui(self):
-
+        self.setMouseTracking(True)
         main_window = QtWidgets.QWidget()
         main_window.setObjectName("main_window")
         main_window.setMinimumSize(QtCore.QSize(400, 380))
