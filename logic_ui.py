@@ -10,10 +10,10 @@ from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirItera
 from PyQt5.QtGui import QIcon
 
 
-class mListWidget(QListWidget):
+class ListWidget(QListWidget):
 
     def __init__(self, parent):
-        super(mListWidget, self).__init__(parent)
+        super(ListWidget, self).__init__(parent)
         self.setAcceptDrops(True)
         self.setMouseTracking(True)
         self.setDragDropMode(QAbstractItemView.InternalMove)
@@ -52,11 +52,11 @@ class mListWidget(QListWidget):
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
         else:
-            super(mListWidget, self).dragEnterEvent(event)
+            super(ListWidget, self).dragEnterEvent(event)
 
     # event
     def dragMoveEvent(self, event):
-            super(mListWidget, self).dragMoveEvent(event)
+            super(ListWidget, self).dragMoveEvent(event)
     # event
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
@@ -64,11 +64,11 @@ class mListWidget(QListWidget):
                 self.addItem(url.path())
             event.acceptProposedAction()
         else:
-            super(mListWidget, self).dropEvent(event)
+            super(ListWidget, self).dropEvent(event)
 
 
 
-class mMainWindow(UI_MainWindow):
+class MainWindow(UI_MainWindow):
 
     def __init__(self):
         super().__init__()

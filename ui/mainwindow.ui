@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>470</width>
-    <height>470</height>
+    <width>400</width>
+    <height>380</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -18,7 +18,7 @@
   </property>
   <property name="font">
    <font>
-    <family>DejaVu Serif</family>
+    <family>DejaVu Sans</family>
     <weight>50</weight>
     <bold>false</bold>
    </font>
@@ -27,16 +27,16 @@
    <string notr="true">GPANDOC</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="vertical_layout_1">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_1">
+       <layout class="QHBoxLayout" name="horizontal_layout_1">
         <item>
          <widget class="QLabel" name="label_1">
           <property name="font">
            <font>
-            <family>DejaVu Serif</family>
+            <family>DejaVu Sans</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -46,23 +46,10 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_1">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_1">
+         <widget class="QPushButton" name="push_button_1">
           <property name="font">
            <font>
-            <family>DejaVu Serif</family>
+            <family>DejaVu Sans</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -71,41 +58,15 @@
           </property>
          </widget>
         </item>
-        <item>
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
+       <layout class="QHBoxLayout" name="horizontal_layout_2">
         <item>
          <widget class="QLabel" name="label_2">
           <property name="font">
            <font>
-            <family>DejaVu Serif</family>
+            <family>DejaVu Sans</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -121,7 +82,7 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_4">
+         <spacer name="horizonta_spacer_1">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -134,23 +95,10 @@
          </spacer>
         </item>
         <item>
-         <spacer name="horizontalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="checkBox_1">
+         <widget class="QCheckBox" name="check_box_1">
           <property name="font">
            <font>
-            <family>DejaVu Serif</family>
+            <family>DejaVu Sans</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -169,20 +117,7 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_6">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_7">
+         <spacer name="horizonta_spacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -197,47 +132,19 @@
        </layout>
       </item>
       <item>
-       <widget class="QListWidget" name="listWidget">
+       <widget class="QListWidget" name="list_widget_1">
         <property name="frameShape">
          <enum>QFrame::Box</enum>
         </property>
-        <item>
-         <property name="text">
-          <string>Lista plików</string>
-         </property>
-         <property name="flags">
-          <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Lista plików2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <layout class="QHBoxLayout" name="horizontal_layout_3">
         <item>
          <widget class="QLabel" name="label_4">
           <property name="font">
            <font>
-            <family>DejaVu Serif</family>
+            <family>DejaVu Sans</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -247,23 +154,10 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_8">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="push_button_2">
           <property name="font">
            <font>
-            <family>DejaVu Serif</family>
+            <family>DejaVu Sans</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -275,100 +169,12 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,0,0,0">
-        <property name="spacing">
-         <number>6</number>
-        </property>
-        <property name="sizeConstraint">
-         <enum>QLayout::SetFixedSize</enum>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
+       <layout class="QHBoxLayout" name="horizonta_layout_4">
         <item>
-         <spacer name="horizontalSpacer_9">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Lista gotowych przepisów:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_10">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_11">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QComboBox" name="comboBox">
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="sizeIncrement">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <spacer name="horizontalSpacer_12">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>37</width>
-            <height>17</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_3">
+         <widget class="QPushButton" name="push_button_3">
           <property name="font">
            <font>
-            <family>DejaVu Serif</family>
+            <family>DejaVu Sans</family>
             <pointsize>12</pointsize>
            </font>
           </property>
@@ -388,8 +194,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>470</width>
-     <height>19</height>
+     <width>400</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
