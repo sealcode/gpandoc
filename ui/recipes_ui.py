@@ -6,7 +6,6 @@
 #
 # WARNING! All changes made in this file will be lost!
 import sys
-import yaml
 
 sys.path.insert(0, 'yaml_files/')
 
