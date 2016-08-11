@@ -7,7 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 import sys
 
-sys.path.insert(0, 'yaml_files/')
+#sys.path.insert(0, 'yaml_files/')
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog, QAction
