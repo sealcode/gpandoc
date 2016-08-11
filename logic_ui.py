@@ -1,7 +1,7 @@
 import sys
 import yaml
-from . import recipes_ui
-from ui import mainwindow_ui.py
+from ui import recipes_ui
+from ui import mainwindow_ui
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, \
@@ -11,6 +11,7 @@ from PyQt5.QtGui import QIcon
 
 
 class mListWidget(QListWidget):
+
     def __init__(self, parent):
         super(mListWidget, self).__init__(parent)
         self.setAcceptDrops(True)
@@ -65,12 +66,17 @@ class mListWidget(QListWidget):
         else:
             super(mListWidget, self).dropEvent(event)
 
-class mMainWindow(QMainWindow):
+
+
+class mMainWindow(UI_MainWindow):
+
+    def __init__(self):
+        super().__init__()
+        self.init_ui()
 
     def add_to_list(self, list_of_files):
         while list_of_files:
             self.list_widget.addItem(list_of_files.pop())
-
 
     def load_files(self):
         list_of_files = []
