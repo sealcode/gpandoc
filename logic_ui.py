@@ -1,5 +1,5 @@
 import sys
-import yaml
+
 from ui import recipes_ui
 from ui import mainwindow_ui
 

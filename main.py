@@ -1,7 +1,6 @@
 
 import sys
 
-#sys.path.insert(0, 'ui/')
 from ui import mainwindow_ui
 
 from PyQt5 import QtWidgets
