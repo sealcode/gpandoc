@@ -1,7 +1,7 @@
 import sys
 
-from ui import recipes_ui
-from ui import mainwindow_ui
+from ui import recipe_ui
+from ui.mainwindow_ui import Ui_MainWindow
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, \
@@ -33,7 +33,6 @@ class ListWidget(QListWidget):
         # Info for users how to add files
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz, lub przeciągnij je i upuść na liście")
-
 
     # clear current selected item
     def clearSelectedItems(self):
@@ -68,11 +67,12 @@ class ListWidget(QListWidget):
 
 
 
-class MainWindow(UI_MainWindow):
+class MainWindow(Ui_MainWindow):
 
     def __init__(self):
-        super().__init__()
-        self.init_ui()
+        super(Ui_MainWindow).__init__()
+       #` Ui_MainWindow.setupUi()
+       # self.show()
 
     def add_to_list(self, list_of_files):
         while list_of_files:
@@ -89,7 +89,7 @@ class MainWindow(UI_MainWindow):
 
     def select_recipe(self):
         dialog = QDialog()
-        dialog.ui = recipes_ui.Ui_Dialog(self)
+        dialog.ui = recipe_ui.Ui_Dialog(self)
         dialog.ui.setupUi(dialog)
         dialog.exec_()
 
