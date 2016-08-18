@@ -12,8 +12,8 @@ from PyQt5.QtGui import QIcon
 
 class ListWidget(QListWidget):
 
-    def __init__(self, parent):
-        super(ListWidget, self).__init__(parent)
+    def __init__(self):
+        super(QListWidget, self).__init__()
         self.setAcceptDrops(True)
         self.setMouseTracking(True)
         self.setDragDropMode(QAbstractItemView.InternalMove)
@@ -67,16 +67,21 @@ class ListWidget(QListWidget):
 
 
 
-class MainWindow(Ui_MainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
 
-    def __init__(self):
-        super(Ui_MainWindow).__init__()
-       #` Ui_MainWindow.setupUi()
-       # self.show()
+    def __init__(self, app, parent=None):
+        super(MainWindow, self).__init__(parent)
+        Ui_MainWindow.setupUi(self, self)
+        self.push_button_1.clicked.connect(self.load_files)
+        self.push_button_2.clicked.connect(self.select_recipe)
+
+   # def __init__(self, QMainWindow):
+    #    super(Ui_MainWindow).__init__()
+    #    Ui_MainWindow.setupUi(self, QMainWindow)
 
     def add_to_list(self, list_of_files):
         while list_of_files:
-            self.list_widget.addItem(list_of_files.pop())
+            self.list_widget_1.addItem(list_of_files.pop())
 
     def load_files(self):
         list_of_files = []
@@ -88,8 +93,8 @@ class MainWindow(Ui_MainWindow):
         self.add_to_list(list_of_files)
 
     def select_recipe(self):
-        dialog = QDialog()
-        dialog.ui = recipe_ui.Ui_Dialog(self)
+        dialog = QtWidgets.QDialog()
+        dialog.ui = recipe_ui.Ui_Dialog()
         dialog.ui.setupUi(dialog)
         dialog.exec_()
 
