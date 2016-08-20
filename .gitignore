@@ -93,3 +93,6 @@ ENV/
 
 # Compiled Qt UI files
 ui/*.py
+
+# QtCreator meta files
+*.autosave

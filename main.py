@@ -1,11 +1,16 @@
 import sys
-sys.path.insert(0, 'ui/')
-import mainwindow_ui
+from ui import main_window
 
 from PyQt5 import QtWidgets
 
-app = QtWidgets.QApplication(sys.argv)
-window = mainwindow_ui.UI_MainWindow()
+def main():
+    app = QtWidgets.QApplication(sys.argv)
 
+    window = QtWidgets.QWidget()
+    main_window.Ui_MainWindow().setupUi(window)
+    window.show()
 
-sys.exit(app.exec_())
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
