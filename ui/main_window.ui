@@ -10,6 +10,12 @@
     <height>526</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>gPandoc</string>
   </property>
@@ -59,7 +65,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Dodaj plik</string>
+    <string>Dodaj</string>
    </property>
   </widget>
   <widget class="QComboBox" name="comboBox">
@@ -83,6 +89,19 @@
    </property>
    <property name="text">
     <string>Przepis:</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>420</y>
+     <width>92</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Usuń</string>
    </property>
   </widget>
  </widget>
