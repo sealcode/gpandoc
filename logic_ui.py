@@ -12,8 +12,8 @@ from PyQt5.QtGui import QIcon
 
 class ListWidget(QListWidget):
 
-    def __init__(self):
-        super(QListWidget, self).__init__()
+    def __init__(self, QListWidget):
+        super(ListWidget, self).__init__()
         self.setAcceptDrops(True)
         self.setMouseTracking(True)
         self.setDragDropMode(QAbstractItemView.InternalMove)
@@ -74,6 +74,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Ui_MainWindow.setupUi(self, self)
         self.push_button_1.clicked.connect(self.load_files)
         self.push_button_2.clicked.connect(self.select_recipe)
+        ListWidget(self.list_widget_1)
+        self.show()
+
 
    # def __init__(self, QMainWindow):
     #    super(Ui_MainWindow).__init__()
