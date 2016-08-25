@@ -12,15 +12,15 @@ from PyQt5.QtGui import QIcon
 
 class ListWidget(QListWidget):
 
-    def __init__(self, QListWidget):
-        super(ListWidget, self).__init__()
+    def __init__(self, parent=None):
+        super(ListWidget, self).__init__(parent)
         self.setAcceptDrops(True)
         self.setMouseTracking(True)
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
-        ### Actions for mouse right click ###
+        # Actions for mouse right click
         quit_action_1 = QAction("Zamknij", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
         quit_action_2 = QAction("Czyść", self, triggered=self.clearAllItems)
         quit_action_3 = QAction("Zaznacz wszystko", self, shortcut="Ctrl+A", triggered=self.selectItems)
@@ -71,20 +71,72 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def __init__(self, app, parent=None):
         super(MainWindow, self).__init__(parent)
+        
         Ui_MainWindow.setupUi(self, self)
+
         self.push_button_1.clicked.connect(self.load_files)
         self.push_button_2.clicked.connect(self.select_recipe)
-        ListWidget(self.list_widget_1)
+
         self.show()
 
+        self.list_widget_1.setAcceptDrops(True)
+        self.list_widget_1.setMouseTracking(True)
+        self.list_widget_1.setDragDropMode(QAbstractItemView.InternalMove)
+        self.list_widget_1.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.list_widget_1.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
-   # def __init__(self, QMainWindow):
-    #    super(Ui_MainWindow).__init__()
-    #    Ui_MainWindow.setupUi(self, QMainWindow)
+    ### Actions for mouse right click ###
+        quit_action_1 = QAction("Zamknij", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
+        quit_action_2 = QAction("Czyść", self, triggered=self.clearAllItems)
+        quit_action_3 = QAction("Zaznacz wszystko", self, shortcut="Ctrl+A", triggered=self.selectItems)
+        quit_action_4 = QAction("Usuń zaznaczone", self, shortcut="Del", triggered=self.clearSelectedItems)
+        self.list_widget_1.addAction(quit_action_4)
+        self.list_widget_1.addAction(quit_action_3)
+        self.list_widget_1.addAction(quit_action_2)
+        self.list_widget_1.addAction(quit_action_1)
+
+    # Info for users how to add files
+        self.list_widget_1.setContextMenuPolicy(Qt.ActionsContextMenu)
+        self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz, lub przeciągnij je i upuść na liście")
+
+    # clear current selected item
+    def clearSelectedItems(self):
+        for selected_item in self.list_widget_1.selectedItems():
+            self.list_widget_1.takeItem(self.list_widget_1.row(selected_item))
+
+    # clear all files on the list
+    def clearAllItems(self):
+        self.list_widget_1.clear()
+
+    # select all files on the list
+    def selectItems(self):
+        self.list_widget_1.selectAll();
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+        else:
+            super(self.list_widget_1, self).dragEnterEvent(event)
+
+    # event
+    def dragMoveEvent(self, event):
+        super(self.list_widget_1, self).dragMoveEvent(event)
+
+
+    # event
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls():
+            for url in event.mimeData().urls():
+                self.list_widget_1.addItem(url.path())
+            event.acceptProposedAction()
+        else:
+            super(self.list_widget_1, self).dropEvent(event)
+
 
     def add_to_list(self, list_of_files):
         while list_of_files:
             self.list_widget_1.addItem(list_of_files.pop())
+
 
     def load_files(self):
         list_of_files = []
@@ -94,6 +146,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             list_of_files.append(file_name)
         print(list_of_files)
         self.add_to_list(list_of_files)
+
 
     def select_recipe(self):
         dialog = QtWidgets.QDialog()
