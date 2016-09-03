@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, 
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt
 from PyQt5.QtGui import QIcon
 
-
+###
 class ListWidget(QListWidget):
 
     def __init__(self, parent=None):
@@ -65,7 +65,7 @@ class ListWidget(QListWidget):
         else:
             super(ListWidget, self).dropEvent(event)
 
-
+###
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
@@ -85,7 +85,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.list_widget_1.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.list_widget_1.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
 
-    ### Actions for mouse right click ###
+    # Actions for mouse right click #
         quit_action_1 = QAction("Zamknij", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
         quit_action_2 = QAction("Czyść", self, triggered=self.clearAllItems)
         quit_action_3 = QAction("Zaznacz wszystko", self, shortcut="Ctrl+A", triggered=self.selectItems)
@@ -97,7 +97,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # Info for users how to add files
         self.list_widget_1.setContextMenuPolicy(Qt.ActionsContextMenu)
-        self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz, lub przeciągnij je i upuść na liście")
+        self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz. \nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
+	
+
+
+
+    # <<< Listwidget handling >>> #
 
     # clear current selected item
     def clearSelectedItems(self):
@@ -111,19 +116,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # select all files on the list
     def selectItems(self):
         self.list_widget_1.selectAll();
-
+    
+    # EVENT: drag item on list
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
         else:
             super(self.list_widget_1, self).dragEnterEvent(event)
 
-    # event
+    # EVENT: move item on list
     def dragMoveEvent(self, event):
         super(self.list_widget_1, self).dragMoveEvent(event)
 
 
-    # event
+    # EVENT: Put elements on the list 
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
             for url in event.mimeData().urls():
@@ -132,7 +138,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             super(self.list_widget_1, self).dropEvent(event)
 
+    # <<< END of: Listwidget handling >>> #
 
+
+	
+    # <<< Load files on >>> #
     def add_to_list(self, list_of_files):
         while list_of_files:
             self.list_widget_1.addItem(list_of_files.pop())
@@ -146,8 +156,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             list_of_files.append(file_name)
         print(list_of_files)
         self.add_to_list(list_of_files)
+   
+    # <<< END of: Load files on >>> #
 
 
+
+    # <<< RECIPE: Dialog handling >>> #
     def select_recipe(self):
         dialog = QtWidgets.QDialog()
         dialog.ui = recipe_ui.Ui_Dialog()
