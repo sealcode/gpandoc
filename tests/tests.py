@@ -16,7 +16,7 @@ class TemplateTest(unittest.TestCase):
         with open(IN_FILE) as test_file:
             IN = test_file.read()
         result = self.converter.convert(IN, 'markdown', 'markdown',
-                                    variables={
+                                        variables={
                                                'var1': 'value1',
                                                'var2': 'value2',
                                                'var3': 'value3'
