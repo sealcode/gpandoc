@@ -149,7 +149,7 @@
            </font>
           </property>
           <property name="text">
-           <string>2. Przepis (format, czcionka, marginesy itp):</string>
+           <string>2. Przepis (Wygląd dokumentu):</string>
           </property>
          </widget>
         </item>
@@ -175,11 +175,35 @@
           <property name="font">
            <font>
             <family>DejaVu Sans</family>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="text">
-           <string>Zapisz</string>
+           <string>Wygeneruj </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="push_button_4">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Usuń zaznaczone</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="push_button_5">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Usuń wszystko</string>
           </property>
          </widget>
         </item>
@@ -198,8 +222,51 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuUstawienia">
+    <property name="title">
+     <string>Ustawienia</string>
+    </property>
+    <addaction name="actionPreferencje"/>
+    <addaction name="actionInterfejs"/>
+   </widget>
+   <widget class="QMenu" name="menuPomoc">
+    <property name="title">
+     <string>Pomoc</string>
+    </property>
+    <addaction name="actionInstrukcja_uzycia"/>
+    <addaction name="separator"/>
+    <addaction name="actionO_GPandoc"/>
+    <addaction name="actionO_Autorach"/>
+   </widget>
+   <addaction name="menuUstawienia"/>
+   <addaction name="menuPomoc"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionO_GPandoc">
+   <property name="text">
+    <string>O GPandoc</string>
+   </property>
+  </action>
+  <action name="actionO_Autorach">
+   <property name="text">
+    <string>O Autorach</string>
+   </property>
+  </action>
+  <action name="actionInstrukcja_uzycia">
+   <property name="text">
+    <string>Instrukcja użycia</string>
+   </property>
+  </action>
+  <action name="actionInterfejs">
+   <property name="text">
+    <string>Interfejs</string>
+   </property>
+  </action>
+  <action name="actionPreferencje">
+   <property name="text">
+    <string>Preferencje</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

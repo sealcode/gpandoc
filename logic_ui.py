@@ -23,8 +23,8 @@ class ListWidget(QListWidget):
         # Actions for mouse right click
         quit_action_1 = QAction("Zamknij", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
         quit_action_2 = QAction("Czyść", self, triggered=self.clearAllItems)
-        quit_action_3 = QAction("Zaznacz wszystko", self, shortcut="Ctrl+A", triggered=self.selectItems)
-        quit_action_4 = QAction("Usuń zaznaczone", self, shortcut="Del",triggered=self.clearSelectedItems)
+        quit_action_3 = QAction("Zaznacz wszystko", self, shortcut="Ctrl+A", triggered=self.select_items)
+        quit_action_4 = QAction("Usuń zaznaczone", self, shortcut="Del",triggered=self.clear_selected_items)
         self.addAction(quit_action_4)
         self.addAction(quit_action_3)
         self.addAction(quit_action_2)
@@ -35,16 +35,16 @@ class ListWidget(QListWidget):
         self.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz, lub przeciągnij je i upuść na liście")
 
     # clear current selected item
-    def clearSelectedItems(self):
+    def clear_selected_items(self):
         for selected_item in self.selectedItems():
             self.takeItem(self.row(selected_item))
 
     # clear all files on the list
-    def clearAllItems(self):
+    def clear_all_items(self):
         self.clear()
 
     # select all files on the list
-    def selectItems(self):
+    def select_items(self):
         self.selectAll();
 
     def dragEnterEvent(self, event):
@@ -67,7 +67,16 @@ class ListWidget(QListWidget):
 
 ###
 
+
+
+
+
+
 class MainWindow(QMainWindow, Ui_MainWindow):
+
+    # Lista plikow 
+    data_of_list = [] 
+
 
     def __init__(self, app, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -76,6 +85,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.push_button_1.clicked.connect(self.load_files)
         self.push_button_2.clicked.connect(self.select_recipe)
+        self.push_button_4.clicked.connect(self.clear_selected_items)
+        self.push_button_5.clicked.connect(self.clear_all_items)
 
         self.show()
 
@@ -87,9 +98,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # Actions for mouse right click #
         quit_action_1 = QAction("Zamknij", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
-        quit_action_2 = QAction("Czyść", self, triggered=self.clearAllItems)
-        quit_action_3 = QAction("Zaznacz wszystko", self, shortcut="Ctrl+A", triggered=self.selectItems)
-        quit_action_4 = QAction("Usuń zaznaczone", self, shortcut="Del", triggered=self.clearSelectedItems)
+        quit_action_2 = QAction("Czyść", self, triggered=self.clear_all_items)
+        quit_action_3 = QAction("Zaznacz wszystko", self, shortcut="Ctrl+A", triggered=self.select_items)
+        quit_action_4 = QAction("Usuń zaznaczone", self, shortcut="Del", triggered=self.clear_selected_items)
         self.list_widget_1.addAction(quit_action_4)
         self.list_widget_1.addAction(quit_action_3)
         self.list_widget_1.addAction(quit_action_2)
@@ -105,16 +116,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # <<< Listwidget handling >>> #
 
     # clear current selected item
-    def clearSelectedItems(self):
+    def clear_selected_items(self):
         for selected_item in self.list_widget_1.selectedItems():
             self.list_widget_1.takeItem(self.list_widget_1.row(selected_item))
 
     # clear all files on the list
-    def clearAllItems(self):
+    def clear_all_items(self):
         self.list_widget_1.clear()
 
     # select all files on the list
-    def selectItems(self):
+    def select_items(self):
         self.list_widget_1.selectAll();
     
     # EVENT: drag item on list
@@ -134,6 +145,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if event.mimeData().hasUrls():
             for url in event.mimeData().urls():
                 self.list_widget_1.addItem(url.path())
+
             event.acceptProposedAction()
         else:
             super(self.list_widget_1, self).dropEvent(event)
@@ -142,20 +154,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
 	
-    # <<< Load files on >>> #
-    def add_to_list(self, list_of_files):
-        while list_of_files:
-            self.list_widget_1.addItem(list_of_files.pop())
+    # <<< ADD paths on list_widget_1 from list_of_paths used pop()  >>> #
+    def add_to_list_widget(self, list_of_paths):
+        data_of_list = list_of_paths
+        while list_of_paths:
+            self.list_widget_1.addItem(list_of_paths.pop())
 
 
     def load_files(self):
-        list_of_files = []
-        file_names, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '', "Files (*.txt *.cpp, *.py *.doc *.pdf);;Folders(*/);;All Files (*)")
+        list_of_paths = []
+        file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '', "Files (*.txt *.cpp, *.py *.doc *.pdf);;Folders(*/);;All Files (*)")
 
-        for file_name in file_names:
-            list_of_files.append(file_name)
-        print(list_of_files)
-        self.add_to_list(list_of_files)
+        for file_path in file_paths:
+            list_of_paths.append(file_path)
+        print(list_of_paths)
+        self.add_to_list_widget(list_of_paths)
    
     # <<< END of: Load files on >>> #
 
