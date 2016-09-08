@@ -89,11 +89,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Ui_MainWindow.setupUi(self, self)
 
         self.push_button_1.clicked.connect(self.load_files)
-        self.push_button_2.clicked.connect(self.select_recipe)
-        self.push_button_3.clicked.connect(self.config_output)
-        self.push_button_4.clicked.connect(self.clear_selected_items)
-        self.push_button_5.clicked.connect(self.clear_all_items)
-
+        self.push_button_2.clicked.connect(self.clear_selected_items)
+        self.push_button_3.clicked.connect(self.clear_all_items)
+        self.push_button_4.clicked.connect(self.select_recipe)
+        self.push_button_5.clicked.connect(self.config_output)
         self.show()
 
         self.list_widget_1.setAcceptDrops(True)
@@ -208,7 +207,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
-    names_of_lists = [ 'Lista1','Lista2','Lista3']
+    names_of_lists = [ 'Lista1',{"value1", "Value2" },'Lista2','Lista3']
     def __init__(self):
         super(VariablesDialog,  self).__init__()
         
@@ -220,21 +219,24 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     def load_table_of_lists(self,names_of_lists):
               
         #for element in name_of_lists:
-        while names_of_lists: 
+        for name_of_list in names_of_lists: 
 
             auto_label = QtWidgets.QLabel()
-            auto_label.setText(self.names_of_lists.pop())
+            auto_label.setText(str(name_of_list))
+            auto_label.setObjectName(auto_label.text()+ "_label")
 
             auto_combobox = QtWidgets.QComboBox()
             auto_combobox.setObjectName(auto_label.text()+ "_combobox")
 
             auto_layout = QtWidgets.QVBoxLayout()
-            auto_layout.setObjectName(auto_label.text() +"_layout")
-
+            auto_layout.setObjectName(auto_label.text() + "_layout")
+            
             #auto_layout.addWidget(auto_label)
             #auto_layout.addWidget(auto_combobox)
+            for elements in name_of_list:
+                auto_combobox.addItem(elements)
 
-            self.form_layout.addRow(auto_label,auto_combobox)
+            self.form_layout.addRow(auto_label, auto_combobox)
                 
 
     def load_table_of_variables(self, names_of_variables):
