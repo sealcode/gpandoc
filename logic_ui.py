@@ -2,6 +2,7 @@ import sys
 
 from ui import recipe_ui
 from ui.mainwindow_ui import Ui_MainWindow
+from ui.variables_ui import Ui_Dialog
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, \
@@ -65,10 +66,14 @@ class ListWidget(QListWidget):
         else:
             super(ListWidget, self).dropEvent(event)
 
-###
 
-# <<< SETTINGS 
+# <<< SETTINGS Variables >>> # 
+data_of_list = [] 
+join_files = False
+allow_repeat = False
 
+# <<<END of: SETTINGS Variables >>> # 
+  
 
 
 # <<< MAINWINDOW >>> #
@@ -76,8 +81,7 @@ class ListWidget(QListWidget):
 class MainWindow(QMainWindow, Ui_MainWindow):
 
     # Lista plikow 
-    data_of_list = [] 
-    	
+       	
 
     def __init__(self, app, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -86,6 +90,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.push_button_1.clicked.connect(self.load_files)
         self.push_button_2.clicked.connect(self.select_recipe)
+        #self.push_button_3.clicked.connect(self.config_output)
         self.push_button_4.clicked.connect(self.clear_selected_items)
         self.push_button_5.clicked.connect(self.clear_all_items)
 
@@ -113,76 +118,86 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	
 
 
-
-    # <<< Listwidget handling >>> #
+ # << Listwidget handling >> #
 
     # clear current selected item
     def clear_selected_items(self):
         for selected_item in self.list_widget_1.selectedItems():
             self.list_widget_1.takeItem(self.list_widget_1.row(selected_item))
+          #  data_of_list.
+         
 
     # clear all files on the list
     def clear_all_items(self):
         self.list_widget_1.clear()
+        data_of_list.clear()
 
     # select all files on the list
     def select_items(self):
         self.list_widget_1.selectAll();
+        qDebug("\n" + str(data_of_list)) # chcek list values: data_of_list 
+
     
-    # EVENT: drag item on list
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
-        else:
-            super(self.list_widget_1, self).dragEnterEvent(event)
+   # EVENT: drag item on list
+   # def dragEnterEvent(self, event):
+   #     if event.mimeData().hasUrls():
+   #         event.acceptProposedAction()
+   #    else:
+   #         super(self.list_widget_1, self).dragEnterEvent(event)
 
-    # EVENT: move item on list
-    def dragMoveEvent(self, event):
-        super(self.list_widget_1, self).dragMoveEvent(event)
+   #  EVENT: move item on list
+   # def dragMoveEvent(self, event):
+   #     super(self.list_widget_1, self).dragMoveEvent(event)
 
 
-    # EVENT: Put elements on the list 
-    def dropEvent(self, event):
-        if event.mimeData().hasUrls():
-            for url in event.mimeData().urls():
-                self.list_widget_1.addItem(url.path())
+   # EVENT: Put elements on the list 
+   # def dropEvent(self, event):
+   #     if event.mimeData().hasUrls():
+   #         for url in event.mimeData().urls():
+   #             self.list_widget_1.addItem(url.path())
+		
 
-            event.acceptProposedAction()
-        else:
-            super(self.list_widget_1, self).dropEvent(event)
+   #         event.acceptProposedAction()
+   #     else:
+   #         super(self.list_widget_1, self).dropEvent(event)
 
-    # <<< END of: Listwidget handling >>> #
+  # << END of: Listwidget handling >> #
 
 
 	
-    # <<< ADD paths on list_widget_1 from list_of_paths used pop()  >>> #
+ # << ADD paths on list_widget_1 from list_of_paths used pop()  >> #
     def add_to_list_widget(self, list_of_paths):
-        data_of_list = list_of_paths
-        while list_of_paths:
-            self.list_widget_1.addItem(list_of_paths.pop())
+     while list_of_paths:
+             self.list_widget_1.addItem(list_of_paths.pop())
 
 
 	
-   # <<< Load files on >>> #
+ # << Load files on >> #
     def load_files(self):
         list_of_paths = []
-        file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '', "Files (*.txt *.cpp, *.py *.doc *.pdf);;Folders(*/);;All Files (*)")
+        file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',"Documents(*.txt *.doc, *.docx, *.pdf);; Markdown (*.md);; Mobi (*.mobi);; All Files (*)")
 
         for file_path in file_paths:
             list_of_paths.append(file_path)
+            data_of_list.append(file_path)
         print(list_of_paths)
         self.add_to_list_widget(list_of_paths)
    
-    # <<< END of: Load files on >>> #
+ # << END of: Load files on >> #
+    
 
 
-
-    # <<< RECIPE: Dialog handling >>> #
+ # << Select recipe - handling >> # 
     def select_recipe(self):
         dialog = QtWidgets.QDialog()
         dialog.ui = recipe_ui.Ui_Dialog()
         dialog.ui.setupUi(dialog)
+	
         dialog.exec_()
+
+ # << END of: Select recipe - handling >> #
+
+
 
 # <<< END OF MAINWINDOW >>> #
 
