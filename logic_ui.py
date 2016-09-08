@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, 
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt
 from PyQt5.QtGui import QIcon
 
-###
+### Commented class current not used 
 class ListWidget(QListWidget):
 
     def __init__(self, parent=None):
@@ -67,16 +67,17 @@ class ListWidget(QListWidget):
 
 ###
 
+# <<< SETTINGS 
 
 
 
-
+# <<< MAINWINDOW >>> #
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
     # Lista plikow 
     data_of_list = [] 
-
+    	
 
     def __init__(self, app, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -161,6 +162,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.list_widget_1.addItem(list_of_paths.pop())
 
 
+	
+   # <<< Load files on >>> #
     def load_files(self):
         list_of_paths = []
         file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '', "Files (*.txt *.cpp, *.py *.doc *.pdf);;Folders(*/);;All Files (*)")
@@ -180,4 +183,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         dialog.ui = recipe_ui.Ui_Dialog()
         dialog.ui.setupUi(dialog)
         dialog.exec_()
+
+# <<< END OF MAINWINDOW >>> #
+
+
+# <<< RECIPES UI >>> #
+
+
 
