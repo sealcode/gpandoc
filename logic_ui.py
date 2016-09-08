@@ -6,7 +6,7 @@ from ui import variables_ui
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, \
-                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction,QDialog
+                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction,QDialog, QComboBox
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt
 from PyQt5.QtGui import QIcon
 
@@ -199,22 +199,54 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def config_output(self):
         config_dialog = VariablesDialog()
-
-
         config_dialog.exec_()
 
 
 # <<< END OF MAINWINDOW >>> #
 
-
 # <<< CONFIG VARIABLES >>> #
 
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
+    names_of_lists = [ 'Lista1','Lista2','Lista3']
     def __init__(self):
         super(VariablesDialog,  self).__init__()
         
         variables_ui.Ui_Dialog.setupUi(self,self)
+        
+
+        self.load_table_of_lists(self.names_of_lists)
+    
+    def load_table_of_lists(self,names_of_lists):
+              
+        #for element in name_of_lists:
+        while names_of_lists: 
+
+            auto_label = QtWidgets.QLabel()
+            auto_label.setText(self.names_of_lists.pop())
+
+            auto_combobox = QtWidgets.QComboBox()
+            auto_combobox.setObjectName(auto_label.text()+ "_combobox")
+
+            auto_layout = QtWidgets.QVBoxLayout()
+            auto_layout.setObjectName(auto_label.text() +"_layout")
+
+            #auto_layout.addWidget(auto_label)
+            #auto_layout.addWidget(auto_combobox)
+
+            self.form_layout.addRow(auto_label,auto_combobox)
+                
+
+    def load_table_of_variables(self, names_of_variables):
+        pass
+
+    def load_table_of_text(self, _of_variables):
+        pass
+    
+    def bulid_menu(self):
+        
+        pass
+        
         
 # <<< END of: CONFIG VARIABLES >>> #
 
