@@ -2,10 +2,10 @@ import sys
 
 from ui import recipe_ui
 from ui.mainwindow_ui import Ui_MainWindow
-from ui.variables_ui import Ui_Dialog
+from ui import variables_ui
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, \
+from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction,QDialog
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt
 from PyQt5.QtGui import QIcon
@@ -68,11 +68,12 @@ class ListWidget(QListWidget):
 
 
 # <<< SETTINGS Variables >>> # 
+
 data_of_list = [] 
 join_files = False
 allow_repeat = False
 
-# <<<END of: SETTINGS Variables >>> # 
+# <<< END of: SETTINGS Variables >>> # 
   
 
 
@@ -80,9 +81,8 @@ allow_repeat = False
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
-    # Lista plikow 
+ # Lista plikow 
        	
-
     def __init__(self, app, parent=None):
         super(MainWindow, self).__init__(parent)
         
@@ -90,7 +90,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.push_button_1.clicked.connect(self.load_files)
         self.push_button_2.clicked.connect(self.select_recipe)
-        #self.push_button_3.clicked.connect(self.config_output)
+        self.push_button_3.clicked.connect(self.config_output)
         self.push_button_4.clicked.connect(self.clear_selected_items)
         self.push_button_5.clicked.connect(self.clear_all_items)
 
@@ -161,7 +161,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
    #     else:
    #         super(self.list_widget_1, self).dropEvent(event)
 
-  # << END of: Listwidget handling >> #
+ # << END of: Listwidget handling >> #
 
 
 	
@@ -189,20 +189,35 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
  # << Select recipe - handling >> # 
     def select_recipe(self):
-        dialog = QtWidgets.QDialog()
-        dialog.ui = recipe_ui.Ui_Dialog()
-        dialog.ui.setupUi(dialog)
+        recipe_dialog = QtWidgets.QDialog()
+        recipe_dialog.ui = recipe_ui.Ui_Dialog()
+        recipe_dialog.ui.setupUi(recipe_dialog)
 	
-        dialog.exec_()
+        recipe_dialog.exec_()
 
  # << END of: Select recipe - handling >> #
 
+    def config_output(self):
+        config_dialog = VariablesDialog()
+
+
+        config_dialog.exec_()
 
 
 # <<< END OF MAINWINDOW >>> #
 
 
-# <<< RECIPES UI >>> #
+# <<< CONFIG VARIABLES >>> #
+
+class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
+
+    def __init__(self):
+        super(VariablesDialog,  self).__init__()
+        
+        variables_ui.Ui_Dialog.setupUi(self,self)
+        
+# <<< END of: CONFIG VARIABLES >>> #
+
 
 
 
