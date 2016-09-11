@@ -1,45 +1,87 @@
-from PyQt5 import QtGui, QtCore, QtWidgets
-import sys, os
+import sys
+import string
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-class CheckableComboBox(QtWidgets.QComboBox):
-    def __init__(self):
-        super(CheckableComboBox, self).__init__()
-        self.view().pressed.connect(self.handleItemPressed)
-       # self.setModel(QtGui.QStandardItemModel(self))
+class Header(QHeaderView):
 
-    def handleItemPressed(self, index):
-        item = self.model().itemFromIndex(index)
-        if item.checkState() == QtCore.Qt.Checked:
-            item.setCheckState(QtCore.Qt.Unchecked)
+    def __init__(self, parent=None):
+        super(Header, self).__init__(Qt.Horizontal, parent)
+
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.ctxMenu)
+
+        self.setup()
+
+    @pyqtSlot(bool)
+    def printID(self, i):
+        print("id")
+        if i == False:
+            self.hideSection(0)
         else:
-            item.setCheckState(QtCore.Qt.Checked)
+            self.showSection(0)
 
-class Dialog_01(QtWidgets.QMainWindow):
-    def __init__(self):
-        super(QtWidgets.QMainWindow,self).__init__()
-        myQWidget = QtWidgets.QWidget()
-        myBoxLayout = QtWidgets.QVBoxLayout()
-        myQWidget.setLayout(myBoxLayout)
-        self.setCentralWidget(myQWidget)
-        self.ComboBox = CheckableComboBox()
-        for i in range(3):
-            self.ComboBox.addItem("Combobox Item " + str(i))
-            item = self.ComboBox.model().item(i, 0)
-            item.setCheckState(QtCore.Qt.Unchecked)
-        self.toolbutton = QtWidgets.QToolButton(self)
-        self.toolbutton.setText('Select Categories ')
-        self.toolmenu = QtWidgets.QMenu(self)
-        for i in range(3):
-            action = self.toolmenu.addAction("Category " + str(i))
-            action.setCheckable(True)
-        self.toolbutton.setMenu(self.toolmenu)
-        self.toolbutton.setPopupMode(QtWidgets.QToolButton.InstantPopup)
-        myBoxLayout.addWidget(self.toolbutton)
-        myBoxLayout.addWidget(self.ComboBox)
+    @pyqtSlot(bool)        
+    def printNAME(self, i):
+        print("name")
+        if i == False:
+            self.hideSection(1)
+        else:
+            self.showSection(1)
+
+    @pyqtSlot(bool)        
+    def printUSERNAME(self, i):
+        print("username")
+        if i == False:
+            self.hideSection(2)
+        else:
+            self.showSection(2)
+
+    def setup(self):
+
+        self.id = QAction("id",self)
+        self.id.setCheckable(True)
+        self.id.setChecked(True)
+        self.connect(self.id, SIGNAL("triggered(bool)"), self, SLOT("printID(bool)"))
+
+
+        self.name = QAction("name",self)
+        self.name.setCheckable(True)
+        self.name.setChecked(True)
+        self.connect(self.name, SIGNAL("triggered(bool)"), self, SLOT("printNAME(bool)"))
+
+
+        self.username = QAction("username",self)
+        self.username.setCheckable(True)
+        self.username.setChecked(True)
+        self.connect(self.username, SIGNAL("triggered(bool)"), self, SLOT("printUSERNAME(bool)"))
+
+    def ctxMenu(self, point):
+        menu = QMenu(self)
+        self.currentSection = self.logicalIndexAt(point)
+        menu.addAction(self.id)
+        menu.addAction(self.name)
+        menu.addAction(self.username)
+        menu.exec_(self.mapToGlobal(point))
+
+
+class Table(QTableWidget):
+    def __init__(self, parent=None):
+        super(Table, self).__init__(parent)
+        self.setHorizontalHeader(Header(self))
+        self.setColumnCount(3)
+        self.setHorizontalHeaderLabels(['id', 'name', 'username'])
+        self.populate()
+
+    def populate(self):
+        self.setRowCount(10)
+        for i in range(10):
+            for j,l in enumerate(string.ascii_letters[:3]):
+                self.setItem(i, j, QTableWidgetItem(l)) 
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    dialog_1 = Dialog_01()
-    dialog_1.show()
-    dialog_1.resize(480,320)
-    sys.exit(app.exec_())
+    app = QApplication(sys.argv)
+    t = Table()
+    t.show()
+    app.exec_()
+    sys.exit()

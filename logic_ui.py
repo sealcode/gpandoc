@@ -1,8 +1,11 @@
 import sys
 
 from ui import recipe_ui
-from ui.mainwindow_ui import Ui_MainWindow
 from ui import variables_ui
+
+#from current_conf import conf.txt
+from ui.mainwindow_ui import Ui_MainWindow
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, \
@@ -10,72 +13,28 @@ from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, 
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt
 from PyQt5.QtGui import QIcon
 
-### Commented class current not used 
-class ListWidget(QListWidget):
-
-    def __init__(self, parent=None):
-        super(ListWidget, self).__init__(parent)
-        self.setAcceptDrops(True)
-        self.setMouseTracking(True)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
-        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-
-        # Actions for mouse right click
-        quit_action_1 = QAction("Zamknij", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
-        quit_action_2 = QAction("Czyść", self, triggered=self.clearAllItems)
-        quit_action_3 = QAction("Zaznacz wszystko", self, shortcut="Ctrl+A", triggered=self.select_items)
-        quit_action_4 = QAction("Usuń zaznaczone", self, shortcut="Del",triggered=self.clear_selected_items)
-        self.addAction(quit_action_4)
-        self.addAction(quit_action_3)
-        self.addAction(quit_action_2)
-        self.addAction(quit_action_1)
-
-        # Info for users how to add files
-        self.setContextMenuPolicy(Qt.ActionsContextMenu)
-        self.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz, lub przeciągnij je i upuść na liście")
-
-    # clear current selected item
-    def clear_selected_items(self):
-        for selected_item in self.selectedItems():
-            self.takeItem(self.row(selected_item))
-
-    # clear all files on the list
-    def clear_all_items(self):
-        self.clear()
-
-    # select all files on the list
-    def select_items(self):
-        self.selectAll();
-
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
-        else:
-            super(ListWidget, self).dragEnterEvent(event)
-
-    # event
-    def dragMoveEvent(self, event):
-            super(ListWidget, self).dragMoveEvent(event)
-    # event
-    def dropEvent(self, event):
-        if event.mimeData().hasUrls():
-            for url in event.mimeData().urls():
-                self.addItem(url.path())
-            event.acceptProposedAction()
-        else:
-            super(ListWidget, self).dropEvent(event)
-
 
 # <<< SETTINGS Variables >>> # 
+data_of_list=[]
+class CurrentConfig():
+    
+    def __init__(self):
+        super(CurrentConfig, self).__init__()
+        File = open("conf.txt", "r+")
+        self.load_conf(File)
+        
+    def load_conf(self, File):
+        
+        pass
 
-data_of_list = [] 
-join_files = False
-allow_repeat = False
+    def save_conf(self,File):
+        pass
 
 # <<< END of: SETTINGS Variables >>> # 
-  
 
+
+        
+    
 
 # <<< MAINWINDOW >>> #
 
@@ -89,10 +48,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Ui_MainWindow.setupUi(self, self)
 
         self.push_button_1.clicked.connect(self.load_files)
-        self.push_button_2.clicked.connect(self.clear_selected_items)
-        self.push_button_3.clicked.connect(self.clear_all_items)
-        self.push_button_4.clicked.connect(self.select_recipe)
-        self.push_button_5.clicked.connect(self.config_output)
+        self.push_button_4.clicked.connect(self.clear_selected_items)
+        self.push_button_5.clicked.connect(self.clear_all_items)
+        self.push_button_2.clicked.connect(self.select_recipe)
+        self.push_button_3.clicked.connect(self.config_output)
         self.show()
 
         self.list_widget_1.setAcceptDrops(True)
@@ -205,48 +164,100 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 # <<< CONFIG VARIABLES >>> #
 
-class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
+import recipe
+import string
+import logging
+import configparser
+from zipfile import ZipFile
 
-    names_of_lists = [ 'Lista1',{"value1", "Value2" },'Lista2','Lista3']
+
+
+class List(QtWidgets.QTableWidget):
+    def __init__(self, parent=None):
+        super(List, self).__init__(parent)
+        self.setColumnCount(1)
+        self.populate()
+
+    def populate(self):
+        self.setRowCount(1)
+        for i in range(10):
+            for j,l in enumerate(string.ascii_letters[:3]):
+                self.setItem(i, j, QtWidgets.QTableWidgetItem(l)) 
+
+
+class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
+    
+   
     def __init__(self):
         super(VariablesDialog,  self).__init__()
         
         variables_ui.Ui_Dialog.setupUi(self,self)
-        
+        self.names_of_lists = ['lista', 'lista2']
+        self.names_of_variables = ['zmienna1','zmienna2']
+        self.form=[]
 
         self.load_table_of_lists(self.names_of_lists)
+        self.load_table_of_variables(self.names_of_variables)
+
+        qDebug(str(self.form[0]))
+    # << Set elements on form >> #
+    def draw_lists(self):
+        for elem in self.form:
+            self.form_layout.addRow(elem)
     
     def load_table_of_lists(self,names_of_lists):
               
         #for element in name_of_lists:
+
         for name_of_list in names_of_lists: 
-
-            auto_label = QtWidgets.QLabel()
-            auto_label.setText(str(name_of_list))
-            auto_label.setObjectName(auto_label.text()+ "_label")
-
-            auto_combobox = QtWidgets.QComboBox()
-            auto_combobox.setObjectName(auto_label.text()+ "_combobox")
-
-            auto_layout = QtWidgets.QVBoxLayout()
-            auto_layout.setObjectName(auto_label.text() + "_layout")
             
-            #auto_layout.addWidget(auto_label)
-            #auto_layout.addWidget(auto_combobox)
-            for elements in name_of_list:
-                auto_combobox.addItem(elements)
+            self.label= QtWidgets.QLabel(name_of_list)
+            self.label.setText(str(name_of_list))
+            self.label.setObjectName(self.label.text()+ "_label")
+            
+            self.line_edit= QtWidgets.QTableWidgetItem("Wartość")
+            
+            self.table_view = List()
+            
+            self.table_view.setObjectName(self.label.text()+ "_combobox")
 
-            self.form_layout.addRow(auto_label, auto_combobox)
-                
+            # create layout vertical for label and list(at the moment still combobox)
+            self.box = QtWidgets.QHBoxLayout()
+            self.box.addWidget(self.label)
+            self.box.addWidget(self.table_view)
+        
+            self.form.append(self.box)
+            #self.form.append(self.combobox)
+
+        self.draw_lists()   
+     
 
     def load_table_of_variables(self, names_of_variables):
-        pass
+            
+        for variable in names_of_variables: 
+            
+            self.label= QtWidgets.QLabel(variable)
+            self.label.setText(str(variable))
+            self.label.setObjectName(self.label.text()+ "_label")
+            
+            self.line_edit= QtWidgets.QLineEdit("Wartość")
+                    
+            self.table_view.setObjectName(self.label.text()+ "_combobox")             
+
+            # create layout vertical for label and list(at the moment still combobox)
+            self.box = QtWidgets.QHBoxLayout()
+            self.box.addWidget(self.label)
+            self.box.addWidget(self.line_edit)
+        
+            self.form.append(self.box)
+            #self.form.append(self.combobox)
+
+        self.draw_lists()
 
     def load_table_of_text(self, _of_variables):
         pass
     
     def bulid_menu(self):
-        
         pass
         
         

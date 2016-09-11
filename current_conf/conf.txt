@@ -1,0 +1,13 @@
+# Configuration file of gpandoc #
+
+# [Documents join]
+join_files = false
+
+# [Documents repeate ask] 
+allow_repeate = false
+do_not_ask = false
+
+# [Recipes]
+default_recipe = "standard.zip"
+author = "Jan Kowalski"
+
