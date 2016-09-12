@@ -162,6 +162,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 # <<< END OF MAINWINDOW >>> #
 
+
+
+
 # <<< CONFIG VARIABLES >>> #
 
 import recipe
@@ -172,17 +175,18 @@ from zipfile import ZipFile
 
 
 
-class List(QtWidgets.QTableWidget):
+class Table(QtWidgets.QTableWidget):
     def __init__(self, parent=None):
-        super(List, self).__init__(parent)
+        super(Table, self).__init__(parent)
         self.setColumnCount(1)
+        
+        self.setCornerButtonEnabled(True)
         self.populate()
 
     def populate(self):
-        self.setRowCount(1)
-        for i in range(10):
-            for j,l in enumerate(string.ascii_letters[:3]):
-                self.setItem(i, j, QtWidgets.QTableWidgetItem(l)) 
+        self.setRowCount(2)
+        self.setItem(0, 0, QtWidgets.QTableWidgetItem("standard")) 
+        self.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
 
 
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
@@ -192,14 +196,16 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         super(VariablesDialog,  self).__init__()
         
         variables_ui.Ui_Dialog.setupUi(self,self)
-        self.names_of_lists = ['lista', 'lista2']
-        self.names_of_variables = ['zmienna1','zmienna2']
+
+        self.names_of_lists = ['list', 'list2']
+        self.names_of_variables = ['var1','var2']
         self.form=[]
 
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
 
         qDebug(str(self.form[0]))
+    
     # << Set elements on form >> #
     def draw_lists(self):
         for elem in self.form:
@@ -213,20 +219,21 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             
             self.label= QtWidgets.QLabel(name_of_list)
             self.label.setText(str(name_of_list))
-            self.label.setObjectName(self.label.text()+ "_label")
-            
-            self.line_edit= QtWidgets.QTableWidgetItem("Wartość")
-            
-            self.table_view = List()
-            
-            self.table_view.setObjectName(self.label.text()+ "_combobox")
-
+            self.label.setObjectName(self.label.text() + "_label")
+           
+            self.table_widget = Table()
+            self.table_widget.setHorizontalHeaderLabels([str(name_of_list)])
+            # self.horizontalHeader().hide()
+            self.table_widget.setObjectName(self.label.text() + "_table_widget")
+            self.button_form = QtWidgets.QPushButton("Dodaj pole")
             # create layout vertical for label and list(at the moment still combobox)
             self.box = QtWidgets.QHBoxLayout()
             self.box.addWidget(self.label)
-            self.box.addWidget(self.table_view)
-        
+            self.box.addWidget(self.table_widget)
+            self.form.append(self.button_form)
+            #self.form.append(self.button_form)
             self.form.append(self.box)
+
             #self.form.append(self.combobox)
 
         self.draw_lists()   
@@ -240,9 +247,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.label.setText(str(variable))
             self.label.setObjectName(self.label.text()+ "_label")
             
-            self.line_edit= QtWidgets.QLineEdit("Wartość")
-                    
-            self.table_view.setObjectName(self.label.text()+ "_combobox")             
+            self.line_edit= QtWidgets.QLineEdit("Wartość")     
 
             # create layout vertical for label and list(at the moment still combobox)
             self.box = QtWidgets.QHBoxLayout()
