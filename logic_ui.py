@@ -53,7 +53,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.push_button_2.clicked.connect(self.select_recipe)
         self.push_button_3.clicked.connect(self.config_output)
         self.show()
-
+                   
         self.list_widget_1.setAcceptDrops(True)
         self.list_widget_1.setMouseTracking(True)
         self.list_widget_1.setDragDropMode(QAbstractItemView.InternalMove)
@@ -178,17 +178,38 @@ from zipfile import ZipFile
 class Table(QtWidgets.QTableWidget):
     def __init__(self, parent=None):
         super(Table, self).__init__(parent)
-        self.setColumnCount(1)
         
-        self.setCornerButtonEnabled(True)
+        self.setColumnCount(1)
+
+        self.button_form = QtWidgets.QPushButton()
+        self.button_form.setText("Nowe pole")
+        self.button_form.clicked.connect(self.add_cell)
+
+        self.row = self.currentRow()
+        self.col = self.currentColumn()
+        self.count = 1
         self.populate()
+        
 
     def populate(self):
-        self.setRowCount(2)
-        self.setItem(0, 0, QtWidgets.QTableWidgetItem("standard")) 
-        self.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        self.setRowCount(self.count)
+        self.setItem(self.count, 0, QtWidgets.QTableWidgetItem("standard")) 
+        self.horizontalHeader().setStretchLastSection(True)
+   
 
+    def c_current(self):
+        self.row = self.currentRow()
+        self.col = self.currentColumn()
+        print("Current row is ", self.row)
+        print("In this cell we have: ", self.value)
 
+    def add_cell(self):
+        
+        self.count = self.count+1
+        self.setRowCount(self.count)
+        self.setItem(self.count,0, QtWidgets.QTableWidgetItem())
+        self.show()
+        
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     
    
@@ -218,26 +239,27 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         for name_of_list in names_of_lists: 
             
             self.label= QtWidgets.QLabel(name_of_list)
+
             self.label.setText(str(name_of_list))
-            self.label.setObjectName(self.label.text() + "_label")
+            self.label.setObjectName(str(name_of_list) + "_label")
            
             self.table_widget = Table()
+
             self.table_widget.setHorizontalHeaderLabels([str(name_of_list)])
-            # self.horizontalHeader().hide()
             self.table_widget.setObjectName(self.label.text() + "_table_widget")
-            self.button_form = QtWidgets.QPushButton("Dodaj pole")
-            # create layout vertical for label and list(at the moment still combobox)
+       
             self.box = QtWidgets.QHBoxLayout()
             self.box.addWidget(self.label)
             self.box.addWidget(self.table_widget)
-            self.form.append(self.button_form)
+            self.box.addWidget(self.table_widget.button_form)
             #self.form.append(self.button_form)
             self.form.append(self.box)
 
             #self.form.append(self.combobox)
 
         self.draw_lists()   
-     
+    def add_cell(self):
+        pass
 
     def load_table_of_variables(self, names_of_variables):
             
