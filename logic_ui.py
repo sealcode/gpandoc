@@ -248,13 +248,16 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.table_widget.setHorizontalHeaderLabels([str(name_of_list)])
             self.table_widget.setObjectName(self.label.text() + "_table_widget")
        
-            self.box = QtWidgets.QHBoxLayout()
-            self.box.addWidget(self.label)
-            self.box.addWidget(self.table_widget)
-            self.box.addWidget(self.table_widget.button_form)
-            #self.form.append(self.button_form)
-            self.form.append(self.box)
+            self.Hbox = QtWidgets.QHBoxLayout()
+            self.Hbox.addWidget(self.label)
+            self.Hbox.addWidget(self.table_widget)
+            
+            self.Vbox = QtWidgets.QVBoxLayout()
+            self.Vbox.addLayout(self.Hbox)
+            self.Vbox.addWidget(self.table_widget.button_form)
 
+            #self.form.append(self.button_form)
+            self.form.append(self.Vbox)
             #self.form.append(self.combobox)
 
         self.draw_lists()   
