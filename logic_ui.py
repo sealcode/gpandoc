@@ -23,8 +23,7 @@ class CurrentConfig():
         File = open("conf.txt", "r+")
         self.load_conf(File)
         
-    def load_conf(self, File):
-        
+    def load_conf(self, File):  
         pass
 
     def save_conf(self,File):
@@ -188,10 +187,10 @@ class Table(QtWidgets.QTableWidget):
         self.row = self.currentRow()
         self.col = self.currentColumn()
         self.count = 1
-        self.populate()
+        self.setup_empty_table()
         
 
-    def populate(self):
+    def setup_empty_table(self):
         self.setRowCount(self.count)
         self.setItem(self.count, 0, QtWidgets.QTableWidgetItem("standard")) 
         self.horizontalHeader().setStretchLastSection(True)
@@ -224,9 +223,32 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
-
-        qDebug(str(self.form[0]))
     
+        num_widgets = self.form[0].count()
+        qDebug(str(self.form[0].objectName()))
+    #    for box in self.form:
+   #         if isinstance(box, QtWidgets.QHBoxLayout):
+     #           items = (box.itemAt(element) for element in range(box.count())) 
+     #           qDebug(str(box.objectName()))
+     #          # qDebug(str(items))
+      #          for item in items:
+       #             if isinstance(item, QtWidgets.QWidgetItem.QLabel):
+                     #   qDebug(str(item))
+
+        ###for l in layouts:
+                
+              # if isinstance(l, QtWidgets.QHBoxLayout):
+               #     elem = (l.itemAt(element) for element in range(l.count())) 
+         
+                #    for w in elem:    
+                  #      if isinstance(w, QtWidgets.QLabel):
+                 #           qDebug("Label type: "+ str(w.nameObject()))
+
+                   #     if isinstance(w, QtWidgets.QTableWidget):
+                     #       for r in QtWidgets.QTableWidget:
+                    #            qDebug(str(r.value()))###
+                
+      
     # << Set elements on form >> #
     def draw_lists(self):
         for elem in self.form:
@@ -248,21 +270,20 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.table_widget.setHorizontalHeaderLabels([str(name_of_list)])
             self.table_widget.setObjectName(self.label.text() + "_table_widget")
        
-            self.Hbox = QtWidgets.QHBoxLayout()
-            self.Hbox.addWidget(self.label)
-            self.Hbox.addWidget(self.table_widget)
+            self.h_box = QtWidgets.QHBoxLayout()
+            self.h_box.addWidget(self.label)
+            self.h_box.addWidget(self.table_widget)
             
-            self.Vbox = QtWidgets.QVBoxLayout()
-            self.Vbox.addLayout(self.Hbox)
-            self.Vbox.addWidget(self.table_widget.button_form)
-
+            self.v_box = QtWidgets.QVBoxLayout()
+            self.v_box.addLayout(self.h_box)
+            self.v_box.addWidget(self.table_widget.button_form)
+            self.box = self.v_box
+            
             #self.form.append(self.button_form)
-            self.form.append(self.Vbox)
+            self.form.append(self.box)
             #self.form.append(self.combobox)
 
         self.draw_lists()   
-    def add_cell(self):
-        pass
 
     def load_table_of_variables(self, names_of_variables):
             
@@ -278,8 +299,8 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.box = QtWidgets.QHBoxLayout()
             self.box.addWidget(self.label)
             self.box.addWidget(self.line_edit)
-        
             self.form.append(self.box)
+
             #self.form.append(self.combobox)
 
         self.draw_lists()
