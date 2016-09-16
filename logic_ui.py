@@ -220,33 +220,35 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         self.names_of_lists = ['list', 'list2']
         self.names_of_variables = ['var1','var2']
         self.form=[]
-
+ 
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
     
         num_widgets = self.form[0].count()
         qDebug(str(self.form[0].objectName()))
-    #    for box in self.form:
-   #         if isinstance(box, QtWidgets.QHBoxLayout):
-     #           items = (box.itemAt(element) for element in range(box.count())) 
-     #           qDebug(str(box.objectName()))
-     #          # qDebug(str(items))
-      #          for item in items:
-       #             if isinstance(item, QtWidgets.QWidgetItem.QLabel):
+        for box in self.form:
+            if isinstance(box, QtWidgets.QHBoxLayout):
+                qDebug("tak")
+                items = (box.itemAt(i).widget() for i in range(box.count())) 
+                for w in items:
+                    qDebug(str(w.text()))
+    #           qDebug(str(box.objectName()))
+    #          # qDebug(str(items))
+    #          for item in items:
+    #             if isinstance(item, QtWidgets.QWidgetItem.QLabel):
                      #   qDebug(str(item))
 
         ###for l in layouts:
                 
-              # if isinstance(l, QtWidgets.QHBoxLayout):
-               #     elem = (l.itemAt(element) for element in range(l.count())) 
-         
-                #    for w in elem:    
-                  #      if isinstance(w, QtWidgets.QLabel):
-                 #           qDebug("Label type: "+ str(w.nameObject()))
+    # if isinstance(l, QtWidgets.QHBoxLayout):
+    #     elem = (l.itemAt(element) for element in range(l.count())) 
+    #    for w in elem:    
+    #      if isinstance(w, QtWidgets.QLabel):
+    #           qDebug("Label type: "+ str(w.nameObject()))
 
-                   #     if isinstance(w, QtWidgets.QTableWidget):
-                     #       for r in QtWidgets.QTableWidget:
-                    #            qDebug(str(r.value()))###
+    #     if isinstance(w, QtWidgets.QTableWidget):
+    #       for r in QtWidgets.QTableWidget:
+    #           qDebug(str(r.value()))###
                 
       
     # << Set elements on form >> #
