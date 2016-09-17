@@ -192,7 +192,7 @@ class Table(QtWidgets.QTableWidget):
 
     def setup_empty_table(self):
         self.setRowCount(self.count)
-        self.setItem(self.count, 0, QtWidgets.QTableWidgetItem("standard")) 
+        self.setItem(self.count, 1, QtWidgets.QTableWidgetItem("standard")) 
         self.horizontalHeader().setStretchLastSection(True)
    
 
@@ -223,34 +223,69 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
  
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
-    
+        
+        self.get_values()
+        
+
+    def get_values(self):
         num_widgets = self.form[0].count()
-        qDebug(str(self.form[0].objectName()))
+        qDebug(self.form[0].objectName().encode())
+        
+
+        
         for box in self.form:
             if isinstance(box, QtWidgets.QHBoxLayout):
-                qDebug("tak")
+                if isinstance(box, QtWidgets.QVBoxLayout):
+                    items = (box.itemAt(i).widget() for i in range(box.count())) 
+
+                    for w in items:
+                        if isinstance (w, QtWidgets.QTableWidget):
+                            for row in w:
+                                qDebug(row.text().encode('utf-8'))
+
+                        if isinstance (w, QtWidgets.QLabel):
+                            qDebug(w.text().encode('utf-8'))
+
+                        if isinstance (w, QtWidgets.QLineEdit):
+                            qDebug(w.text().encode('utf-8'))
+
+                        if isinstance(box, Table):
+                            items = (box.itemAt(i).widget() for i in range(box.count())) 
+
+                            for w in items:
+                       
+                                if isinstance (w, QtWidgets.QLabel):
+                                    qDebug(w.text().encode('utf-8'))
+
+                                if isinstance (w, QtWidgets.QLineEdit):
+                                    qDebug(w.text().encode('utf-8'))
+
                 items = (box.itemAt(i).widget() for i in range(box.count())) 
+
                 for w in items:
-                    qDebug(str(w.text()))
-    #           qDebug(str(box.objectName()))
-    #          # qDebug(str(items))
-    #          for item in items:
-    #             if isinstance(item, QtWidgets.QWidgetItem.QLabel):
-                     #   qDebug(str(item))
+                    if isinstance (w, QtWidgets.QTableWidget):
+                        for row in w:
+                            qDebug(row.text().encode('utf-8'))
 
-        ###for l in layouts:
-                
-    # if isinstance(l, QtWidgets.QHBoxLayout):
-    #     elem = (l.itemAt(element) for element in range(l.count())) 
-    #    for w in elem:    
-    #      if isinstance(w, QtWidgets.QLabel):
-    #           qDebug("Label type: "+ str(w.nameObject()))
+                    if isinstance (w, QtWidgets.QLabel):
+                        qDebug(w.text().encode('utf-8'))
 
-    #     if isinstance(w, QtWidgets.QTableWidget):
-    #       for r in QtWidgets.QTableWidget:
-    #           qDebug(str(r.value()))###
-                
-      
+                    if isinstance (w, QtWidgets.QLineEdit):
+                        qDebug(w.text().encode('utf-8'))
+
+                    if isinstance(box, Table):
+                        items = (box.itemAt(i).widget() for i in range(box.count())) 
+
+                        for w in items:
+                       
+                            if isinstance (w, QtWidgets.QLabel):
+                                qDebug(w.text().encode('utf-8'))
+
+                            if isinstance (w, QtWidgets.QLineEdit):
+                                qDebug(w.text().encode('utf-8'))
+
+           
+
     # << Set elements on form >> #
     def draw_lists(self):
         for elem in self.form:
@@ -279,10 +314,9 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.v_box = QtWidgets.QVBoxLayout()
             self.v_box.addLayout(self.h_box)
             self.v_box.addWidget(self.table_widget.button_form)
-            self.box = self.v_box
             
             #self.form.append(self.button_form)
-            self.form.append(self.box)
+            self.form.append(self.v_box)
             #self.form.append(self.combobox)
 
         self.draw_lists()   
