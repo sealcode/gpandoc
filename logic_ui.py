@@ -219,13 +219,14 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
         self.names_of_lists = ['list', 'list2']
         self.names_of_variables = ['var1','var2']
+        self.names_of_texts = ['text1','text2']
       #  self.form_layout = QtWidgets.QFormLayout()
         self.form=[]
  
       
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
-
+        self.load_table_of_texts(self.names_of_texts)
         
         self.get_values()
         
@@ -241,7 +242,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 if isinstance (w, Table):
                     for i in range(w.columnCount()):
                         itm = w.item(i,0)
-                        qDebug(str(itm.text()))
+                        qDebug(itm.text().encode('utf-8'))
                        
                     #qDebug(w.text().encode('utf-8'))
                 
@@ -253,6 +254,9 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
                 if isinstance (w, QtWidgets.QLineEdit):
                     qDebug(w.text().encode('utf-8'))  
+
+                if isinstance (w, QtWidgets.QPlainTextEdit):
+                    qDebug(w.toPlainText().encode('utf-8'))  
                     
 
     # << Set elements on form >> #
@@ -260,8 +264,6 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         for elem in self.form:
             self.form_layout.addRow(elem)
   
-
-
 
     def load_table_of_lists(self,names_of_lists):
               
@@ -307,6 +309,26 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.box = QtWidgets.QHBoxLayout()
             self.box.addWidget(self.label)
             self.box.addWidget(self.line_edit)
+            self.form.append(self.box)
+
+            #self.form.append(self.combobox)
+
+        self.draw_lists()
+
+    def load_table_of_texts(self, names_of_texts):
+            
+        for text in names_of_texts: 
+            
+            self.label= QtWidgets.QLabel(text)
+            self.label.setText(str(text))
+            self.label.setObjectName(self.label.text()+ "_label")
+            
+            self.plain_text= QtWidgets.QPlainTextEdit("Wartość tekstowa")     
+
+            # create layout vertical for label and list(at the moment still combobox)
+            self.box = QtWidgets.QHBoxLayout()
+            self.box.addWidget(self.label)
+            self.box.addWidget(self.plain_text)
             self.form.append(self.box)
 
             #self.form.append(self.combobox)
