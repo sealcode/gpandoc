@@ -232,9 +232,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         
 
     def get_values(self):
-        num_widgets = self.form[0].count()
-        qDebug(self.form[0].objectName().encode())
-        
+      
         for box in self.form:
             items = (box.itemAt(i).widget() for i in range(box.count())) 
 
@@ -245,7 +243,8 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                         qDebug(itm.text().encode('utf-8'))
                        
                     #qDebug(w.text().encode('utf-8'))
-                
+                if isinstance(w, QtWidgets.QPushButton):
+                    pass
                 if isinstance (w, QtWidgets.QTableWidgetItem):
                     qDebug("teble item")#qDebug(w.text().encode('utf-8'))
 
@@ -285,14 +284,15 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.box.addWidget(self.label)
             self.box.addWidget(self.table_widget)
             
-          # self.v_box = QtWidgets.QVBoxLayout()
-        #  self.box.addLayout(self.box)
-            self.box.addWidget(self.table_widget.button_form)
+            self.v_box = QtWidgets.QVBoxLayout()
+           
+            self.v_box.addWidget(self.table_widget.button_form)
             
             #self.form.append(self.button_form)
             self.form.append(self.box)
-            #self.form.append(self.combobox)
-
+            self.form.append(self.v_box)
+          
+            
         self.draw_lists()   
 
     def load_table_of_variables(self, names_of_variables):
