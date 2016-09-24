@@ -37,7 +37,7 @@ class CurrentConfig():
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
- # Lista plikow 
+  # << Custon Main Widget >> #
        	
     def __init__(self, app, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -71,6 +71,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.list_widget_1.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz. \nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
 	
+ # << END of: Custom Main Widget >> #
+
 
 
  # << Listwidget handling >> #
@@ -164,13 +166,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 # <<< CONFIG VARIABLES >>> #
 
-import recipe
-import string
-import logging
-import configparser
-from zipfile import ZipFile
-
-
 
 class Table(QtWidgets.QTableWidget):
     def __init__(self, parent=None):
@@ -193,6 +188,11 @@ class Table(QtWidgets.QTableWidget):
         self.insertRow(self.count)
         self.setItem(self.row, 1, QtWidgets.QTableWidgetItem("standard")) 
         self.horizontalHeader().setStretchLastSection(True)
+        
+        self.setMinimumHeight(150)
+        self.setMaximumHeight(200)
+        for x in range(self.count):
+            self.setRowHeight(x, 30)
    
 
     def c_current(self):
@@ -206,6 +206,11 @@ class Table(QtWidgets.QTableWidget):
         self.count = self.count+1
         self.setRowCount(self.count)
         self.setItem(self.count,0, QtWidgets.QTableWidgetItem())
+        if int(self.count) > 3:
+            self.setMinimumHeight(150)
+            self.setMaximumHeight(300)
+            for x in range(self.count):
+                self.setRowHeight(x, 20)
         self.show()
     
         
@@ -301,6 +306,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             
             self.label= QtWidgets.QLabel(variable)
             self.label.setText(str(variable))
+
             self.label.setObjectName(self.label.text()+ "_label")
             
             self.line_edit= QtWidgets.QLineEdit("Wartość")     
