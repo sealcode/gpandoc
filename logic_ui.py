@@ -39,8 +39,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
   # << Custon Main Widget >> #
        	
-    def __init__(self, app, parent=None):
-        super(MainWindow, self).__init__(parent)
+    def __init__(self, app):
+        super(MainWindow, self).__init__()
         
         Ui_MainWindow.setupUi(self, self)
 
@@ -94,34 +94,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.list_widget_1.selectAll();
         qDebug("\n" + str(data_of_list)) # chcek list values: data_of_list 
 
-    
-   # EVENT: drag item on list
-   # def dragEnterEvent(self, event):
-   #     if event.mimeData().hasUrls():
-   #         event.acceptProposedAction()
-   #    else:
-   #         super(self.list_widget_1, self).dragEnterEvent(event)
-
-   #  EVENT: move item on list
-   # def dragMoveEvent(self, event):
-   #     super(self.list_widget_1, self).dragMoveEvent(event)
-
-
-   # EVENT: Put elements on the list 
-   # def dropEvent(self, event):
-   #     if event.mimeData().hasUrls():
-   #         for url in event.mimeData().urls():
-   #             self.list_widget_1.addItem(url.path())
-		
-
-   #         event.acceptProposedAction()
-   #     else:
-   #         super(self.list_widget_1, self).dropEvent(event)
-
- # << END of: Listwidget handling >> #
-
-
-	
  # << ADD paths on list_widget_1 from list_of_paths used pop()  >> #
     def add_to_list_widget(self, list_of_paths):
      while list_of_paths:
@@ -168,10 +140,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
 class Table(QtWidgets.QTableWidget):
-    def __init__(self, parent=None):
-        super(Table, self).__init__(parent)
-        
-        
+
+    def __init__(self):
+        super(Table, self).__init__()
+                
         self.rows_number = 1 
         self.columns_number = 1
         self.setRowCount(self.rows_number)
@@ -198,14 +170,16 @@ class Table(QtWidgets.QTableWidget):
  
     def add_cell(self):
         self.rows_number = (self.rowCount())
-     #   self.setRowCount(self.rows_number)
         self.insertRow(self.rows_number)
         self.setItem(self.rows_number, 0, QtWidgets.QTableWidgetItem(""))
+
         if int(self.rows_number) > 3:
             self.setMinimumHeight(150)
             self.setMaximumHeight(300)
+
             for x in range(self.rowCount()):
                 self.setRowHeight(x, 20)
+
         self.show()
     
         
@@ -214,44 +188,45 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
    
     def __init__(self):
         super(VariablesDialog,  self).__init__()
-        
         variables_ui.Ui_Dialog.setupUi(self,self)
 
+        self.form=[]
+        self.attributes = {}   
+
+      # some varaibles for test ui #
         self.names_of_lists = ['list', 'list2']
         self.names_of_variables = ['var1','var2']
         self.names_of_texts = ['text1','text2']
       #  self.form_layout = QtWidgets.QFormLayout()
-        self.form=[]
- 
-      
+          
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
         self.load_table_of_texts(self.names_of_texts)
-        
-        self.get_values()
+        self.get_values()   
         
 
     def get_values(self):
-      
+         
+        getsName = ""                
+        getsTable = []
+
         for box in self.form:
             items = (box.itemAt(i).widget() for i in range(box.count())) 
-
+        
+            for w in items:
+                if isinstance (w, QtWidgets.QLabel):
+                    self.attributes[str(w.text())] = None
+                    #self.attributes[w.text().encode('utf-8')] = None
+            
             for w in items:
                 if isinstance (w, Table):
+                
                     for i in range(w.rowCount()):
-                        qDebug(str(w.rowCount()))
-                    #    if (i<w.rowCount()):
                         itm = w.item(i,0)
+                        getsTable.append(itm.text().encode('utf-8'))
                         qDebug(itm.text().encode('utf-8'))
                        
-                    #qDebug(w.text().encode('utf-8'))
-                if isinstance(w, QtWidgets.QPushButton):
-                    pass
-                if isinstance (w, QtWidgets.QTableWidgetItem):
-                    qDebug("teble item")#qDebug(w.text().encode('utf-8'))
-
-                if isinstance (w, QtWidgets.QLabel):
-                    qDebug(w.text().encode('utf-8'))
+                    #qDebug(w.text().encode('utf-8'))     
 
                 if isinstance (w, QtWidgets.QLineEdit):
                     qDebug(w.text().encode('utf-8'))  
@@ -259,6 +234,8 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 if isinstance (w, QtWidgets.QPlainTextEdit):
                     qDebug(w.toPlainText().encode('utf-8'))  
                     
+      #  print(sorted(list(self.attributes)))
+        
 
     # << Set elements on form >> #
     def draw_lists(self):
@@ -287,7 +264,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.box.addWidget(self.table_widget)
             
             self.v_box = QtWidgets.QVBoxLayout()
-           
+
             self.v_box.addWidget(self.table_widget.button_form)
             
             #self.form.append(self.button_form)
