@@ -171,45 +171,40 @@ class Table(QtWidgets.QTableWidget):
     def __init__(self, parent=None):
         super(Table, self).__init__(parent)
         
-        self.setColumnCount(1)
+        
+        self.rows_number = 1 
+        self.columns_number = 1
+        self.setRowCount(self.rows_number)
+        self.setColumnCount(self.columns_number)
+        self.setup_empty_table()
 
+        qDebug("Row numbers: " + str(self.rows_number))
+        qDebug("Column numbers: " + str(self.columns_number))
+
+        # < ADD PushButton and connect with function add_cell > #
         self.button_form = QtWidgets.QPushButton()
         self.button_form.setText("Nowe pole")
         self.button_form.clicked.connect(self.add_cell)
 
-        self.row = self.currentRow()
-        self.col = self.currentColumn()
-        self.count = 1
-        self.setup_empty_table()
-        
 
     def setup_empty_table(self):
-        self.setRowCount(self.count)
-        self.insertRow(self.count)
-        self.setItem(self.row, 1, QtWidgets.QTableWidgetItem("standard")) 
+        self.setItem(0, 0, QtWidgets.QTableWidgetItem("wartosc")) 
         self.horizontalHeader().setStretchLastSection(True)
         
-        self.setMinimumHeight(150)
-        self.setMaximumHeight(200)
-        for x in range(self.count):
+        self.setMinimumHeight(120)
+        self.setMaximumHeight(180)
+        for x in range(self.rows_number):
             self.setRowHeight(x, 30)
-   
-
-    def c_current(self):
-        self.row = self.currentRow()
-        self.col = self.currentColumn()
-        print("Current row is ", self.row)
-        print("In this cell we have: ", self.value)
-
+ 
     def add_cell(self):
-        
-        self.count = self.count+1
-        self.setRowCount(self.count)
-        self.setItem(self.count,0, QtWidgets.QTableWidgetItem())
-        if int(self.count) > 3:
+        self.rows_number = (self.rowCount())
+     #   self.setRowCount(self.rows_number)
+        self.insertRow(self.rows_number)
+        self.setItem(self.rows_number, 0, QtWidgets.QTableWidgetItem(""))
+        if int(self.rows_number) > 3:
             self.setMinimumHeight(150)
             self.setMaximumHeight(300)
-            for x in range(self.count):
+            for x in range(self.rowCount()):
                 self.setRowHeight(x, 20)
         self.show()
     
@@ -243,7 +238,9 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
             for w in items:
                 if isinstance (w, Table):
-                    for i in range(w.columnCount()):
+                    for i in range(w.rowCount()):
+                        qDebug(str(w.rowCount()))
+                    #    if (i<w.rowCount()):
                         itm = w.item(i,0)
                         qDebug(itm.text().encode('utf-8'))
                        
