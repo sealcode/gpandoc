@@ -218,34 +218,27 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 if isinstance (w, QtWidgets.QLabel):
                     self.getsTable = []
                     self.getsTable.append(w.text().encode('utf-8').decode('utf-8'))
-                   # qDebug(w.text().encode('utf-8').decode('utf-8'))
                     key_value = True
             
                 if isinstance (w, Table):
                     for i in range(w.rowCount()):
                         itm = w.item(i,0)
                         self.getsTable.append(itm.text().encode('utf-8').decode('utf-8'))
-                        #qDebug(itm.text().encode('utf-8').decode('utf-8'))
 
                     if key_value:
                         self.attributes[self.getsTable[0]] = self.getsTable[1:]
                         key_value = False
  
-                    #qDebug(w.text().encode('utf-8').decode('utf-8'))     
-
                 if isinstance (w, QtWidgets.QLineEdit):
                     self.getsTable.append(w.text().encode('utf-8').decode('utf-8'))
                     if key_value:
                         self.attributes[self.getsTable[0]] = self.getsTable[1:]
-                       # qDebug(w.text().encode('utf-8').decode('utf-8'))  
                         key_value = False
 
                 if isinstance (w, QtWidgets.QPlainTextEdit):
-                    #qDebug(str(w.toPlainText()).encode('utf-8').decode('utf-8'))  
                     self.getsTable.append(w.toPlainText().encode('utf-8').decode('utf-8')) 
                     if key_value:
                         self.attributes[self.getsTable[0]] = self.getsTable[1:]
-                        #qDebug(w.text().encode('utf-8').decode('utf-8')) 
                         key_value = False 
                 
         print(self.attributes)    
