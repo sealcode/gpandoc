@@ -144,7 +144,7 @@ class Table(QtWidgets.QTableWidget):
     def __init__(self):
         super(Table, self).__init__()
                 
-        self.rows_number = 1 
+        self.rows_number = 3 
         self.columns_number = 1
         self.setRowCount(self.rows_number)
         self.setColumnCount(self.columns_number)
@@ -160,7 +160,9 @@ class Table(QtWidgets.QTableWidget):
 
 
     def setup_empty_table(self):
-        self.setItem(0, 0, QtWidgets.QTableWidgetItem("wartosc")) 
+        self.setItem(0, 0, QtWidgets.QTableWidgetItem("ąćęźiółńś")) 
+        self.setItem(1, 0, QtWidgets.QTableWidgetItem("wartosc1")) 
+        self.setItem(2, 0, QtWidgets.QTableWidgetItem("wartosc2")) 
         self.horizontalHeader().setStretchLastSection(True)
         
         self.setMinimumHeight(120)
@@ -206,34 +208,47 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         
 
     def get_values(self):
-         
-        getsName = ""                
-        getsTable = []
 
+        self.getsTable = []
         for box in self.form:
+            
             items = (box.itemAt(i).widget() for i in range(box.count())) 
-        
-            for w in items:
-                if isinstance (w, QtWidgets.QLabel):
-                    self.attributes[str(w.text())] = None
-                    #self.attributes[w.text().encode('utf-8')] = None
             
             for w in items:
+                if isinstance (w, QtWidgets.QLabel):
+                    self.getsTable = []
+                    self.getsTable.append(w.text().encode('utf-8').decode('utf-8'))
+                   # qDebug(w.text().encode('utf-8').decode('utf-8'))
+                    key_value = True
+            
                 if isinstance (w, Table):
-                
                     for i in range(w.rowCount()):
                         itm = w.item(i,0)
-                        getsTable.append(itm.text().encode('utf-8'))
-                        qDebug(itm.text().encode('utf-8'))
-                       
-                    #qDebug(w.text().encode('utf-8'))     
+                        self.getsTable.append(itm.text().encode('utf-8').decode('utf-8'))
+                        #qDebug(itm.text().encode('utf-8').decode('utf-8'))
+
+                    if key_value:
+                        self.attributes[self.getsTable[0]] = self.getsTable[1:]
+                        key_value = False
+ 
+                    #qDebug(w.text().encode('utf-8').decode('utf-8'))     
 
                 if isinstance (w, QtWidgets.QLineEdit):
-                    qDebug(w.text().encode('utf-8'))  
+                    self.getsTable.append(w.text().encode('utf-8').decode('utf-8'))
+                    if key_value:
+                        self.attributes[self.getsTable[0]] = self.getsTable[1:]
+                       # qDebug(w.text().encode('utf-8').decode('utf-8'))  
+                        key_value = False
 
                 if isinstance (w, QtWidgets.QPlainTextEdit):
-                    qDebug(w.toPlainText().encode('utf-8'))  
-                    
+                    #qDebug(str(w.toPlainText()).encode('utf-8').decode('utf-8'))  
+                    self.getsTable.append(w.toPlainText().encode('utf-8').decode('utf-8')) 
+                    if key_value:
+                        self.attributes[self.getsTable[0]] = self.getsTable[1:]
+                        #qDebug(w.text().encode('utf-8').decode('utf-8')) 
+                        key_value = False 
+                
+        print(self.attributes)    
       #  print(sorted(list(self.attributes)))
         
 
@@ -257,7 +272,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.table_widget = Table()
 
             self.table_widget.setHorizontalHeaderLabels([str(name_of_list)])
-            self.table_widget.setObjectName(self.label.text() + "_tablpyqt5  Qtablewidget isinstancee_widget")
+            self.table_widget.setObjectName(self.label.text() + "_table_widget")
        
             self.box = QtWidgets.QHBoxLayout()
             self.box.addWidget(self.label)
