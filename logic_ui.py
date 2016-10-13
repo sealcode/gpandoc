@@ -83,7 +83,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.list_widget_1.takeItem(self.list_widget_1.row(selected_item))
           #  data_of_list.
          
-
     # clear all files on the list
     def clear_all_items(self):
         self.list_widget_1.clear()
@@ -93,14 +92,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def select_items(self):
         self.list_widget_1.selectAll();
         qDebug("\n" + str(data_of_list)) # chcek list values: data_of_list 
+        self.return_files()
 
  # << ADD paths on list_widget_1 from list_of_paths used pop()  >> #
     def add_to_list_widget(self, list_of_paths):
      while list_of_paths:
              self.list_widget_1.addItem(list_of_paths.pop())
 
-
-	
  # << Load files on >> #
     def load_files(self):
         list_of_paths = []
@@ -114,15 +112,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
    
  # << END of: Load files on >> #
     
+    def return_files(self):
+        self.ret_files = []
+        qDebug("Return files: ")
+       
+        for i in range (self.list_widget_1.count()):
+            qDebug(str(self.list_widget_1.item(i).text()))
+            self.ret_files.append(self.list_widget_1.item(i).text().encode('utf-8').decode('utf -8'))
 
+            #qDebug(str(item.text()))
+
+ # << >>
 
  # << Select recipe - handling >> # 
     def select_recipe(self):
         recipe_dialog = QtWidgets.QDialog()
         recipe_dialog.ui = recipe_ui.Ui_Dialog()
         recipe_dialog.ui.setupUi(recipe_dialog)
-	
+        
         recipe_dialog.exec_()
+        
 
  # << END of: Select recipe - handling >> #
 
@@ -249,7 +258,6 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     def draw_lists(self):
         for elem in self.form:
             self.form_layout.addRow(elem)
-  
 
     def load_table_of_lists(self,names_of_lists):
               
