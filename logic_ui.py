@@ -49,6 +49,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.push_button_5.clicked.connect(self.clear_all_items)
         self.push_button_2.clicked.connect(self.select_recipe)
         self.push_button_3.clicked.connect(self.config_output)
+       
         self.show()
                    
         self.list_widget_1.setAcceptDrops(True)
@@ -71,7 +72,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.list_widget_1.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz pliki." +
                                       "\nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
-       
+        self.ret_files = []
+      
     # << END of: Custom Main Widget >> #
 
 
@@ -93,7 +95,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def select_items(self):
         self.list_widget_1.selectAll();
         print("\n" + str(data_of_list)) # chcek list values: data_of_list 
-        self.return_files()
+
 
  # << ADD paths on list_widget_1 from list_of_paths used pop()  >> #
     def add_to_list_widget(self, list_of_paths):
@@ -137,7 +139,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
  # << END of: Select recipe - handling >> #
 
     def config_output(self):
-        config_dialog = VariablesDialog()
+        config_dialog = VariablesDialog(self.return_files())
         config_dialog.exec_()
 
 
@@ -160,8 +162,8 @@ class Table(QtWidgets.QTableWidget):
         self.setColumnCount(self.columns_number)
         self.setup_empty_table()
 
-        print("Row numbers: " + str(self.rows_number))
-        print("Column numbers: " + str(self.columns_number))
+        #print("Row numbers: " + str(self.rows_number))
+        #print("Column numbers: " + str(self.columns_number))
 
         # < ADD PushButton and connect with function add_cell > #
         self.button_form = QtWidgets.QPushButton()
@@ -177,6 +179,7 @@ class Table(QtWidgets.QTableWidget):
         
         self.setMinimumHeight(120)
         self.setMaximumHeight(180)
+        
         for x in range(self.rows_number):
             self.setRowHeight(x, 30)
  
@@ -198,11 +201,12 @@ class Table(QtWidgets.QTableWidget):
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     
    
-    def __init__(self):
-        super(VariablesDialog,  self).__init__()
+    def __init__(self, get_files, parent=None):
+        super(VariablesDialog,  self).__init__(parent=parent)
         variables_ui.Ui_Dialog.setupUi(self,self)
-
+        
         self.form=[]
+        self.get_files = get_files
         self.attributes = {}   
 
       # some varaibles for test ui #
@@ -214,17 +218,17 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
         self.load_table_of_texts(self.names_of_texts)
-        self.get_values()   
-   
-  
+
     def print_ok(self):
         print(str("O.K"))     
         
     def accept(self):
-       # ret ={ "all-attributes": self.attributes, "all-files": self.return_files }
-      #  print(ret)
-       # return ret
+            
+        ret ={ "all-attributes": self.attributes, "all-files": self.get_files }
+        print(ret)
+        
         super(VariablesDialog, self).accept()
+
     
     def reject(self):
         super(VariablesDialog, self).reject()
