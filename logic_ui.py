@@ -8,7 +8,7 @@ from ui.mainwindow_ui import Ui_MainWindow
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, \
+from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, QDialogButtonBox, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction,QDialog, QComboBox
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt
 from PyQt5.QtGui import QIcon
@@ -20,7 +20,7 @@ class CurrentConfig():
     
     def __init__(self):
         super(CurrentConfig, self).__init__()
-        File = open("conf.txt", "r+")
+        File = open("conf.py", "r+")
         self.load_conf(File)
         
     def load_conf(self, File):  
@@ -69,9 +69,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # Info for users how to add files
         self.list_widget_1.setContextMenuPolicy(Qt.ActionsContextMenu)
-        self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz. \nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
-	
- # << END of: Custom Main Widget >> #
+        self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz pliki." +
+                                      "\nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
+       
+    # << END of: Custom Main Widget >> #
 
 
 
@@ -120,7 +121,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             qDebug(str(self.list_widget_1.item(i).text()))
             self.ret_files.append(self.list_widget_1.item(i).text().encode('utf-8').decode('utf -8'))
 
-            #qDebug(str(item.text()))
+            #qDebug(str(item.text()))g
 
  # << >>
 
@@ -192,7 +193,7 @@ class Table(QtWidgets.QTableWidget):
                 self.setRowHeight(x, 20)
 
         self.show()
-    
+        
         
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     
@@ -214,7 +215,19 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         self.load_table_of_variables(self.names_of_variables)
         self.load_table_of_texts(self.names_of_texts)
         self.get_values()   
+   
+  
+    def print_ok(self):
+        qDebug(str("O.K"))     
         
+    def accept(self):
+        self.print_ok()
+        super(VariablesDialog, self).accept()
+    
+    def reject(self):
+        super(VariablesDialog, self).reject()
+    
+  
 
     def get_values(self):
 
@@ -250,6 +263,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                         self.attributes[self.getsTable[0]] = self.getsTable[1:]
                         key_value = False 
                 
+               
         print(self.attributes)    
       #  print(sorted(list(self.attributes)))
         
@@ -331,12 +345,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
         self.draw_lists()
 
-    def load_table_of_text(self, _of_variables):
-        pass
     
-    def bulid_menu(self):
-        pass
-        
         
 # <<< END of: CONFIG VARIABLES >>> #
 
