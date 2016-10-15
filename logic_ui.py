@@ -201,12 +201,12 @@ class Table(QtWidgets.QTableWidget):
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     
    
-    def __init__(self, get_files, parent=None):
+    def __init__(self, gfiles, parent=None):
         super(VariablesDialog,  self).__init__(parent=parent)
         variables_ui.Ui_Dialog.setupUi(self,self)
         
         self.form=[]
-        self.get_files = get_files
+        self.get_files = gfiles
         self.attributes = {}   
 
       # some varaibles for test ui #
@@ -223,7 +223,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         print(str("O.K"))     
         
     def accept(self):
-            
+        self.get_values()    
         ret ={ "all-attributes": self.attributes, "all-files": self.get_files }
         print(ret)
         
@@ -270,7 +270,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                         key_value = False 
                 
                
-        print(self.attributes)    
+      #  print(self.attributes)    
       #  print(sorted(list(self.attributes)))
         
 
