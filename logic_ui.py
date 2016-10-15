@@ -82,7 +82,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def clear_selected_items(self):
         for selected_item in self.list_widget_1.selectedItems():
             self.list_widget_1.takeItem(self.list_widget_1.row(selected_item))
-          #  data_of_list.
+       
          
     # clear all files on the list
     def clear_all_items(self):
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # select all files on the list
     def select_items(self):
         self.list_widget_1.selectAll();
-        qDebug("\n" + str(data_of_list)) # chcek list values: data_of_list 
+        print("\n" + str(data_of_list)) # chcek list values: data_of_list 
         self.return_files()
 
  # << ADD paths on list_widget_1 from list_of_paths used pop()  >> #
@@ -103,7 +103,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
  # << Load files on >> #
     def load_files(self):
         list_of_paths = []
-        file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',"Documents(*.txt *.doc, *.docx, *.pdf);; Markdown (*.md);; Mobi (*.mobi);; All Files (*)")
+        file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',"Documents(*.txt *.doc, *.docx, *.pdf)"+
+                                                           ";; Markdown (*.md);; Mobi (*.mobi);; All Files (*)")
 
         for file_path in file_paths:
             list_of_paths.append(file_path)
@@ -115,14 +116,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     def return_files(self):
         self.ret_files = []
-        qDebug("Return files: ")
-       
+      
         for i in range (self.list_widget_1.count()):
-            qDebug(str(self.list_widget_1.item(i).text()))
             self.ret_files.append(self.list_widget_1.item(i).text().encode('utf-8').decode('utf -8'))
+            #print(self.list_widget_1.item(i).text().encode('utf-8').decode('utf -8'))
 
-            #qDebug(str(item.text()))g
-
+        print("Return files: ", self.ret_files)
+        return self.ret_files
  # << >>
 
  # << Select recipe - handling >> # 
@@ -160,8 +160,8 @@ class Table(QtWidgets.QTableWidget):
         self.setColumnCount(self.columns_number)
         self.setup_empty_table()
 
-        qDebug("Row numbers: " + str(self.rows_number))
-        qDebug("Column numbers: " + str(self.columns_number))
+        print("Row numbers: " + str(self.rows_number))
+        print("Column numbers: " + str(self.columns_number))
 
         # < ADD PushButton and connect with function add_cell > #
         self.button_form = QtWidgets.QPushButton()
@@ -218,10 +218,12 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
    
   
     def print_ok(self):
-        qDebug(str("O.K"))     
+        print(str("O.K"))     
         
     def accept(self):
-        self.print_ok()
+       # ret ={ "all-attributes": self.attributes, "all-files": self.return_files }
+      #  print(ret)
+       # return ret
         super(VariablesDialog, self).accept()
     
     def reject(self):
