@@ -1,7 +1,9 @@
 import sys
-
+import recipe
 from ui import recipe_ui
 from ui import variables_ui
+
+
 
 #from current_conf import conf.txt
 from ui.mainwindow_ui import Ui_MainWindow
@@ -156,7 +158,7 @@ class Table(QtWidgets.QTableWidget):
     def __init__(self):
         super(Table, self).__init__()
                 
-        self.rows_number = 3 
+        self.rows_number = 1 
         self.columns_number = 1
         self.setRowCount(self.rows_number)
         self.setColumnCount(self.columns_number)
@@ -169,12 +171,14 @@ class Table(QtWidgets.QTableWidget):
         self.button_form = QtWidgets.QPushButton()
         self.button_form.setText("Nowe pole")
         self.button_form.clicked.connect(self.add_cell)
+        
+        self.button_form2 = QtWidgets.QPushButton()
+        self.button_form2.setText("Usuń pole")
+        self.button_form2.clicked.connect(self.remove_cell)
 
 
     def setup_empty_table(self):
-        self.setItem(0, 0, QtWidgets.QTableWidgetItem("ąćęźiółńś")) 
-        self.setItem(1, 0, QtWidgets.QTableWidgetItem("wartosc1")) 
-        self.setItem(2, 0, QtWidgets.QTableWidgetItem("wartosc2")) 
+
         self.horizontalHeader().setStretchLastSection(True)
         
         self.setMinimumHeight(120)
@@ -195,6 +199,13 @@ class Table(QtWidgets.QTableWidget):
             for x in range(self.rowCount()):
                 self.setRowHeight(x, 20)
 
+        self.show()
+        
+    def remove_cell(self):
+    #    self.current_row = self.currentRow()
+     #   self.removeRow(self.current_row()) 
+
+       
         self.show()
         
         
@@ -298,14 +309,15 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.box = QtWidgets.QHBoxLayout()
             self.box.addWidget(self.label)
             self.box.addWidget(self.table_widget)
-            
-            self.v_box = QtWidgets.QVBoxLayout()
-
-            self.v_box.addWidget(self.table_widget.button_form)
+                        
+            self.b_box = QtWidgets.QHBoxLayout()
+            self.b_box.addWidget(self.table_widget.button_form)
+            self.b_box.addWidget(self.table_widget.button_form2)
             
             #self.form.append(self.button_form)
             self.form.append(self.box)
-            self.form.append(self.v_box)
+
+            self.form.append(self.b_box)
           
             
         self.draw_lists()   
