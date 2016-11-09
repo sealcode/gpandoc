@@ -158,7 +158,7 @@ class Table(QtWidgets.QTableWidget):
     def __init__(self):
         super(Table, self).__init__()
                 
-        self.rows_number = 1 
+        self.rows_number = 0
         self.columns_number = 1
         self.setRowCount(self.rows_number)
         self.setColumnCount(self.columns_number)
@@ -202,7 +202,8 @@ class Table(QtWidgets.QTableWidget):
         self.show()
         
     def remove_cell(self):
-    #    self.current_row = self.currentRow()
+        self.current_row = self.currentRow()
+        self.removeRow(self.currentRow())
      #   self.removeRow(self.current_row()) 
 
        
