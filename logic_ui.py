@@ -1,4 +1,6 @@
+import os
 import sys
+import glob
 import recipe
 from ui import recipe_ui
 from ui import variables_ui
@@ -40,18 +42,15 @@ class CurrentConfig():
 class MainWindow(QMainWindow, Ui_MainWindow):
 
   # << Custon Main Widget >> #
-       	
     def __init__(self, app):
         super(MainWindow, self).__init__()
         
         Ui_MainWindow.setupUi(self, self)
-
         self.push_button_1.clicked.connect(self.load_files)
         self.push_button_4.clicked.connect(self.clear_selected_items)
         self.push_button_5.clicked.connect(self.clear_all_items)
         self.push_button_2.clicked.connect(self.select_recipe)
         self.push_button_3.clicked.connect(self.config_output)
-       
         self.show()
                    
         self.list_widget_1.setAcceptDrops(True)
@@ -101,15 +100,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
  # << ADD paths on list_widget_1 from list_of_paths used pop()  >> #
     def add_to_list_widget(self, list_of_paths):
-     while list_of_paths:
-             self.list_widget_1.addItem(list_of_paths.pop())
+        while list_of_paths:
+            self.list_widget_1.addItem(list_of_paths.pop())
 
  # << Load files on >> #
     def load_files(self):
         list_of_paths = []
         file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',"Documents(*.txt *.doc, *.docx, *.pdf)"+
                                                            ";; Markdown (*.md);; Mobi (*.mobi);; All Files (*)")
-
         for file_path in file_paths:
             list_of_paths.append(file_path)
             data_of_list.append(file_path)
@@ -120,22 +118,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     def return_files(self):
         self.ret_files = []
-      
         for i in range (self.list_widget_1.count()):
             self.ret_files.append(self.list_widget_1.item(i).text().encode('utf-8').decode('utf -8'))
-            #print(self.list_widget_1.item(i).text().encode('utf-8').decode('utf -8'))
-
         print("Return files: ", self.ret_files)
         return self.ret_files
  # << >>
 
  # << Select recipe - handling >> # 
     def select_recipe(self):
-        recipe_dialog = QtWidgets.QDialog()
-        recipe_dialog.ui = recipe_ui.Ui_Dialog()
-        recipe_dialog.ui.setupUi(recipe_dialog)
+        zipPackages =[]
+        dialog = QtWidgets.QDialog()
+        dialog.ui = recipe_ui.Ui_Dialog()
+        dialog.ui.setupUi(dialog)
+       
+        zipPackages  = [os.path.basename(x) for x in glob.glob('zips/*.zip')]
+        print (zipPackages)
         
-        recipe_dialog.exec_()
+        dialog.ui.combo_box_1.addItems(zipPackages)
+        print(dialog.ui.combo_box_1.currentText())
+        
+        dialog.exec_()
         
 
  # << END of: Select recipe - handling >> #
@@ -157,20 +159,16 @@ class Table(QtWidgets.QTableWidget):
 
     def __init__(self):
         super(Table, self).__init__()
-                
         self.rows_number = 0
         self.columns_number = 1
         self.setRowCount(self.rows_number)
         self.setColumnCount(self.columns_number)
         self.setup_empty_table()
 
-        #print("Row numbers: " + str(self.rows_number))
-        #print("Column numbers: " + str(self.columns_number))
-
         # < ADD PushButton and connect with function add_cell > #
         self.button_form = QtWidgets.QPushButton()
         self.button_form.setText("Nowe pole")
-        self.button_form.clicked.connect(self.add_cell)
+        self.button_form.clicked.connect(self.add_cell)      
         
         self.button_form2 = QtWidgets.QPushButton()
         self.button_form2.setText("Usuń pole")
@@ -178,12 +176,9 @@ class Table(QtWidgets.QTableWidget):
 
 
     def setup_empty_table(self):
-
         self.horizontalHeader().setStretchLastSection(True)
-        
         self.setMinimumHeight(120)
         self.setMaximumHeight(180)
-        
         for x in range(self.rows_number):
             self.setRowHeight(x, 30)
  
@@ -191,41 +186,29 @@ class Table(QtWidgets.QTableWidget):
         self.rows_number = (self.rowCount())
         self.insertRow(self.rows_number)
         self.setItem(self.rows_number, 0, QtWidgets.QTableWidgetItem(""))
-
         if int(self.rows_number) > 3:
             self.setMinimumHeight(150)
             self.setMaximumHeight(300)
-
             for x in range(self.rowCount()):
                 self.setRowHeight(x, 20)
-
         self.show()
         
     def remove_cell(self):
         self.current_row = self.currentRow()
         self.removeRow(self.currentRow())
-       
         self.show()
         
         
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
-    
-   
     def __init__(self, gfiles, parent=None):
         super(VariablesDialog,  self).__init__(parent=parent)
         variables_ui.Ui_Dialog.setupUi(self,self)
-        
         self.form=[]
         self.get_files = gfiles
         self.attributes = {}   
-
-      # some varaibles for test ui #
-       # self.names_of_lists = ['list', 'list2']
         self.names_of_lists = recipe.Recipe("zips/recipe.zip").lists
         self.names_of_variables = recipe.Recipe("zips/recipe.zip").strings
-        self.names_of_texts = recipe.Recipe("zips/recipe.zip").texts
-      #  self.form_layout = QtWidgets.QFormLayout()
-          
+        self.names_of_texts = recipe.Recipe("zips/recipe.zip").texts         
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
         self.load_table_of_texts(self.names_of_texts)
@@ -237,7 +220,6 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         self.get_values()    
         ret ={ "all-attributes": self.attributes, "all-files": self.get_files }
         print(ret)
-        
         super(VariablesDialog, self).accept()
 
     
@@ -247,12 +229,10 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
   
 
     def get_values(self):
-
         self.getsTable = []
         for box in self.form:
-            
             items = (box.itemAt(i).widget() for i in range(box.count())) 
-            
+         
             for w in items:
                 if isinstance (w, QtWidgets.QLabel):
                     self.getsTable = []
@@ -279,67 +259,48 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                     if key_value:
                         self.attributes[self.getsTable[0]] = self.getsTable[1:]
                         key_value = False 
-                
-               
-      #  print(self.attributes)    
-      #  print(sorted(list(self.attributes)))
-        
+
 
     # << Set elements on form >> #
     def draw_lists(self):
         for elem in self.form:
             self.form_layout.addRow(elem)
 
+
     def load_table_of_lists(self,names_of_lists):
-              
         #for element in name_of_lists:
-
         for name_of_list in names_of_lists: 
-            
             self.label= QtWidgets.QLabel(name_of_list)
-
             self.label.setText(str(name_of_list))
             self.label.setObjectName(str(name_of_list) + "_label")
-           
             self.table_widget = Table()
-
             self.table_widget.setHorizontalHeaderLabels([str(name_of_list)])
             self.table_widget.setObjectName(self.label.text() + "_table_widget")
        
             self.box = QtWidgets.QHBoxLayout()
             self.box.addWidget(self.label)
             self.box.addWidget(self.table_widget)
-                        
+                       
             self.b_box = QtWidgets.QHBoxLayout()
             self.b_box.addWidget(self.table_widget.button_form)
             self.b_box.addWidget(self.table_widget.button_form2)
-            
-            #self.form.append(self.button_form)
             self.form.append(self.box)
-
             self.form.append(self.b_box)
           
             
         self.draw_lists()   
 
-    def load_table_of_variables(self, names_of_variables):
-            
+    def load_table_of_variables(self, names_of_variables): 
         for variable in names_of_variables: 
-            
+      
             self.label= QtWidgets.QLabel(variable)
             self.label.setText(str(variable))
-
             self.label.setObjectName(self.label.text()+ "_label")
-            
             self.line_edit= QtWidgets.QLineEdit("Wartość")     
-
-            # create layout vertical for label and list(at the moment still combobox)
             self.box = QtWidgets.QHBoxLayout()
             self.box.addWidget(self.label)
             self.box.addWidget(self.line_edit)
             self.form.append(self.box)
-
-            #self.form.append(self.combobox)
 
         self.draw_lists()
 
