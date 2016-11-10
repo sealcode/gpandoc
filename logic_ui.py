@@ -204,8 +204,6 @@ class Table(QtWidgets.QTableWidget):
     def remove_cell(self):
         self.current_row = self.currentRow()
         self.removeRow(self.currentRow())
-     #   self.removeRow(self.current_row()) 
-
        
         self.show()
         
@@ -222,9 +220,10 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         self.attributes = {}   
 
       # some varaibles for test ui #
-        self.names_of_lists = ['list', 'list2']
-        self.names_of_variables = ['var1','var2']
-        self.names_of_texts = ['text1','text2']
+       # self.names_of_lists = ['list', 'list2']
+        self.names_of_lists = recipe.Recipe("zips/recipe.zip").lists
+        self.names_of_variables = recipe.Recipe("zips/recipe.zip").strings
+        self.names_of_texts = recipe.Recipe("zips/recipe.zip").texts
       #  self.form_layout = QtWidgets.QFormLayout()
           
         self.load_table_of_lists(self.names_of_lists)

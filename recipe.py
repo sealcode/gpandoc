@@ -10,9 +10,10 @@ class Recipe(configparser.ConfigParser):
         self.log = logging.getLogger(self.__class__.__name__)
         super(Recipe, self).__init__()
         with ZipFile(in_file) as zip_recipe:
-            with zip_recipe.open(in_file.split('.')[0] + '/recipe.ini') as ini:
-                self.read_string(ini.read().decode('utf-8'))
 
+            with zip_recipe.open('recipe/recipe.ini') as ini:
+                self.read_string(ini.read().decode('utf-8'))  
+	    #in_file.split('.')[0]
     def __getattr__(self, name):
         '''Extract values from INI with simple accessors'''
         if name == 'lists':
