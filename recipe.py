@@ -11,7 +11,7 @@ class Recipe(configparser.ConfigParser):
         super(Recipe, self).__init__()
         with ZipFile(in_file) as zip_recipe:
 
-            with zip_recipe.open('recipe/recipe.ini') as ini:
+            with zip_recipe.open('recipe.ini') as ini:
                 self.read_string(ini.read().decode('utf-8'))  
 	    #in_file.split('.')[0]
     def __getattr__(self, name):

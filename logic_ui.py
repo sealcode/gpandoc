@@ -14,7 +14,7 @@ from ui.mainwindow_ui import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, QDialogButtonBox, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction,QDialog, QComboBox
-from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt
+from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent
 from PyQt5.QtGui import QIcon
 
 
@@ -44,6 +44,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
   # << Custon Main Widget >> #
     def __init__(self, app):
         super(MainWindow, self).__init__()
+        self.loaded_recipe =""
         
         Ui_MainWindow.setupUi(self, self)
         self.push_button_1.clicked.connect(self.load_files)
@@ -126,19 +127,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
  # << Select recipe - handling >> # 
     def select_recipe(self):
-        zipPackages =[]
-        dialog = QtWidgets.QDialog()
-        dialog.ui = recipe_ui.Ui_Dialog()
-        dialog.ui.setupUi(dialog)
+        self.zipPackages =[]
+        self.dialog = QtWidgets.QDialog()
+        self.dialog.ui = recipe_ui.Ui_Dialog()
+        self.dialog.ui.setupUi(self.dialog)
        
-        zipPackages  = [os.path.basename(x) for x in glob.glob('zips/*.zip')]
-        print (zipPackages)
+        self.zipPackages  = [os.path.basename(x) for x in glob.glob('zips/*.zip')]
+        print (self.zipPackages)
         
-        dialog.ui.combo_box_1.addItems(zipPackages)
-        print(dialog.ui.combo_box_1.currentText())
+        self.dialog.ui.combo_box_1.addItems(self.zipPackages)
+        print(self.dialog.ui.combo_box_1.currentText())
+     
+        self.dialog.ui.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)
         
-        dialog.exec_()
+           
+        self.dialog.exec_()
         
+        
+    def changeRecipe(self):
+        print(self.dialog.ui.combo_box_1.currentText())   
+        
+
+
+
 
  # << END of: Select recipe - handling >> #
 
@@ -206,9 +217,9 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         self.form=[]
         self.get_files = gfiles
         self.attributes = {}   
-        self.names_of_lists = recipe.Recipe("zips/recipe.zip").lists
-        self.names_of_variables = recipe.Recipe("zips/recipe.zip").strings
-        self.names_of_texts = recipe.Recipe("zips/recipe.zip").texts         
+        self.names_of_lists = recipe.Recipe("zips/recipe 1.zip").lists
+        self.names_of_variables = recipe.Recipe("zips/recipe 1.zip").strings
+        self.names_of_texts = recipe.Recipe("zips/recipe 1.zip").texts         
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
         self.load_table_of_texts(self.names_of_texts)
