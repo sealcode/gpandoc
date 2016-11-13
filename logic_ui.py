@@ -2,20 +2,20 @@ import os
 import sys
 import glob
 import recipe
+
+from zipfile import ZipFile
+import io
+from PIL import Image,ImageQt
 from ui import recipe_ui
 from ui import variables_ui
-
-
-
-#from current_conf import conf.txt
 from ui.mainwindow_ui import Ui_MainWindow
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon,QPixmap
+from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, QDialogButtonBox, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction,QDialog, QComboBox
-from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent
-from PyQt5.QtGui import QIcon
+
 
 
 # <<< SETTINGS Variables >>> # 
@@ -138,19 +138,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.dialog.ui.combo_box_1.addItems(self.zipPackages)
         print(self.dialog.ui.combo_box_1.currentText())
      
-        self.dialog.ui.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)
-        
-           
+        self.dialog.ui.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)        
         self.dialog.exec_()
         
         
     def changeRecipe(self):
         print(self.dialog.ui.combo_box_1.currentText())   
         
+        print (str('zips/'+self.dialog.ui.combo_box_1.currentText()))
 
+        zippedImgs = ZipFile('zips/'+self.dialog.ui.combo_box_1.currentText())
 
-
-
+        for i in range(len(zippedImgs.namelist())):
+            print ("iter", i, " ")
+            file_in_zip = zippedImgs.namelist()[i]
+            if (".png" in file_in_zip or ".PNG" in file_in_zip):
+                print ("Found image: ", file_in_zip, " -- ")
+                data = zippedImgs.read(file_in_zip)
+                dataEnc = io.BytesIO(data)
+                dataImgEnc = Image.open(dataEnc)
+                qimage = ImageQt.ImageQt(dataImgEnc)
+                pixmap = QtGui.QPixmap.fromImage(qimage)
+                print(pixmap)
+                self.dialog.ui.label_1.setPixmap(pixmap)
+            else:
+                print("")
+        
+        #self.dialog.ui.label_1.setPixmap(recipe.getImage("zips/"+self.dialog.ui.combo_box_1.currentText()))
+      #  with ZipFile('zips/'+self.dialog.ui.combo_box_1.currentText()) as zip_recipe:
+       #     with zip_recipe.open('preview.png') as png:
+       #         preview= QPixmap(png)
+       #         self.dialog.ui.label_1.setPixmap(preview)
+      #  self.dialog.ui.label_1.setPixmap(image_data)
  # << END of: Select recipe - handling >> #
 
     def config_output(self):
