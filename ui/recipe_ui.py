@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'recipe.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.7
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -25,15 +25,25 @@ class Ui_Dialog(object):
         self.verticalLayout_3.addLayout(self.vertical_layout_1)
         self.vertical_layout_2 = QtWidgets.QVBoxLayout()
         self.vertical_layout_2.setObjectName("vertical_layout_2")
-        self.scroll_area_1 = QtWidgets.QScrollArea(Dialog)
-        self.scroll_area_1.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self.scroll_area_1.setWidgetResizable(True)
-        self.scroll_area_1.setObjectName("scroll_area_1")
-        self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 314, 407))
-        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
-        self.scroll_area_1.setWidget(self.scrollAreaWidgetContents)
-        self.vertical_layout_2.addWidget(self.scroll_area_1)
+        self.scroll = QtWidgets.QScrollArea(Dialog)
+        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setObjectName("scroll")
+        self.content = QtWidgets.QWidget()
+        self.content.setGeometry(QtCore.QRect(0, 0, 300, 433))
+        self.content.setMaximumSize(QtCore.QSize(300, 600))
+        self.content.setObjectName("content")
+        self.label_2 = QtWidgets.QLabel(self.content)
+        self.label_2.setGeometry(QtCore.QRect(8, 3, 301, 421))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy)
+        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_2.setObjectName("label_2")
+        self.scroll.setWidget(self.content)
+        self.vertical_layout_2.addWidget(self.scroll)
         self.button_box_1 = QtWidgets.QDialogButtonBox(Dialog)
         self.button_box_1.setOrientation(QtCore.Qt.Horizontal)
         self.button_box_1.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
@@ -50,4 +60,5 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.label_1.setText(_translate("Dialog", "Wybór przepisu:"))
+        self.label_2.setText(_translate("Dialog", "TextLabel"))
 

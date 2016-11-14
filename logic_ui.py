@@ -131,38 +131,44 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.dialog = QtWidgets.QDialog()
         self.dialog.ui = recipe_ui.Ui_Dialog()
         self.dialog.ui.setupUi(self.dialog)
+        self.dialog.ui.label_1.setScaledContents(True);
        
         self.zipPackages  = [os.path.basename(x) for x in glob.glob('zips/*.zip')]
         print (self.zipPackages)
         
         self.dialog.ui.combo_box_1.addItems(self.zipPackages)
         print(self.dialog.ui.combo_box_1.currentText())
-     
+        self.changeRecipe()
         self.dialog.ui.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)        
         self.dialog.exec_()
         
         
     def changeRecipe(self):
-        print(self.dialog.ui.combo_box_1.currentText())   
-        
+        print(self.dialog.ui.combo_box_1.currentText())      
         print (str('zips/'+self.dialog.ui.combo_box_1.currentText()))
-
         zippedImgs = ZipFile('zips/'+self.dialog.ui.combo_box_1.currentText())
-
         for i in range(len(zippedImgs.namelist())):
-            print ("iter", i, " ")
             file_in_zip = zippedImgs.namelist()[i]
             if (".png" in file_in_zip or ".PNG" in file_in_zip):
                 print ("Found image: ", file_in_zip, " -- ")
+                # read bits to variable
                 data = zippedImgs.read(file_in_zip)
+                # save bytes like io
                 dataEnc = io.BytesIO(data)
+                # convert bytes on Image file
                 dataImgEnc = Image.open(dataEnc)
+                # create QtImage from QImage
                 qimage = ImageQt.ImageQt(dataImgEnc)
+                # convert QtImage to QPixmap
                 pixmap = QtGui.QPixmap.fromImage(qimage)
+              #  pixmap=pixmap.scaledToWidth(  self.dialog.ui.scroll.width());
+              #  pixmap=pixmap.scaledToHeight( self.dialog.ui.scroll.height());
+              #  print pixmap details
+              
                 print(pixmap)
-                self.dialog.ui.label_1.setPixmap(pixmap)
+                self.dialog.ui.label_2.setPixmap(pixmap)    
             else:
-                print("")
+                self.dialog.ui.label_2.setText("Brak podglądu")
         
         #self.dialog.ui.label_1.setPixmap(recipe.getImage("zips/"+self.dialog.ui.combo_box_1.currentText()))
       #  with ZipFile('zips/'+self.dialog.ui.combo_box_1.currentText()) as zip_recipe:
