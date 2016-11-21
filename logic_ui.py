@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon,QPixmap
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, QDialogButtonBox, \
-                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction,QDialog, QComboBox
+                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction, QDialog, QComboBox
 
 
 
@@ -34,24 +34,25 @@ class CurrentConfig():
         pass
 
 # <<< END of: SETTINGS Variables >>> # 
-        
-    
 
+        
 # <<< MAINWINDOW >>> #
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+    
 
   # << Custon Main Widget >> #
     def __init__(self, app):
         super(MainWindow, self).__init__()
-        self.loaded_recipe =""
+      
+       
         
         Ui_MainWindow.setupUi(self, self)
         self.push_button_1.clicked.connect(self.load_files)
         self.push_button_4.clicked.connect(self.clear_selected_items)
         self.push_button_5.clicked.connect(self.clear_all_items)
         self.push_button_2.clicked.connect(self.select_recipe)
-        self.push_button_3.clicked.connect(self.config_output)
+        self.push_button_3.clicked.connect(self.conf_variables)
         self.show()
                    
         self.list_widget_1.setAcceptDrops(True)
@@ -75,10 +76,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz pliki." +
                                       "\nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
         self.ret_files = []
-      
+        self.loadedRecipe =None
     # << END of: Custom Main Widget >> #
-
-
 
  # << Listwidget handling >> #
 
@@ -127,60 +126,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
  # << Select recipe - handling >> # 
     def select_recipe(self):
-        self.zipPackages =[]
-        self.dialog = QtWidgets.QDialog()
-        self.dialog.ui = recipe_ui.Ui_Dialog()
-        self.dialog.ui.setupUi(self.dialog)
-        self.dialog.ui.label_1.setScaledContents(True);
-       
-        self.zipPackages  = [os.path.basename(x) for x in glob.glob('zips/*.zip')]
-        print (self.zipPackages)
-        
-        self.dialog.ui.combo_box_1.addItems(self.zipPackages)
-        print(self.dialog.ui.combo_box_1.currentText())
-        self.changeRecipe()
-        self.dialog.ui.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)        
-        self.dialog.exec_()
-        
-        
-    def changeRecipe(self):
-        print(self.dialog.ui.combo_box_1.currentText())      
-        print (str('zips/'+self.dialog.ui.combo_box_1.currentText()))
-        zippedImgs = ZipFile('zips/'+self.dialog.ui.combo_box_1.currentText())
-        for i in range(len(zippedImgs.namelist())):
-            file_in_zip = zippedImgs.namelist()[i]
-            if (".png" in file_in_zip or ".PNG" in file_in_zip):
-                print ("Found image: ", file_in_zip, " -- ")
-                # read bits to variable
-                data = zippedImgs.read(file_in_zip)
-                # save bytes like io
-                dataEnc = io.BytesIO(data)
-                # convert bytes on Image file
-                dataImgEnc = Image.open(dataEnc)
-                # create QtImage from QImage
-                qimage = ImageQt.ImageQt(dataImgEnc)
-                # convert QtImage to QPixmap
-                pixmap = QtGui.QPixmap.fromImage(qimage)
-              #  pixmap=pixmap.scaledToWidth(  self.dialog.ui.scroll.width());
-              #  pixmap=pixmap.scaledToHeight( self.dialog.ui.scroll.height());
-              #  print pixmap details
-              
-                print(pixmap)
-                self.dialog.ui.label_2.setPixmap(pixmap)    
-            else:
-                self.dialog.ui.label_2.setText("Brak podglądu")
-        
-        #self.dialog.ui.label_1.setPixmap(recipe.getImage("zips/"+self.dialog.ui.combo_box_1.currentText()))
-      #  with ZipFile('zips/'+self.dialog.ui.combo_box_1.currentText()) as zip_recipe:
-       #     with zip_recipe.open('preview.png') as png:
-       #         preview= QPixmap(png)
-       #         self.dialog.ui.label_1.setPixmap(preview)
-      #  self.dialog.ui.label_1.setPixmap(image_data)
+        recipeDialog=None
+        recipeDialog = RecipeDialog(recipeDialog) 
+        self.loadedRecipe = recipeDialog.retRecipe()
+        print(self.loadedRecipe)
+
  # << END of: Select recipe - handling >> #
 
-    def config_output(self):
-        config_dialog = VariablesDialog(self.return_files())
-        config_dialog.exec_()
+    def conf_variables(self):
+        variablesDialog = VariablesDialog(self.loadedRecipe, self.return_files())
+        variablesDialog.exec_()
 
 
 # <<< END OF MAINWINDOW >>> #
@@ -235,16 +190,73 @@ class Table(QtWidgets.QTableWidget):
         self.show()
         
         
+        
+class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
+    def __init__(self, app):
+        super(RecipeDialog, self).__init__()
+        recipe_ui.Ui_Dialog.setupUi(self, self)
+        
+        self.zipPackages =[]
+        self.dialog = QtWidgets.QDialog()
+        self.dialog.ui = recipe_ui.Ui_Dialog()
+        self.dialog.ui.setupUi(self.dialog)
+        self.dialog.ui.label_1.setScaledContents(True);
+        
+        self.zipPackages  = [os.path.basename(x) for x in glob.glob('zips/*.zip')]
+        print (self.zipPackages)
+        
+        self.dialog.ui.combo_box_1.addItems(self.zipPackages)
+        print(self.dialog.ui.combo_box_1.currentText())
+        self.changeRecipe()
+        self.dialog.ui.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)   
+        self.dialog.ui.button_box_1.accepted.connect(self.accept)
+        self.dialog.ui.button_box_1.rejected.connect(self.reject)
+        self.dialog.exec_()
+        
+    def accept(self): 
+        self.loadedRecipe = str("zips/" + str(self.dialog.ui.combo_box_1.currentText()))
+        print("Current loaded recipe: "+ self.loadedRecipe)
+        return (self.loadedRecipe)
+        super().accept()
+    
+    
+    def reject(self):
+        #self.loadedRecipe = str("zips/" + str(self.dialog.ui.combo_box_1.currentText()))
+        super().reject()
+    
+    def retRecipe(self):
+        return (self.loadedRecipe)
+       
+    def changeRecipe(self):
+        print(self.dialog.ui.combo_box_1.currentText()) 
+        print (str('zips/'+self.dialog.ui.combo_box_1.currentText()))
+        zippedImgs = ZipFile('zips/'+self.dialog.ui.combo_box_1.currentText())
+        for i in range(len(zippedImgs.namelist())):
+            file_in_zip = zippedImgs.namelist()[i]
+            if (".png" in file_in_zip or ".PNG" in file_in_zip):
+                print ("Found image: ", file_in_zip, " -- ")
+                data = zippedImgs.read(file_in_zip)       # read bits to variable                                                      
+                dataEnc = io.BytesIO(data)                # save bytes like io              
+                dataImgEnc = Image.open(dataEnc)          # convert bytes on Image file            
+                qimage = ImageQt.ImageQt(dataImgEnc)      # create QtImage from QImage
+                pixmap = QtGui.QPixmap.fromImage(qimage)  # convert QtImage to QPixmap      
+                print(pixmap)
+                self.dialog.ui.label_2.setPixmap(pixmap)    
+            else:
+                self.dialog.ui.label_2.setText("Brak podglądu")
+                 
+        
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
-    def __init__(self, gfiles, parent=None):
-        super(VariablesDialog,  self).__init__(parent=parent)
+    def __init__(self, loadedRecipe, gfiles):
+        super(VariablesDialog,  self).__init__()
         variables_ui.Ui_Dialog.setupUi(self,self)
+      
         self.form=[]
-        self.get_files = gfiles
         self.attributes = {}   
-        self.names_of_lists = recipe.Recipe("zips/recipe 1.zip").lists
-        self.names_of_variables = recipe.Recipe("zips/recipe 1.zip").strings
-        self.names_of_texts = recipe.Recipe("zips/recipe 1.zip").texts         
+        self.get_files = gfiles
+        self.names_of_lists = recipe.Recipe(loadedRecipe).lists
+        self.names_of_variables = recipe.Recipe(loadedRecipe).strings
+        self.names_of_texts = recipe.Recipe(loadedRecipe).texts         
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
         self.load_table_of_texts(self.names_of_texts)
@@ -255,6 +267,9 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     def accept(self):
         self.get_values()    
         ret ={ "all-attributes": self.attributes, "all-files": self.get_files }
+        
+        ## Place where is generate otuput for pandoc
+        
         print(ret)
         super(VariablesDialog, self).accept()
 
