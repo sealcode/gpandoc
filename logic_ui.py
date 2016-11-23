@@ -1,10 +1,12 @@
+import io
 import os
 import sys
 import glob
 import recipe
+from os import path
 
 from zipfile import ZipFile
-import io
+
 from PIL import Image,ImageQt
 from ui import recipe_ui
 from ui import variables_ui
@@ -214,7 +216,9 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
         self.dialog.exec_()
         
     def accept(self): 
-        self.loadedRecipe = str("zips/" + str(self.dialog.ui.combo_box_1.currentText()))
+
+        path = os.path.dirname(__file__)     
+        self.loadedRecipe = str(path+ "/zips/" + str(self.dialog.ui.combo_box_1.currentText()))
         print("Current loaded recipe: "+ self.loadedRecipe)
         return (self.loadedRecipe)
         super().accept()
