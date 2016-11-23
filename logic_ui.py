@@ -46,8 +46,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
   # << Custon Main Widget >> #
     def __init__(self, app):
         super(MainWindow, self).__init__()
-      
-       
+            
         
         Ui_MainWindow.setupUi(self, self)
         self.push_button_1.clicked.connect(self.load_files)
@@ -79,9 +78,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                       "\nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
         self.ret_files = []
         self.loadedRecipe =None
+        if not self.loadedRecipe:
+            self.push_button_3.setEnabled(False)
+
     # << END of: Custom Main Widget >> #
 
- # << Listwidget handling >> #
+ # << Listwidget handling >> #2
 
     # clear current selected item
     def clear_selected_items(self):
@@ -129,9 +131,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
  # << Select recipe - handling >> # 
     def select_recipe(self):
         recipeDialog=None
-        recipeDialog = RecipeDialog(recipeDialog) 
+        recipeDialog = RecipeDialog(recipeDialog, self.loadedRecipe) 
         self.loadedRecipe = recipeDialog.retRecipe()
-        print(self.loadedRecipe)
+        if self.loadedRecipe:
+            self.push_button_3.setEnabled(True)
+            print(self.loadedRecipe)
 
  # << END of: Select recipe - handling >> #
 
@@ -194,17 +198,19 @@ class Table(QtWidgets.QTableWidget):
         
         
 class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
-    def __init__(self, app):
+    def __init__(self,app,loadedRecipe):
         super(RecipeDialog, self).__init__()
         recipe_ui.Ui_Dialog.setupUi(self, self)
         
         self.zipPackages =[]
+        self.loadedRecipe = loadedRecipe
+        self.path = os.path.dirname(__file__)     
         self.dialog = QtWidgets.QDialog()
         self.dialog.ui = recipe_ui.Ui_Dialog()
         self.dialog.ui.setupUi(self.dialog)
         self.dialog.ui.label_1.setScaledContents(True);
         
-        self.zipPackages  = [os.path.basename(x) for x in glob.glob('zips/*.zip')]
+        self.zipPackages  = [os.path.basename(x) for x in glob.glob(self.path+'/zips/*.zip')]
         print (self.zipPackages)
         
         self.dialog.ui.combo_box_1.addItems(self.zipPackages)
@@ -216,25 +222,21 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
         self.dialog.exec_()
         
     def accept(self): 
-
-        path = os.path.dirname(__file__)     
-        self.loadedRecipe = str(path+ "/zips/" + str(self.dialog.ui.combo_box_1.currentText()))
+        self.loadedRecipe = str(self.path+ "/zips/" + str(self.dialog.ui.combo_box_1.currentText()))
         print("Current loaded recipe: "+ self.loadedRecipe)
-        return (self.loadedRecipe)
+        self.retRecipe()
         super().accept()
     
-    
     def reject(self):
-        #self.loadedRecipe = str("zips/" + str(self.dialog.ui.combo_box_1.currentText()))
         super().reject()
     
     def retRecipe(self):
         return (self.loadedRecipe)
        
-    def changeRecipe(self):
+    def changeRecipe(self): 
         print(self.dialog.ui.combo_box_1.currentText()) 
         print (str('zips/'+self.dialog.ui.combo_box_1.currentText()))
-        zippedImgs = ZipFile('zips/'+self.dialog.ui.combo_box_1.currentText())
+        zippedImgs = ZipFile(self.path+'/zips/'+str(self.dialog.ui.combo_box_1.currentText()))
         for i in range(len(zippedImgs.namelist())):
             file_in_zip = zippedImgs.namelist()[i]
             if (".png" in file_in_zip or ".PNG" in file_in_zip):
