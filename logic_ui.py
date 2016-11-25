@@ -4,7 +4,7 @@ import sys
 import glob
 import recipe
 from os import path
-
+from subprocess import call
 from zipfile import ZipFile
 
 from PIL import Image,ImageQt
@@ -142,7 +142,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def conf_variables(self):
         variablesDialog = VariablesDialog(self.loadedRecipe, self.return_files())
         variablesDialog.exec_()
-
+        self.shellCommand()
+    
+    def shellCommand(self):
+        call(["ls", "-l"])
 
 # <<< END OF MAINWINDOW >>> #
 
