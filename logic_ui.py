@@ -145,7 +145,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.shellCommand()
     
     def shellCommand(self):
-        call(["ls", "-l"])
+        call(["echo", "SHELL COMMAND"])
 
 # <<< END OF MAINWINDOW >>> #
 
