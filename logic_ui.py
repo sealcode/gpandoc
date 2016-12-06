@@ -16,7 +16,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon,QPixmap
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, QDialogButtonBox, \
-                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QMouseEventTransition, QAction, QDialog, QComboBox
+                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QAction, QDialog, QComboBox
 
 
 
@@ -61,6 +61,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.list_widget_1.setDragDropMode(QAbstractItemView.InternalMove)
         self.list_widget_1.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.list_widget_1.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
+        self.list_widget_1.currentItemChanged.connect(self.items_changed)
 
     # Actions for mouse right click #
         quit_action_1 = QAction("Zamknij", self, shortcut="Ctrl+Q", triggered=QApplication.instance().quit)
@@ -78,23 +79,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                       "\nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
         self.ret_files = []
         self.loadedRecipe =None
-        if not self.loadedRecipe:
-            self.push_button_3.setEnabled(False)
+        self.items_changed()
 
     # << END of: Custom Main Widget >> #
 
  # << Listwidget handling >> #2
 
+    
+    
     # clear current selected item
     def clear_selected_items(self):
         for selected_item in self.list_widget_1.selectedItems():
             self.list_widget_1.takeItem(self.list_widget_1.row(selected_item))
+            
+        self.items_changed()
        
+    def items_changed(self):
+        if self.loadedRecipe == None or self.list_widget_1.count()==0:
+            self.push_button_3.setEnabled(False)
+        else:
+            self.push_button_3.setEnabled(True)
+
          
     # clear all files on the list
     def clear_all_items(self):
         self.list_widget_1.clear()
         data_of_list.clear()
+        self.items_changed()
 
     # select all files on the list
     def select_items(self):
@@ -117,6 +128,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             data_of_list.append(file_path)
         print(list_of_paths)
         self.add_to_list_widget(list_of_paths)
+        self.items_changed()
    
  # << END of: Load files on >> #
     
@@ -127,16 +139,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         print("Return files: ", self.ret_files)
         return self.ret_files
  # << >>
-
+  
  # << Select recipe - handling >> # 
     def select_recipe(self):
         recipeDialog=None
         recipeDialog = RecipeDialog(recipeDialog, self.loadedRecipe) 
         self.loadedRecipe = recipeDialog.retRecipe()
-        if self.loadedRecipe:
-            self.push_button_3.setEnabled(True)
-            print(self.loadedRecipe)
-
+        self.items_changed()
+        print(self.loadedRecipe)
+        
  # << END of: Select recipe - handling >> #
 
     def conf_variables(self):
