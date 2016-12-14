@@ -16,7 +16,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon,QPixmap
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, QDialogButtonBox, \
-                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QAction, QDialog, QComboBox
+                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy,QSpacerItem, QAction, QDialog, QComboBox
 
 
 
@@ -261,7 +261,8 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
                 qimage = ImageQt.ImageQt(dataImgEnc)      # create QtImage from QImage
                 pixmap = QtGui.QPixmap.fromImage(qimage)  # convert QtImage to QPixmap      
                 print(pixmap)
-                self.dialog.ui.label_2.setPixmap(pixmap)    
+                self.dialog.ui.label_2.setPixmap(pixmap)  
+                self.dialog.ui.label_2.setScaledContents(True)
             else:
                 self.dialog.ui.label_2.setText("Brak podglądu")
                  
@@ -342,17 +343,20 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         #for element in name_of_lists:
         for name_of_list in names_of_lists: 
             self.label= QtWidgets.QLabel(name_of_list)
+            self.label.setMinimumWidth(100)
             self.label.setText(str(name_of_list))
             self.label.setObjectName(str(name_of_list) + "_label")
+
             self.table_widget = Table()
             self.table_widget.setHorizontalHeaderLabels([str(name_of_list)])
             self.table_widget.setObjectName(self.label.text() + "_table_widget")
-       
+        
             self.box = QtWidgets.QHBoxLayout()
             self.box.addWidget(self.label)
             self.box.addWidget(self.table_widget)
                        
             self.b_box = QtWidgets.QHBoxLayout()
+            self.b_box.addSpacing(108)
             self.b_box.addWidget(self.table_widget.button_form)
             self.b_box.addWidget(self.table_widget.button_form2)
             self.form.append(self.box)
@@ -365,6 +369,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         for variable in names_of_variables: 
       
             self.label= QtWidgets.QLabel(variable)
+            self.label.setMinimumWidth(100)
             self.label.setText(str(variable))
             self.label.setObjectName(self.label.text()+ "_label")
             self.line_edit= QtWidgets.QLineEdit("Wartość")     
@@ -381,6 +386,9 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             
             self.label= QtWidgets.QLabel(text)
             self.label.setText(str(text))
+            self.label.setMinimumWidth(100)
+            self.label.setMinimumHeight(100)
+            self.label.setScaledContents(True)
             self.label.setObjectName(self.label.text()+ "_label")
             
             self.plain_text= QtWidgets.QPlainTextEdit("Wartość tekstowa")     
