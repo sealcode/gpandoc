@@ -219,26 +219,19 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuUstawienia">
-    <property name="title">
-     <string>Ustawienia</string>
-    </property>
-    <addaction name="actionPreferencje"/>
-    <addaction name="actionInterfejs"/>
-   </widget>
    <widget class="QMenu" name="menuPomoc">
     <property name="title">
      <string>Pomoc</string>
     </property>
+    <addaction name="separator"/>
+    <addaction name="actionUstawienia"/>
     <addaction name="actionInstrukcja_uzycia"/>
     <addaction name="separator"/>
     <addaction name="actionO_GPandoc"/>
-    <addaction name="actionO_Autorach"/>
    </widget>
-   <addaction name="menuUstawienia"/>
    <addaction name="menuPomoc"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -247,24 +240,14 @@
     <string>O GPandoc</string>
    </property>
   </action>
-  <action name="actionO_Autorach">
-   <property name="text">
-    <string>O Autorach</string>
-   </property>
-  </action>
   <action name="actionInstrukcja_uzycia">
    <property name="text">
     <string>Instrukcja użycia</string>
    </property>
   </action>
-  <action name="actionInterfejs">
+  <action name="actionUstawienia">
    <property name="text">
-    <string>Interfejs</string>
-   </property>
-  </action>
-  <action name="actionPreferencje">
-   <property name="text">
-    <string>Preferencje</string>
+    <string>Ustawienia</string>
    </property>
   </action>
  </widget>

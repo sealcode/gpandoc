@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui/mainwindow.ui'
+# Form implementation generated from reading ui file 'mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.7
 #
@@ -114,10 +114,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addLayout(self.vertical_layout_1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 400, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 400, 19))
         self.menubar.setObjectName("menubar")
-        self.menuUstawienia = QtWidgets.QMenu(self.menubar)
-        self.menuUstawienia.setObjectName("menuUstawienia")
         self.menuPomoc = QtWidgets.QMenu(self.menubar)
         self.menuPomoc.setObjectName("menuPomoc")
         MainWindow.setMenuBar(self.menubar)
@@ -126,21 +124,15 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.actionO_GPandoc = QtWidgets.QAction(MainWindow)
         self.actionO_GPandoc.setObjectName("actionO_GPandoc")
-        self.actionO_Autorach = QtWidgets.QAction(MainWindow)
-        self.actionO_Autorach.setObjectName("actionO_Autorach")
         self.actionInstrukcja_uzycia = QtWidgets.QAction(MainWindow)
         self.actionInstrukcja_uzycia.setObjectName("actionInstrukcja_uzycia")
-        self.actionInterfejs = QtWidgets.QAction(MainWindow)
-        self.actionInterfejs.setObjectName("actionInterfejs")
-        self.actionPreferencje = QtWidgets.QAction(MainWindow)
-        self.actionPreferencje.setObjectName("actionPreferencje")
-        self.menuUstawienia.addAction(self.actionPreferencje)
-        self.menuUstawienia.addAction(self.actionInterfejs)
+        self.actionUstawienia = QtWidgets.QAction(MainWindow)
+        self.actionUstawienia.setObjectName("actionUstawienia")
+        self.menuPomoc.addSeparator()
+        self.menuPomoc.addAction(self.actionUstawienia)
         self.menuPomoc.addAction(self.actionInstrukcja_uzycia)
         self.menuPomoc.addSeparator()
         self.menuPomoc.addAction(self.actionO_GPandoc)
-        self.menuPomoc.addAction(self.actionO_Autorach)
-        self.menubar.addAction(self.menuUstawienia.menuAction())
         self.menubar.addAction(self.menuPomoc.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -157,11 +149,8 @@ class Ui_MainWindow(object):
         self.push_button_3.setText(_translate("MainWindow", "Wygeneruj "))
         self.push_button_4.setText(_translate("MainWindow", "Usuń zaznaczone"))
         self.push_button_5.setText(_translate("MainWindow", "Usuń wszystko"))
-        self.menuUstawienia.setTitle(_translate("MainWindow", "Ustawienia"))
         self.menuPomoc.setTitle(_translate("MainWindow", "Pomoc"))
         self.actionO_GPandoc.setText(_translate("MainWindow", "O GPandoc"))
-        self.actionO_Autorach.setText(_translate("MainWindow", "O Autorach"))
         self.actionInstrukcja_uzycia.setText(_translate("MainWindow", "Instrukcja użycia"))
-        self.actionInterfejs.setText(_translate("MainWindow", "Interfejs"))
-        self.actionPreferencje.setText(_translate("MainWindow", "Preferencje"))
+        self.actionUstawienia.setText(_translate("MainWindow", "Ustawienia"))
 

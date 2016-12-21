@@ -3,9 +3,12 @@ import os
 import sys
 import glob
 import recipe
+import configparser
+
 from os import path
 from subprocess import call
 from zipfile import ZipFile
+
 
 from PIL import Image,ImageQt
 from ui import recipe_ui
@@ -15,13 +18,13 @@ from ui.mainwindow_ui import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon,QPixmap
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent
-from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QTextEdit, QDialog, QDialogButtonBox, \
+from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QSlider, QTextEdit, QDialog, QDialogButtonBox, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy,QSpacerItem, QAction, QDialog, QComboBox
 
 
 
 # <<< SETTINGS Variables >>> # 
-data_of_list=[]
+list_of_paths=[]
 class CurrentConfig():
     
     def __init__(self):
@@ -58,6 +61,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                    
         self.list_widget_1.setAcceptDrops(True)
         self.list_widget_1.setMouseTracking(True)
+        self.list_widget_1.verticalScrollBar()
+        self.list_widget_1.horizontalScrollBar()
         self.list_widget_1.setDragDropMode(QAbstractItemView.InternalMove)
         self.list_widget_1.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.list_widget_1.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
@@ -75,57 +80,72 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # Info for users how to add files
         self.list_widget_1.setContextMenuPolicy(Qt.ActionsContextMenu)
-        self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz pliki." +
-                                      "\nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
+     #  self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz pliki." +
+                                   #   "\nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
         self.ret_files = []
-        self.loadedRecipe =None
+        self.loadedRecipe = None
         self.items_changed()
 
     # << END of: Custom Main Widget >> #
-
  # << Listwidget handling >> #2
 
-    
-    
+    def update_python_list(self):
+        list_of_paths.clear()
+        for x in range(self.list_widget_1.count()):
+            list_of_paths.append(self.list_widget_1.item(x).text())
+
     # clear current selected item
     def clear_selected_items(self):
-        for selected_item in self.list_widget_1.selectedItems():
+        for selected_item in self.list_widget_1.selectedItems():    
             self.list_widget_1.takeItem(self.list_widget_1.row(selected_item))
-            
+        self.update_python_list()
         self.items_changed()
        
+    
+         
     def items_changed(self):
+        self.update_python_list()
+
         if self.loadedRecipe == None or self.list_widget_1.count()==0:
             self.push_button_3.setEnabled(False)
         else:
             self.push_button_3.setEnabled(True)
 
-         
+   
     # clear all files on the list
     def clear_all_items(self):
         self.list_widget_1.clear()
-        data_of_list.clear()
+        list_of_paths.clear()
         self.items_changed()
 
     # select all files on the list
     def select_items(self):
         self.list_widget_1.selectAll();
-        print("\n" + str(data_of_list)) # chcek list values: data_of_list 
+        print("\n" + str(list_of_paths)) # chcek list values: list_of_paths
 
+    def dragEnterEvent(self, e):
+        e.accept()
+        self.update_python_list()
+
+    def dropEvent(self, e):
+        self.items_changed()
 
  # << ADD paths on list_widget_1 from list_of_paths used pop()  >> #
     def add_to_list_widget(self, list_of_paths):
-        while list_of_paths:
-            self.list_widget_1.addItem(list_of_paths.pop())
+        for path in list_of_paths:
+            self.list_widget_1.addItem(str(path))
+        count = self.list_widget_1.count()
+        for x in range(count):
+            name_of_file = self.list_widget_1.item(x).text().split("/")
+            self.list_widget_1.item(x).setToolTip(name_of_file[-1])
 
  # << Load files on >> #
     def load_files(self):
         list_of_paths = []
-        file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',"Documents(*.txt *.doc, *.docx, *.pdf)"+
-                                                           ";; Markdown (*.md);; Mobi (*.mobi);; All Files (*)")
+        file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',"Dokumenty (*.txt *.odt *.doc *.docx *.pdf) "+
+                                                           ";; Markdown (*.md);; pdf (*.pdf);; txt (*.txt);; doc (*.doc);; docx (*.docx);; Mobi (*.mobi);; Wszystkie (*)")
         for file_path in file_paths:
             list_of_paths.append(file_path)
-            data_of_list.append(file_path)
         print(list_of_paths)
         self.add_to_list_widget(list_of_paths)
         self.items_changed()
