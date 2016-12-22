@@ -19,7 +19,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon,QPixmap
 from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QSlider, QTextEdit, QDialog, QDialogButtonBox, \
-                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy,QSpacerItem, QAction, QDialog, QComboBox
+                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy, \
+                            QSpacerItem, QAction, QDialog, QComboBox, QListView
 
 
 
@@ -43,20 +44,29 @@ class CurrentConfig():
         
 # <<< MAINWINDOW >>> #
 
-class MainWindow(QMainWindow, Ui_MainWindow):
-    
+class itemNamePath(QListWidgetItem):
+    # << Custom Main Widget >> #
+    def __init__(self, text):
+        super(itemNamePath, self).__init__()
+        self.path=""
+    def showPath(self):
+        return self.path
 
-  # << Custon Main Widget >> #
+    def setPath(self,text):
+        self.path = text
+
+class MainWindow(QMainWindow, Ui_MainWindow):
+
+  # << Custom Main Widget >> #
     def __init__(self, app):
         super(MainWindow, self).__init__()
-            
-        
+              
         Ui_MainWindow.setupUi(self, self)
         self.push_button_1.clicked.connect(self.load_files)
-        self.push_button_4.clicked.connect(self.clear_selected_items)
-        self.push_button_5.clicked.connect(self.clear_all_items)
         self.push_button_2.clicked.connect(self.select_recipe)
         self.push_button_3.clicked.connect(self.conf_variables)
+        self.push_button_4.clicked.connect(self.clear_selected_items)
+        self.push_button_5.clicked.connect(self.clear_all_items)
         self.show()
                    
         self.list_widget_1.setAcceptDrops(True)
@@ -80,8 +90,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # Info for users how to add files
         self.list_widget_1.setContextMenuPolicy(Qt.ActionsContextMenu)
-     #  self.list_widget_1.setToolTip("Aby dodać pliki skorzystaj z przycisku wybierz pliki." +
-                                   #   "\nAby wyświetlić szybkie menu kliknij prawym przyciskiem. ")
+
+        self.push_button_1.setToolTip("Kliknij, aby dodać pliki do listy")
+        self.push_button_2.setToolTip("Kliknij, aby wybrać przepis")
+
+        self.push_button_3.setToolTip("Kliknij, aby przejść do wygenerowania dokumentu")
+        self.push_button_4.setToolTip("Kliknij, aby usunać zaznaczone elementy")
+        self.push_button_5.setToolTip("Kliknij, aby wyczyścić liste")
+
         self.ret_files = []
         self.loadedRecipe = None
         self.items_changed()
@@ -89,23 +105,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # << END of: Custom Main Widget >> #
  # << Listwidget handling >> #2
 
-    def update_python_list(self):
-        list_of_paths.clear()
-        for x in range(self.list_widget_1.count()):
-            list_of_paths.append(self.list_widget_1.item(x).text())
-
     # clear current selected item
     def clear_selected_items(self):
         for selected_item in self.list_widget_1.selectedItems():    
             self.list_widget_1.takeItem(self.list_widget_1.row(selected_item))
-        self.update_python_list()
         self.items_changed()
        
-    
          
     def items_changed(self):
-        self.update_python_list()
-
         if self.loadedRecipe == None or self.list_widget_1.count()==0:
             self.push_button_3.setEnabled(False)
         else:
@@ -115,17 +122,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # clear all files on the list
     def clear_all_items(self):
         self.list_widget_1.clear()
-        list_of_paths.clear()
         self.items_changed()
 
     # select all files on the list
     def select_items(self):
         self.list_widget_1.selectAll();
-        print("\n" + str(list_of_paths)) # chcek list values: list_of_paths
+        #print("\n" + str(list_of_paths)) # chcek list values: list_of_paths
+        for x in range(self.list_widget_1.count()):
+            print(self.list_widget_1.item(x).showPath())
 
     def dragEnterEvent(self, e):
         e.accept()
-        self.update_python_list()
 
     def dropEvent(self, e):
         self.items_changed()
@@ -133,17 +140,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
  # << ADD paths on list_widget_1 from list_of_paths used pop()  >> #
     def add_to_list_widget(self, list_of_paths):
         for path in list_of_paths:
-            self.list_widget_1.addItem(str(path))
-        count = self.list_widget_1.count()
-        for x in range(count):
-            name_of_file = self.list_widget_1.item(x).text().split("/")
-            self.list_widget_1.item(x).setToolTip(name_of_file[-1])
-
+            name_of_file = str(path).split("/")     
+            item = itemNamePath(path)   
+            item.setText(name_of_file[-1])
+            item.setPath(str(path))
+            self.list_widget_1.addItem(item)
+     
  # << Load files on >> #
     def load_files(self):
         list_of_paths = []
-        file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',"Dokumenty (*.txt *.odt *.doc *.docx *.pdf) "+
-                                                           ";; Markdown (*.md);; pdf (*.pdf);; txt (*.txt);; doc (*.doc);; docx (*.docx);; Mobi (*.mobi);; Wszystkie (*)")
+        file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',
+                                                           "Dokumenty (*.txt *.odt *.doc *.docx) ;; "+
+                                                           "txt (*.txt);; "+
+                                                           "doc (*.doc);; docx (*.docx);; "+
+                                                           "Mobi (*.mobi);; "+
+                                                           "Markdown (*.md);; "+
+                                                           "Wszystkie (*)")
         for file_path in file_paths:
             list_of_paths.append(file_path)
         print(list_of_paths)
@@ -154,8 +166,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     def return_files(self):
         self.ret_files = []
-        for i in range (self.list_widget_1.count()):
-            self.ret_files.append(self.list_widget_1.item(i).text().encode('utf-8').decode('utf -8'))
+        for x in range(self.list_widget_1.count()):
+            self.ret_files.append(self.list_widget_1.item(x).showPath())
         print("Return files: ", self.ret_files)
         return self.ret_files
  # << >>
@@ -181,10 +193,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 # <<< END OF MAINWINDOW >>> #
 
 
-
-
 # <<< CONFIG VARIABLES >>> #
-
 
 class Table(QtWidgets.QTableWidget):
 
@@ -228,8 +237,7 @@ class Table(QtWidgets.QTableWidget):
         self.current_row = self.currentRow()
         self.removeRow(self.currentRow())
         self.show()
-        
-        
+         
         
 class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
     def __init__(self,app,loadedRecipe):
@@ -423,10 +431,9 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
         self.draw_lists()
 
-    
-        
 # <<< END of: CONFIG VARIABLES >>> #
 
 
 
+      
 
