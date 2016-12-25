@@ -18,14 +18,18 @@ class Recipe(configparser.ConfigParser):
     
     def __getattr__(self, name):
         '''Extract values from INI with simple accessors'''
-        if name == 'lists':
+        if name == 'list':
             return [k for k,v in self['Variables'].items() if v == 'list']
-        elif name == 'strings':
+        elif name == 'string':
             return [k for k,v in self['Variables'].items() if v == 'string']
-        elif name == 'texts':
+        elif name == 'text':
             return [k for k,v in self['Variables'].items() if v == 'text']
-        elif name == 'preview':
+        elif name == 'image':
             return [k for k,v in self['Document'].items() if v == 'image']
+        elif name == 'outputFormat':
+            return [k for k,v in self['Document'].items() if v == 'output_format']
+        elif name == 'template':
+            return [k for k,v in self['Document'].items() if v == 'template']
         else:
             raise AttributeError("'%s' object has no attribute '%s'" %
                                  (self.__class__.__name__, name))

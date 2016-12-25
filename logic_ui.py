@@ -25,7 +25,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QSlider, QT
 
 
 # <<< SETTINGS Variables >>> # 
-list_of_paths=[]
+listPaths=[]
 class CurrentConfig():
     
     def __init__(self):
@@ -44,10 +44,10 @@ class CurrentConfig():
         
 # <<< MAINWINDOW >>> #
 
-class itemNamePath(QListWidgetItem):
+class MyListWidgetItem(QListWidgetItem):
     # << Custom Main Widget >> #
     def __init__(self, text):
-        super(itemNamePath, self).__init__()
+        super(MyListWidgetItem, self).__init__()
         self.path=""
     def showPath(self):
         return self.path
@@ -99,7 +99,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.push_button_5.setToolTip("Kliknij, aby wyczyścić liste")
 
         self.ret_files = []
-        self.loadedRecipe = None
+        self.boxIsChecked=False
+        self.loadedRecipe= None
         self.items_changed()
 
     # << END of: Custom Main Widget >> #
@@ -107,8 +108,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # clear current selected item
     def clear_selected_items(self):
-        for selected_item in self.list_widget_1.selectedItems():    
-            self.list_widget_1.takeItem(self.list_widget_1.row(selected_item))
+        for select in self.list_widget_1.selectedItems():    
+            self.list_widget_1.takeItem(self.list_widget_1.row(select))
         self.items_changed()
        
          
@@ -117,7 +118,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.push_button_3.setEnabled(False)
         else:
             self.push_button_3.setEnabled(True)
-
    
     # clear all files on the list
     def clear_all_items(self):
@@ -127,7 +127,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # select all files on the list
     def select_items(self):
         self.list_widget_1.selectAll();
-        #print("\n" + str(list_of_paths)) # chcek list values: list_of_paths
+        #print("\n" + str(listPaths)) # chcek list values: listPaths
         for x in range(self.list_widget_1.count()):
             print(self.list_widget_1.item(x).showPath())
 
@@ -137,33 +137,36 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def dropEvent(self, e):
         self.items_changed()
 
- # << ADD paths on list_widget_1 from list_of_paths used pop()  >> #
-    def add_to_list_widget(self, list_of_paths):
-        for path in list_of_paths:
-            name_of_file = str(path).split("/")     
-            item = itemNamePath(path)   
-            item.setText(name_of_file[-1])
+ # << ADD paths on list_widget_1 from listPaths used pop()  >> #
+    def add_to_list_widget(self, listPaths):
+        for path in listPaths:
+            fileName = str(path).split("/")     
+            item = MyListWidgetItem(path)   
+            item.setText(fileName[-1])
             item.setPath(str(path))
             self.list_widget_1.addItem(item)
      
  # << Load files on >> #
     def load_files(self):
-        list_of_paths = []
-        file_paths, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',
+        listPaths = []
+        files, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',
                                                            "Dokumenty (*.txt *.odt *.doc *.docx) ;; "+
                                                            "txt (*.txt);; "+
                                                            "doc (*.doc);; docx (*.docx);; "+
                                                            "Mobi (*.mobi);; "+
                                                            "Markdown (*.md);; "+
                                                            "Wszystkie (*)")
-        for file_path in file_paths:
-            list_of_paths.append(file_path)
-        print(list_of_paths)
-        self.add_to_list_widget(list_of_paths)
+        for file in files:
+            listPaths.append(file)
+        print(listPaths)
+        self.add_to_list_widget(listPaths)
         self.items_changed()
    
  # << END of: Load files on >> #
-    
+    def return_boxIsChecked(self):
+        self.isChecked =  self.check_box_1.checkState() 
+        return self.isChecked
+     
     def return_files(self):
         self.ret_files = []
         for x in range(self.list_widget_1.count()):
@@ -183,11 +186,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
  # << END of: Select recipe - handling >> #
 
     def conf_variables(self):
-        variablesDialog = VariablesDialog(self.loadedRecipe, self.return_files())
+        variablesDialog = VariablesDialog(self.loadedRecipe, self.return_files(), self.return_boxIsChecked())
         variablesDialog.exec_()
         self.shellCommand()
     
     def shellCommand(self):
+        command = None
+
         call(["echo", "SHELL COMMAND"])
 
 # <<< END OF MAINWINDOW >>> #
@@ -257,7 +262,6 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
         
         self.dialog.ui.combo_box_1.addItems(self.zipPackages)
         print(self.dialog.ui.combo_box_1.currentText())
-        self.changeRecipe()
         self.dialog.ui.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)   
         self.dialog.ui.button_box_1.accepted.connect(self.accept)
         self.dialog.ui.button_box_1.rejected.connect(self.reject)
@@ -296,37 +300,28 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
                  
         
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
-    def __init__(self, loadedRecipe, gfiles):
+    def __init__(self, loadedRecipe, gfiles, boxIsChecked):
         super(VariablesDialog,  self).__init__()
         variables_ui.Ui_Dialog.setupUi(self,self)
       
         self.form=[]
         self.attributes = {}   
         self.get_files = gfiles
-        self.names_of_lists = recipe.Recipe(loadedRecipe).lists
-        self.names_of_variables = recipe.Recipe(loadedRecipe).strings
-        self.names_of_texts = recipe.Recipe(loadedRecipe).texts         
+        self.boxIsChecked = boxIsChecked
+        self.names_of_lists = recipe.Recipe(loadedRecipe).list
+        print("Name_of_lists ", str(self.names_of_lists))
+        self.names_of_variables = recipe.Recipe(loadedRecipe).string
+        print("Name_of_variables ", str(self.names_of_variables))
+        self.names_of_texts = recipe.Recipe(loadedRecipe).text
+        print("Name_of_texts ", str(self.names_of_texts))
+        self.template_name = recipe.Recipe(loadedRecipe).template  
+        print("Template name ", str(self.template_name))  
+        self.output_format = recipe.Recipe(loadedRecipe).outputFormat
+        print("Output_format ", str(self.output_format))  
+
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
         self.load_table_of_texts(self.names_of_texts)
-
-    def print_ok(self):
-        print(str("O.K"))     
-        
-    def accept(self):
-        self.get_values()    
-        ret ={ "all-attributes": self.attributes, "all-files": self.get_files }
-        
-        ## Place where is generate otuput for pandoc
-        
-        print(ret)
-        super(VariablesDialog, self).accept()
-
-    
-    def reject(self):
-        super(VariablesDialog, self).reject()
-    
-  
 
     def get_values(self):
         self.getsTable = []
@@ -429,11 +424,57 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
             #self.form.append(self.combobox)
 
-        self.draw_lists()
+        self.draw_lists()   
+        
+    
+    def reject(self):
+        super(VariablesDialog, self).reject()
+    
+    def accept(self):
+        self.get_values()    
+        shellPandoc = None
+        if(self.boxIsChecked):
+            shellPandoc = "pandoc "
+            for path in self.get_files:
+                shellPandoc+=" "+str(path)
+                
+            if(self.template_name != ""):
+
+                # wydobycie pliku z archiwum!!
+                shellPandoc+=" --template=" + self.template_name[0]  
+            for attr in self.attributes.keys(): 
+                for e in self.attributes[attr]:
+                    shellPandoc+=" -V "
+                    shellPandoc+= str(attr) + "=" +"\""+ str(e)+"\""
+                    #shellPandoc+= str(attr) + "=" +"\""+ str(self.attributes[attr])+"\""
+        else:
+            shellPandoc = None
+        print (str(shellPandoc))
+        #    self.template_name = recipe.Recipe(loadedRecipe).template  
+        #    self.output_format = recipe.Recipe(loadedRecipe).output_format
+        #ret ={ "all-attributes": self.attributes, "all-files": self.get_files }
+        
+       #if():
+       #     pass
+       # else:
+         #   pass
+        ## Place where is generate otuput for pandoc
+        ##  template = template.html
+        ##  output_format = html
+
+        super(VariablesDialog, self).accept()
+
+   
 
 # <<< END of: CONFIG VARIABLES >>> #
 
 
 
       
+
+
+
+
+
+
 
