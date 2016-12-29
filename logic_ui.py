@@ -4,7 +4,9 @@ import sys
 import glob
 import recipe
 import pypandoc
+import datetime
 import configparser
+
 
 from os import path
 import subprocess 
@@ -63,6 +65,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
               
         Ui_MainWindow.setupUi(self, self)
+        self.line_edit_1.setToolTip("Nazwa dokumentu bez rozszerzenia. Wynik konwersji zostanie zapisany w folderze\"/outputs\"."+
+                                    "Wiele plików będzie posiadać jedną nazwę z dopisanym numerem np. book_1")
+        now = datetime.datetime.now()
+        self.line_edit_1.setText(str(now.strftime("%Y-%m-%d_%H:%M_book")))
         self.push_button_1.clicked.connect(self.load_files)
         self.push_button_2.clicked.connect(self.select_recipe)
         self.push_button_3.clicked.connect(self.conf_variables)
@@ -105,7 +111,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pathDirectory = os.path.dirname(__file__) 
         self.items_changed()
 
-    # << END of: Custom Main Widget >> #
+ # << END of: Custom Main Widget >> #
  # << Listwidget handling >> #2
 
     # clear current selected item
@@ -120,7 +126,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.push_button_3.setEnabled(False)
         else:
             self.push_button_3.setEnabled(True)
-   
+     
     # clear all files on the list
     def clear_all_items(self):
         self.list_widget_1.clear()
@@ -149,18 +155,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.list_widget_1.addItem(item)
      
  # << Load files on >> #
+
+    def infoFormats(self):
+        print(pypandoc.get_pandoc_formats())
+
     def load_files(self):
         listPaths = []
         files, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',
-                                                           "Dokumenty (*.txt *.odt *.doc *.docx) ;; "+
-                                                           "txt (*.txt);; "+
-                                                           "doc (*.doc);; docx (*.docx);; "+
-                                                           "Mobi (*.mobi);; "+
-                                                           "Markdown (*.md);; "+
-                                                           "Wszystkie (*)")
+                                                "Wszystkie (*);;"+"commonmark (*.commonmark);;"+
+                                                "docbook (*.docbook);;"+"docx (*.docx);;"+"epub (*.epub);;"+
+                                                "haddock (*.haddock);;"+"html (*.html);;"+"json (*.json);;"+
+                                                "latex (*.latex);;"+"markdown (*.markdown *.md);;"+"markdown_github (*.markdown_github);;"+
+                                                "markdown_mmd (*.markdown_mmd);;"+"markdown_phpextra (*.markdown_phpextra);;"+
+                                                "markdown_strict (*.markdown_strict);;"+"mediawiki (*.mediawiki);;"+
+                                                "native (*.native);;"+"odt (*.odt);;"+"opml (*.opml);;"+"org (*.org);;"+
+                                                "rst (*.rst);;"+"t2t (*.t2t);;"+"textile (*.textile);;"+"twiki (*.twiki)")
+
         for file in files:
             listPaths.append(file)
         print(listPaths)
+        self.infoFormats()
         self.add_to_list_widget(listPaths)
         self.items_changed()
    
@@ -185,10 +199,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.items_changed()
         print(self.selectedRecipe)
         
- # << END of: Select recipe - handling >> #
+ # << END of: Select recipe - handling >> #with ZipFile('spam.zip') as myzip:
+ 
 
     def conf_variables(self):
-        variablesDialog = VariablesDialog(self.selectedRecipe, self.return_files(), self.return_boxIsChecked(), self.pathDirectory)
+        bookName = str(self.line_edit_1.text())
+        variablesDialog = VariablesDialog(self.selectedRecipe, self.return_files(), self.return_boxIsChecked(), self.pathDirectory, bookName)
         variablesDialog.exec_()
         self.shellCommand()
     
@@ -225,9 +241,10 @@ class Table(QtWidgets.QTableWidget):
         self.horizontalHeader().setStretchLastSection(True)
         self.setMinimumHeight(120)
         self.setMaximumHeight(180)
+        self.add_cell()
         for x in range(self.rows_number):
             self.setRowHeight(x, 30)
- 
+
     def add_cell(self):
         self.rows_number = (self.rowCount())
         self.insertRow(self.rows_number)
@@ -292,7 +309,7 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
                 data = zippedImgs.read(file_in_zip)       # read bits to variable                                                      
                 dataEnc = io.BytesIO(data)                # save bytes like io              
                 dataImgEnc = Image.open(dataEnc)          # convert bytes on Image file            
-                qimage = ImageQt.ImageQt(dataImgEnc)      # create QtImage from QImage
+                qimage = ImageQt.ImageQt(dataImgEnc)      # create QtImage from Image
                 pixmap = QtGui.QPixmap.fromImage(qimage)  # convert QtImage to QPixmap      
                 print(pixmap)
                 self.dialog.ui.label_2.setPixmap(pixmap)  
@@ -302,30 +319,28 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
                  
         
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
-    def __init__(self, loadedRecipe, gfiles, boxIsChecked, pathDirectory):
+    def __init__(self, loadedRecipe, gfiles, boxIsChecked, pathDirectory, bookName):
         super(VariablesDialog,  self).__init__()
         variables_ui.Ui_Dialog.setupUi(self,self)
       
         self.form=[]
-        self.bookName = "book" 
+        self.bookName = bookName
         self.attributes = {}  
+        self.getFiles = gfiles
         self.saveDir = pathDirectory
-        self.get_files = gfiles
         self.boxIsChecked = boxIsChecked
+        self.loadedRecipe = loadedRecipe
         self.names_of_lists = recipe.Recipe(loadedRecipe).list
-        print("Name_of_lists ", str(self.names_of_lists))
-        self.names_of_variables = recipe.Recipe(loadedRecipe).string
-        print("Name_of_variables ", str(self.names_of_variables))
         self.names_of_texts = recipe.Recipe(loadedRecipe).text
-        print("Name_of_texts ", str(self.names_of_texts))
+        self.names_of_variables = recipe.Recipe(loadedRecipe).string
         self.template_name = recipe.Recipe(loadedRecipe).template  
-        print("Template name ", str(self.template_name))  
         self.output_format = recipe.Recipe(loadedRecipe).outputFormat
-        print("Output_format ", str(self.output_format))  
+
 
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
         self.load_table_of_texts(self.names_of_texts)
+        self.make_temp_template()
     #    self.load_name_of_book()
 
     def get_values(self):
@@ -360,26 +375,11 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                         self.attributes[self.getsTable[0]] = self.getsTable[1:]
                         key_value = False 
 
-
     # << Set elements on form >> #
     def drawInterface(self):
         for elem in self.form:
             self.form_layout.addRow(elem)
 
-    """  
-        def load_name_of_book(self):
-        label = "Output name"
-        self.label = QtWidgets.QLabel(str(label))
-        self.label.setMinimumWidth(100)
-        self.label.setText(str(label))
-        self.line_edit= QtWidgets.QLineEdit("book")  
-        self.box = QtWidgets.QHBoxLayout()   
-        self.box.addWidget(self.label)
-        self.box.addWidget(self.line_edit)
-        self.form.append(self.box)
-
-        self.drawInterface()
-        """
     def load_table_of_lists(self,names_of_lists):
         #for element in name_of_lists:
         for name_of_list in names_of_lists: 
@@ -443,79 +443,86 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             #self.form.append(self.combobox)
 
         self.drawInterface()   
-        
-    
+
+    def make_temp_template(self):
+        with ZipFile(self.loadedRecipe) as myzip:
+            with myzip.open(*self.template_name) as myfile:
+                print(str(myfile.read())) # for debugging
+                
     def reject(self):
+        self.form
         super(VariablesDialog, self).reject()
   
     def accept(self):
-        self.get_values()    
-        shellPandoc = ""
-        pandoc =""
-        inputFile = ""
-        templateFile = ""
-        variables=""
-        outputFile=""
 
-        """
+        variables = []
+        outputFile = ""
+        templateFile = ""
+
+        self.get_values()   
+        pandoc = pypandoc.get_pandoc_path()   
+
         if(self.boxIsChecked):
-            #shellPandoc = "pandoc "
-            shellPandoc="pandoc"
-            for path in self.get_files:
-                shellPandoc+=[' '+str(path)]
-                
-            if(self.template_name):
-            # <!>  wydobycie pliku z archiwum !! <!>
-                shellPandoc+=" --template=" + str(self.template_name[0])
+            inputFile = []
+            for path in self.getFiles:
+                inputFile.append(str(path))    #input file
+
+            if(self.template_name): #template file
+                templateFile+=' --template=' + str(self.template_name[0])
             for attr in self.attributes.keys(): 
-                for e in self.attributes[attr]:
-                    shellPandoc+=' -V ' + str(attr) + '=' +"\""+ str(e)+"\""
-            shellPandoc += " --output=outputs/ksiazka." + str(self.output_format[0])
-        
-        else:
-        """
-        if(self.boxIsChecked):
-            pass
+                for e in self.attributes[attr]:    #variables skime ex.: -V authors = "Szymborska"
+                    variables.append('-V')
+                    variables.append(attr+ '=' + e)
+
+            outputFile+='--output='+ self.saveDir+'/outputs/'+self.bookName+'.'+self.output_format[0]
+                                
+                #print([pandoc,inputFile,templateFile,variables,outputFile])
+            
+            if(templateFile!=""):
+                #print([pandoc,inputFile,templateFile,*variables,outputFile])  # for debugging
+                subprocess.run([pandoc,*inputFile,templateFile,*variables,outputFile])
+                print("[*] Done -used temp file"+str(templateFile))  # for debugging
+            else:
+                    #print([pandoc,inputFile,*variables,outputFile])  # for debugging
+                subprocess.run([pandoc,*inputFile,*variables,outputFile])
+                print("[*] Done - use default template file ")  # for debugging
+                
+            
+            inputFile = []
+            templateFile = ""
+            variables =[]
+            outputFile=""
         else:
             num = 0
-            for path in self.get_files:
+            inputFile =""
+            for path in self.getFiles:
                 num+=1
-            #plik wejściowy
-                inputFile+=str(path)               
-                if(self.template_name):
-            #templatka
+                inputFile=str(path)    #input file
+
+                if(self.template_name): #template file
                     templateFile+=' --template=' + str(self.template_name[0])
                 for attr in self.attributes.keys(): 
-                    for e in self.attributes[attr]:
-            #zmienne schmet np.: -V authors = "Szymborska"
-                        variables+='-V '+ attr+ '=\"' + e+'\" '
+                    for e in self.attributes[attr]:    #variables skime ex.: -V authors = "Szymborska"
+                        variables.append('-V')
+                        variables.append(attr+ '=' + e)
 
                 outputFile+='--output='+ self.saveDir+'/outputs/'+self.bookName+"_"+str(num)+'.'+self.output_format[0]
+                                       
+                if(templateFile!=""):
+                    #print([pandoc,inputFile,templateFile,*variables,outputFile])  # for debugging
+                    subprocess.run([pandoc,inputFile,templateFile,*variables,outputFile])
+                    print("[*] Done -used temp file"+str(templateFile))  # for debugging
+                else:
+                    #print([pandoc,inputFile,*variables,outputFile])  # for debugging
+                    subprocess.run([pandoc,inputFile,*variables,outputFile])
+                    print("[*] Done - use default template file ")  # for debugging
                 
-
-                print(pandoc)             
-                print(inputFile) 
-                print(templateFile)
-                print(variables)
-                print(outputFile)
-                print(str([pandoc,inputFile,str(templateFile+variables+outputFile)]))
-            
-                subprocess.run(["pandoc","/home/afar/gpandoc2/content.odt","-V title=Wartość","--output=/home/afar/gpandoc2/outputs/book2.pdf"])
-                print("O.K")
-                subprocess.run(["pandoc",inputFile,variables,outputFile])
-                print("O.K-2")
-                #call("pandoc",[inputFile,outputFile])
-                #subprocess.run(["pandoc",inputFile,templateFile,variables,outputFile])
-
-                inputFile = ""
                 templateFile = ""
-                variables =""
+                variables =[]
                 outputFile=""
-
 
         super(VariablesDialog, self).accept()
 
-   
 
 # <<< END of: CONFIG VARIABLES >>> #
 

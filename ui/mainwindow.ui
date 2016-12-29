@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>521</width>
     <height>380</height>
    </rect>
   </property>
@@ -27,8 +27,8 @@
    <string notr="true">GPANDOC</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
      <layout class="QVBoxLayout" name="vertical_layout_1">
       <item>
        <layout class="QHBoxLayout" name="horizontal_layout_1">
@@ -142,6 +142,12 @@
        <layout class="QHBoxLayout" name="horizontal_layout_3">
         <item>
          <widget class="QLabel" name="label_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <family>DejaVu Sans</family>
@@ -149,12 +155,18 @@
            </font>
           </property>
           <property name="text">
-           <string>2. Przepis (Wygląd dokumentu):</string>
+           <string>2. Przepis (Wygląd i rozszrzenie): </string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="push_button_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <family>DejaVu Sans</family>
@@ -163,6 +175,45 @@
           </property>
           <property name="text">
            <string>Wybierz przepis</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>3. Nazwa dokumentu(bez rozszerzenia): </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="line_edit_1">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="text">
+           <string/>
           </property>
          </widget>
         </item>
@@ -218,7 +269,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>521</width>
      <height>19</height>
     </rect>
    </property>
@@ -251,6 +302,16 @@
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>push_button_1</tabstop>
+  <tabstop>check_box_1</tabstop>
+  <tabstop>list_widget_1</tabstop>
+  <tabstop>push_button_2</tabstop>
+  <tabstop>line_edit_1</tabstop>
+  <tabstop>push_button_3</tabstop>
+  <tabstop>push_button_4</tabstop>
+  <tabstop>push_button_5</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
