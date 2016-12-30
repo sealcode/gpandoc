@@ -2,25 +2,29 @@ import io
 import os
 import sys
 import glob
+import shutil
 import recipe
+import zipfile
 import pypandoc
 import datetime
 import configparser
 
-
-from os import path
 import subprocess 
-from subprocess import call
+from os import path
 from zipfile import ZipFile
+from subprocess import call
+from PIL import Image, ImageQt
 
-from PIL import Image,ImageQt
+from ui import about_ui
+from ui import settings_ui
+from ui import howToUse_ui
 from ui import recipe_ui
 from ui import variables_ui
 from ui.mainwindow_ui import Ui_MainWindow
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QIcon,QPixmap
-from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent
+from PyQt5.QtGui import QIcon,QPixmap,QRegExpValidator
+from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent,QRegExp
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QSlider, QTextEdit, QDialog, QDialogButtonBox, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy, \
                             QSpacerItem, QAction, QDialog, QComboBox, QListView
@@ -44,7 +48,32 @@ class CurrentConfig():
 
 # <<< END of: SETTINGS Variables >>> # 
 
-        
+class AboutDialog(QtWidgets.QDialog, about_ui.Ui_Dialog):
+    def __init__(self):
+        super(AboutDialog, self).__init__()
+        self.dialog = QtWidgets.QDialog()
+        about_ui.Ui_Dialog.setupUi(self, self)
+        self.dialog.ui = about_ui.Ui_Dialog()
+        self.dialog.ui.setupUi(self.dialog)   
+        self.show()
+
+class UseDialog(QtWidgets.QDialog, howToUse_ui.Ui_Dialog):
+    def __init__(self):
+        super(UseDialog, self).__init__()
+        self.dialog = QtWidgets.QDialog()
+        howToUse_ui.Ui_Dialog.setupUi(self, self)
+        self.dialog.ui = howToUse_ui.Ui_Dialog()
+        self.dialog.ui.setupUi(self.dialog)   
+        self.show()
+
+class SettingsDialog(QtWidgets.QDialog, settings_ui.Ui_Dialog):
+    def __init__(self):
+        super(SettingsDialog, self).__init__()
+        self.dialog = QtWidgets.QDialog()
+        settings_ui.Ui_Dialog.setupUi(self, self)
+        self.dialog.ui = settings_ui.Ui_Dialog()
+        self.dialog.ui.setupUi(self.dialog)   
+        self.show()
 # <<< MAINWINDOW >>> #
 
 class MyListWidgetItem(QListWidgetItem):
@@ -65,10 +94,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
               
         Ui_MainWindow.setupUi(self, self)
-        self.line_edit_1.setToolTip("Nazwa dokumentu bez rozszerzenia. Wynik konwersji zostanie zapisany w folderze\"/outputs\"."+
-                                    "Wiele plików będzie posiadać jedną nazwę z dopisanym numerem np. book_1")
+        #interface  - menubar
+
+        self.actionUstawienia.triggered.connect(self.settings)
+        self.actionO_GPandoc.triggered.connect(self.aboutGPadnoc)
+        self.actionInstrukcja_uzycia.triggered.connect(self.instruction)
+
         now = datetime.datetime.now()
-        self.line_edit_1.setText(str(now.strftime("%Y-%m-%d_%H:%M_book")))
+        rx =QRegExp("(([\w\d])+([ ]||[-]||[_])*)*");
+
+        self.reg = QRegExpValidator(rx)
+        self.line_edit_1.setValidator(self.reg)
+        self.line_edit_1.setText(str(now.strftime("%d-%m-%y_%H-%M_book")))
+        self.line_edit_1.setToolTip("Wynik konwersji zostanie zapisany w folderze\"/outputs\". "+
+                                    "Przy odznaczonej opcji \"łącz dokumenty\",\n"+
+                                    "do nazw plików wynikowych dopisywany jest numer porządkowy według listy.")
+
         self.push_button_1.clicked.connect(self.load_files)
         self.push_button_2.clicked.connect(self.select_recipe)
         self.push_button_3.clicked.connect(self.conf_variables)
@@ -112,7 +153,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.items_changed()
 
  # << END of: Custom Main Widget >> #
- # << Listwidget handling >> #2
+    def aboutGPadnoc(self):
+        dialog = AboutDialog()
+        dialog.exec_()   
+
+    def instruction(self):
+        dialog = UseDialog()
+        dialog.exec_()   
+
+    def settings(self):
+        dialog = SettingsDialog()
+        dialog.exec_()   
+ # << Listwidget handling >> #
 
     # clear current selected item
     def clear_selected_items(self):
@@ -217,6 +269,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 # <<< CONFIG VARIABLES >>> #
 
+
 class Table(QtWidgets.QTableWidget):
 
     def __init__(self):
@@ -276,13 +329,12 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
         self.dialog.ui.label_1.setScaledContents(True);
         
         self.zipPackages  = [os.path.basename(x) for x in glob.glob(self.path+'/zips/*.zip')]
-        print (self.zipPackages)
         
         self.dialog.ui.combo_box_1.addItems(self.zipPackages)
-        print(self.dialog.ui.combo_box_1.currentText())
         self.dialog.ui.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)   
         self.dialog.ui.button_box_1.accepted.connect(self.accept)
         self.dialog.ui.button_box_1.rejected.connect(self.reject)
+        self.showPreviewOfRecipe()
         self.dialog.exec_()
         
     def accept(self): 
@@ -299,13 +351,20 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
 
     def setRecipe(self):
         self.dialog.ui.combo_box_1.setCurrentText(str(self.loadedRecipe))
-    def changeRecipe(self): 
-        print (str('zips/'+self.dialog.ui.combo_box_1.currentText()))
+    
+    
+    def showPreviewOfRecipe(self):
         zippedImgs = ZipFile(self.path+'/zips/'+str(self.dialog.ui.combo_box_1.currentText()))
+       
         for i in range(len(zippedImgs.namelist())):
+           
+            print ("iter", i, " ")
             file_in_zip = zippedImgs.namelist()[i]
-            if (".png" in file_in_zip or ".PNG" in file_in_zip):
-                print ("Found image: ", file_in_zip, " -- ")
+            self.dialog.ui.label_2.setText("Brak podglądu") 
+            self.dialog.ui.label_2.setScaledContents(True)
+           
+            if ("preview" in file_in_zip):
+                print ("Found image: ", file_in_zip, " -- ")  # for debugging
                 data = zippedImgs.read(file_in_zip)       # read bits to variable                                                      
                 dataEnc = io.BytesIO(data)                # save bytes like io              
                 dataImgEnc = Image.open(dataEnc)          # convert bytes on Image file            
@@ -313,10 +372,11 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
                 pixmap = QtGui.QPixmap.fromImage(qimage)  # convert QtImage to QPixmap      
                 print(pixmap)
                 self.dialog.ui.label_2.setPixmap(pixmap)  
-                self.dialog.ui.label_2.setScaledContents(True)
-            else:
-                self.dialog.ui.label_2.setText("Brak podglądu")
-                 
+
+    def changeRecipe(self): 
+        print(self.dialog.ui.combo_box_1.currentText())     
+        print(str('zips/'+self.dialog.ui.combo_box_1.currentText()))
+        self.showPreviewOfRecipe()                
         
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     def __init__(self, loadedRecipe, gfiles, boxIsChecked, pathDirectory, bookName):
@@ -336,13 +396,11 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         self.template_name = recipe.Recipe(loadedRecipe).template  
         self.output_format = recipe.Recipe(loadedRecipe).outputFormat
 
-
         self.load_table_of_lists(self.names_of_lists)
         self.load_table_of_variables(self.names_of_variables)
         self.load_table_of_texts(self.names_of_texts)
-        self.make_temp_template()
-    #    self.load_name_of_book()
 
+        self.unzip()
     def get_values(self):
         self.getsTable = []
         for box in self.form:
@@ -401,8 +459,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             self.b_box.addWidget(self.table_widget.button_form)
             self.b_box.addWidget(self.table_widget.button_form2)
             self.form.append(self.box)
-            self.form.append(self.b_box)
-          
+            self.form.append(self.b_box) 
             
         self.drawInterface()   
 
@@ -443,18 +500,20 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             #self.form.append(self.combobox)
 
         self.drawInterface()   
+    
+    def unzip(self):
+        with zipfile.ZipFile(self.loadedRecipe) as zf:
+            zf.extractall(self.saveDir+'/temp/')
+   
+    def clear_dir(self):
+        shutil.rmtree(self.saveDir+'/temp/',True)
 
-    def make_temp_template(self):
-        with ZipFile(self.loadedRecipe) as myzip:
-            with myzip.open(*self.template_name) as myfile:
-                print(str(myfile.read())) # for debugging
-                
     def reject(self):
-        self.form
+        self.clear_dir()
         super(VariablesDialog, self).reject()
   
     def accept(self):
-
+        
         variables = []
         outputFile = ""
         templateFile = ""
@@ -463,12 +522,13 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
         pandoc = pypandoc.get_pandoc_path()   
 
         if(self.boxIsChecked):
+
             inputFile = []
             for path in self.getFiles:
-                inputFile.append(str(path))    #input file
-
+                inputFile.append(str(path))    #input file 
             if(self.template_name): #template file
-                templateFile+=' --template=' + str(self.template_name[0])
+                templateFile='--template='+self.saveDir+'/temp/' + str(self.template_name[0])
+                print (templateFile)
             for attr in self.attributes.keys(): 
                 for e in self.attributes[attr]:    #variables skime ex.: -V authors = "Szymborska"
                     variables.append('-V')
@@ -479,20 +539,21 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 #print([pandoc,inputFile,templateFile,variables,outputFile])
             
             if(templateFile!=""):
-                #print([pandoc,inputFile,templateFile,*variables,outputFile])  # for debugging
+
                 subprocess.run([pandoc,*inputFile,templateFile,*variables,outputFile])
                 print("[*] Done -used temp file"+str(templateFile))  # for debugging
             else:
-                    #print([pandoc,inputFile,*variables,outputFile])  # for debugging
+     
                 subprocess.run([pandoc,*inputFile,*variables,outputFile])
                 print("[*] Done - use default template file ")  # for debugging
                 
-            
             inputFile = []
             templateFile = ""
             variables =[]
             outputFile=""
+        
         else:
+
             num = 0
             inputFile =""
             for path in self.getFiles:
@@ -500,7 +561,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 inputFile=str(path)    #input file
 
                 if(self.template_name): #template file
-                    templateFile+=' --template=' + str(self.template_name[0])
+                    templateFile='--template='+self.saveDir+'/temp/' + str(self.template_name[0])
                 for attr in self.attributes.keys(): 
                     for e in self.attributes[attr]:    #variables skime ex.: -V authors = "Szymborska"
                         variables.append('-V')
@@ -509,13 +570,13 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 outputFile+='--output='+ self.saveDir+'/outputs/'+self.bookName+"_"+str(num)+'.'+self.output_format[0]
                                        
                 if(templateFile!=""):
-                    #print([pandoc,inputFile,templateFile,*variables,outputFile])  # for debugging
+
                     subprocess.run([pandoc,inputFile,templateFile,*variables,outputFile])
-                    print("[*] Done -used temp file"+str(templateFile))  # for debugging
+                    print("[*] Done -used temp file"+str(templateFile))  
                 else:
-                    #print([pandoc,inputFile,*variables,outputFile])  # for debugging
+
                     subprocess.run([pandoc,inputFile,*variables,outputFile])
-                    print("[*] Done - use default template file ")  # for debugging
+                    print("[*] Done - use default template file ")  
                 
                 templateFile = ""
                 variables =[]
@@ -525,14 +586,3 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
 
 # <<< END of: CONFIG VARIABLES >>> #
-
-
-
-      
-
-
-
-
-
-
-
