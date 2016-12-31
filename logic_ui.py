@@ -55,7 +55,11 @@ class AboutDialog(QtWidgets.QDialog, about_ui.Ui_Dialog):
         about_ui.Ui_Dialog.setupUi(self, self)
         self.dialog.ui = about_ui.Ui_Dialog()
         self.dialog.ui.setupUi(self.dialog)   
+        self.buttonBox.accepted.connect(self.accept)
         self.show()
+
+    def accept(self):
+        super(AboutDialog, self).accept()
 
 class UseDialog(QtWidgets.QDialog, howToUse_ui.Ui_Dialog):
     def __init__(self):
@@ -63,8 +67,12 @@ class UseDialog(QtWidgets.QDialog, howToUse_ui.Ui_Dialog):
         self.dialog = QtWidgets.QDialog()
         howToUse_ui.Ui_Dialog.setupUi(self, self)
         self.dialog.ui = howToUse_ui.Ui_Dialog()
-        self.dialog.ui.setupUi(self.dialog)   
+        self.dialog.ui.setupUi(self.dialog)  
+        self.buttonBox.accepted.connect(self.accept)
         self.show()
+
+    def accept(self):
+        super(UseDialog, self).accept()
 
 class SettingsDialog(QtWidgets.QDialog, settings_ui.Ui_Dialog):
     def __init__(self):
@@ -73,7 +81,11 @@ class SettingsDialog(QtWidgets.QDialog, settings_ui.Ui_Dialog):
         settings_ui.Ui_Dialog.setupUi(self, self)
         self.dialog.ui = settings_ui.Ui_Dialog()
         self.dialog.ui.setupUi(self.dialog)   
+        self.buttonBox.accepted.connect(self.accept)
         self.show()
+
+    def accept(self):
+        super(SettingsDialog, self).accept()
 # <<< MAINWINDOW >>> #
 
 class MyListWidgetItem(QListWidgetItem):
@@ -102,7 +114,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         now = datetime.datetime.now()
         rx =QRegExp("(([\w\d])+([ ]||[-]||[_])*)*");
-
+        self.zipsFolder="/zips/" 
         self.reg = QRegExpValidator(rx)
         self.line_edit_1.setValidator(self.reg)
         self.line_edit_1.setText(str(now.strftime("%d-%m-%y_%H-%M_book")))
@@ -246,7 +258,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
  # << Select recipe - handling >> # 
     def select_recipe(self):
         recipeDialog=None
-        recipeDialog = RecipeDialog(recipeDialog, self.selectedRecipe) 
+        recipeDialog = RecipeDialog(recipeDialog, self.selectedRecipe,self.zipsFolder) 
         self.selectedRecipe = recipeDialog.retRecipe()
         self.items_changed()
         print(self.selectedRecipe)
@@ -316,10 +328,10 @@ class Table(QtWidgets.QTableWidget):
          
         
 class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
-    def __init__(self,app,selectedRecipe):
+    def __init__(self,app,selectedRecipe,zipsFolder):
         super(RecipeDialog, self).__init__()
         recipe_ui.Ui_Dialog.setupUi(self, self)
-        
+        self.zipsFolder=zipsFolder
         self.zipPackages =[]
         self.loadedRecipe = selectedRecipe
         self.path = os.path.dirname(__file__)     
@@ -328,7 +340,7 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
         self.dialog.ui.setupUi(self.dialog)
         self.dialog.ui.label_1.setScaledContents(True);
         
-        self.zipPackages  = [os.path.basename(x) for x in glob.glob(self.path+'/zips/*.zip')]
+        self.zipPackages  = [os.path.basename(x) for x in glob.glob(self.path+self.zipsFolder+'*.zip')]
         
         self.dialog.ui.combo_box_1.addItems(self.zipPackages)
         self.dialog.ui.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)   
@@ -338,7 +350,7 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
         self.dialog.exec_()
         
     def accept(self): 
-        self.loadedRecipe = str(self.path+ "/zips/" + str(self.dialog.ui.combo_box_1.currentText()))
+        self.loadedRecipe = str(self.path+ self.zipsFolder+ str(self.dialog.ui.combo_box_1.currentText()))
         print("Current loaded recipe: "+ self.loadedRecipe)
         self.retRecipe()
         super().accept()
@@ -354,7 +366,7 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
     
     
     def showPreviewOfRecipe(self):
-        zippedImgs = ZipFile(self.path+'/zips/'+str(self.dialog.ui.combo_box_1.currentText()))
+        zippedImgs = ZipFile(self.path+self.zipsFolder+str(self.dialog.ui.combo_box_1.currentText()))
        
         for i in range(len(zippedImgs.namelist())):
            
@@ -375,14 +387,14 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
 
     def changeRecipe(self): 
         print(self.dialog.ui.combo_box_1.currentText())     
-        print(str('zips/'+self.dialog.ui.combo_box_1.currentText()))
+        print(str(self.zipsFolder+self.dialog.ui.combo_box_1.currentText()))
         self.showPreviewOfRecipe()                
         
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     def __init__(self, loadedRecipe, gfiles, boxIsChecked, pathDirectory, bookName):
         super(VariablesDialog,  self).__init__()
         variables_ui.Ui_Dialog.setupUi(self,self)
-      
+        self.tempFolder="/temp/"
         self.form=[]
         self.bookName = bookName
         self.attributes = {}  
@@ -503,10 +515,10 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     
     def unzip(self):
         with zipfile.ZipFile(self.loadedRecipe) as zf:
-            zf.extractall(self.saveDir+'/temp/')
+            zf.extractall(self.saveDir+self.tempFolder)
    
     def clear_dir(self):
-        shutil.rmtree(self.saveDir+'/temp/',True)
+        shutil.rmtree(self.saveDir+self.tempFolder,True)
 
     def reject(self):
         self.clear_dir()
@@ -527,7 +539,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             for path in self.getFiles:
                 inputFile.append(str(path))    #input file 
             if(self.template_name): #template file
-                templateFile='--template='+self.saveDir+'/temp/' + str(self.template_name[0])
+                templateFile='--template='+self.saveDir+self.tempFolder + str(self.template_name[0])
                 print (templateFile)
             for attr in self.attributes.keys(): 
                 for e in self.attributes[attr]:    #variables skime ex.: -V authors = "Szymborska"
@@ -561,7 +573,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 inputFile=str(path)    #input file
 
                 if(self.template_name): #template file
-                    templateFile='--template='+self.saveDir+'/temp/' + str(self.template_name[0])
+                    templateFile='--template='+self.saveDir+self.tempFolder + str(self.template_name[0])
                 for attr in self.attributes.keys(): 
                     for e in self.attributes[attr]:    #variables skime ex.: -V authors = "Szymborska"
                         variables.append('-V')
