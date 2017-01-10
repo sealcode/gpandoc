@@ -1,4 +1,4 @@
-import io
+﻿import io
 import os
 import sys
 import glob
@@ -24,7 +24,7 @@ from ui.mainwindow_ui import Ui_MainWindow
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon,QPixmap,QRegExpValidator
-from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, pyqtWrapperType, qDebug, Qt, QEvent,QRegExp
+from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, qDebug, Qt, QEvent,QRegExp
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QSlider, QTextEdit, QDialog, QDialogButtonBox, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy, \
                             QSpacerItem, QAction, QDialog, QComboBox, QListView
@@ -220,8 +220,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
      
  # << Load files on >> #
 
-    def infoFormats(self):
-        print(pypandoc.get_pandoc_formats())
+   
 
     def load_files(self):
         listPaths = []
@@ -237,8 +236,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         for file in files:
             listPaths.append(file)
-        print(listPaths)
-        self.infoFormats()
+        print(listPaths)  # for debugging
         self.add_to_list_widget(listPaths)
         self.items_changed()
    
@@ -251,7 +249,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.returnedFiles = []
         for x in range(self.list_widget_1.count()):
             self.returnedFiles.append(self.list_widget_1.item(x).showPath())
-        print("Return files: ", self.returnedFiles)
         return self.returnedFiles
  # << >>
   
@@ -261,7 +258,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         recipeDialog = RecipeDialog(recipeDialog, self.selectedRecipe,self.zipsFolder) 
         self.selectedRecipe = recipeDialog.retRecipe()
         self.items_changed()
-        print(self.selectedRecipe)
+        print(self.selectedRecipe)   # for debugging
         
  # << END of: Select recipe - handling >> #with ZipFile('spam.zip') as myzip:
  
@@ -351,7 +348,7 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
         
     def accept(self): 
         self.loadedRecipe = str(self.path+ self.zipsFolder+ str(self.dialog.ui.combo_box_1.currentText()))
-        print("Current loaded recipe: "+ self.loadedRecipe)
+        print("Current loaded recipe: "+ self.loadedRecipe)   # for debugging
         self.retRecipe()
         super().accept()
     
@@ -370,7 +367,6 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
        
         for i in range(len(zippedImgs.namelist())):
            
-            print ("iter", i, " ")
             file_in_zip = zippedImgs.namelist()[i]
             self.dialog.ui.label_2.setText("Brak podglądu") 
             self.dialog.ui.label_2.setScaledContents(True)
@@ -382,12 +378,11 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
                 dataImgEnc = Image.open(dataEnc)          # convert bytes on Image file            
                 qimage = ImageQt.ImageQt(dataImgEnc)      # create QtImage from Image
                 pixmap = QtGui.QPixmap.fromImage(qimage)  # convert QtImage to QPixmap      
-                print(pixmap)
+                print(pixmap)     # for debugging
                 self.dialog.ui.label_2.setPixmap(pixmap)  
 
     def changeRecipe(self): 
         print(self.dialog.ui.combo_box_1.currentText())     
-        print(str(self.zipsFolder+self.dialog.ui.combo_box_1.currentText()))
         self.showPreviewOfRecipe()                
         
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
@@ -551,13 +546,19 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 #print([pandoc,inputFile,templateFile,variables,outputFile])
             
             if(templateFile!=""):
-
-                subprocess.run([pandoc,*inputFile,templateFile,*variables,outputFile])
-                print("[*] Done -used temp file"+str(templateFile))  # for debugging
+                try:
+                    print (*[pandoc,*inputFile,templateFile,*variables,outputFile])  # for debagging
+                    subprocess.run([pandoc,*inputFile,templateFile,*variables,outputFile])
+                except subprocess.errno:
+                    print("error until call to pandoc")
+                print("[*] Done")  # for debugging
             else:
-     
-                subprocess.run([pandoc,*inputFile,*variables,outputFile])
-                print("[*] Done - use default template file ")  # for debugging
+                try:
+                    print (*[pandoc,*inputFile,*variables,outputFile])  # for debagging
+                    subprocess.run([pandoc,*inputFile,*variables,outputFile])
+                except subprocess.errno:
+                    print("error until call to pandoc")
+                print("[*] Done")  # for debugging
                 
             inputFile = []
             templateFile = ""
@@ -583,12 +584,19 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                                        
                 if(templateFile!=""):
 
-                    subprocess.run([pandoc,inputFile,templateFile,*variables,outputFile])
-                    print("[*] Done -used temp file"+str(templateFile))  
+                    try:
+                        print (*[pandoc,inputFile,templateFile,*variables,outputFile])  # for debagging
+                        subprocess.run([pandoc,inputFile,templateFile,*variables,outputFile])
+                    except subprocess.errno:
+                        print("error until call to pandoc")
+                    print("[*] Done")  # for debugging
                 else:
-
-                    subprocess.run([pandoc,inputFile,*variables,outputFile])
-                    print("[*] Done - use default template file ")  
+                    try:
+                        print (*[pandoc,inputFile,*variables,outputFile])  # for debagging
+                        subprocess.run([pandoc,inputFile,*variables,outputFile])
+                    except subprocess.errno:
+                        print("error until call to pandoc")
+                    print("[*] Done")  # for debugging
                 
                 templateFile = ""
                 variables =[]

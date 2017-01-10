@@ -1,6 +1,6 @@
-import logging
+﻿import logging
 import configparser
-import numpy as np
+#import numpy as np
 from zipfile import ZipFile
 from PIL import Image
 
