@@ -15,6 +15,10 @@ from zipfile import ZipFile
 from subprocess import call
 from PIL import Image, ImageQt
 
+import ui 
+import zips
+import outputs
+
 from ui import about_ui
 from ui import settings_ui
 from ui import howToUse_ui
@@ -24,28 +28,19 @@ from ui.mainwindow_ui import Ui_MainWindow
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon,QPixmap,QRegExpValidator
-from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, qDebug, Qt, QEvent,QRegExp
+from PyQt5.QtCore import QFile, QFileDevice, QFileSelector, QFileInfo, QDirIterator, qDebug, Qt, QEvent,QRegExp, QCoreApplication
 from PyQt5.QtWidgets import QApplication, QMainWindow,  QFileDialog, QSlider, QTextEdit, QDialog, QDialogButtonBox, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy, \
                             QSpacerItem, QAction, QDialog, QComboBox, QListView
 
 
-
 # <<< SETTINGS Variables >>> # 
 listPaths=[]
-class CurrentConfig():
-    
-    def __init__(self):
-        super(CurrentConfig, self).__init__()
-        File = open("conf.py", "r+")
-        self.load_conf(File)
-        
-    def load_conf(self, File):  
-        pass
 
-    def save_conf(self,File):
-        pass
-
+def saveConf():
+    pass
+def loadConf():
+    pass
 # <<< END of: SETTINGS Variables >>> # 
 
 class AboutDialog(QtWidgets.QDialog, about_ui.Ui_Dialog):
@@ -81,11 +76,39 @@ class SettingsDialog(QtWidgets.QDialog, settings_ui.Ui_Dialog):
         settings_ui.Ui_Dialog.setupUi(self, self)
         self.dialog.ui = settings_ui.Ui_Dialog()
         self.dialog.ui.setupUi(self.dialog)   
-        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.accept)
+        self.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.reject)
+       # self.buttonBox.ac
+
+        path = os.path.dirname(__file__) 
+        self.zipPackages  = [os.path.basename(x) for x in glob.glob(path+'/zips/'+'*.zip')]
+
+        self.combo_box_1.addItems(self.zipPackages)
         self.show()
 
+    def saveConf():
+        config = configparser.ConfigParser()
+        config['DEFAULT'] = {'DeflautZips': '', 'BookName': 'book'}
+
+        with open('conf.ini', 'w') as configfile:
+            config.write(configfile)
+
+
+    def loadConf():
+        with open('conf.ini', 'r') as configfile:
+            config.read(configfile)
+
+        config = configparser.ConfigParser()
+
+
     def accept(self):
+
         super(SettingsDialog, self).accept()
+
+    def reject(self):
+        super(SettingsDialog, self).reject()
+
+
 # <<< MAINWINDOW >>> #
 
 class MyListWidgetItem(QListWidgetItem):
@@ -96,18 +119,24 @@ class MyListWidgetItem(QListWidgetItem):
     def showPath(self):
         return self.path
 
+    def showExtension(self):
+        text = self.showPath()
+        text=text.split('.')
+        return text[-1]
+
     def setPath(self,text):
         self.path = text
 
-class MainWindow(QMainWindow, Ui_MainWindow):
 
+class MainWindow(QMainWindow, Ui_MainWindow):
   # << Custom Main Widget >> #
     def __init__(self, app):
         super(MainWindow, self).__init__()
               
         Ui_MainWindow.setupUi(self, self)
-        #interface  - menubar
 
+        self.setWindowIcon(QIcon("ui/sealcode-logo.ico")) 
+        #interface  - menubar
         self.actionUstawienia.triggered.connect(self.settings)
         self.actionO_GPandoc.triggered.connect(self.aboutGPadnoc)
         self.actionInstrukcja_uzycia.triggered.connect(self.instruction)
@@ -162,6 +191,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.boxIsChecked = False
         self.selectedRecipe = None
         self.pathDirectory = os.path.dirname(__file__) 
+
         self.items_changed()
 
  # << END of: Custom Main Widget >> #
@@ -183,14 +213,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for select in self.list_widget_1.selectedItems():    
             self.list_widget_1.takeItem(self.list_widget_1.row(select))
         self.items_changed()
-       
+    
+    def check_extensions(self):
+        if (self.list_widget_1.count()):
+            ext = self.list_widget_1.item(0).showExtension()
+            for x in range (self.list_widget_1.count()):
+                if(str(ext) != str(self.list_widget_1.item(x).showExtension())):
+                    print ("check_extension return: \nFalse, because list included different extensions.\nDisable checkBox")  # for debugging
+                    self.check_box_1.setChecked(False)
+                    self.check_box_1.setEnabled(False)
+                    return False
+            print ("check_extension return: \nTrue, because list included the same extensions.\nEnable checkBox")   # for debugging
+            
+            self.check_box_1.setEnabled(True)
+        self.check_box_1.setEnabled(True)
+        return True
          
     def items_changed(self):
-        if self.selectedRecipe == None or self.list_widget_1.count()==0:
-            self.push_button_3.setEnabled(False)
+        if (self.selectedRecipe == None or self.list_widget_1.count()==0):
+            self.push_button_3.setEnabled(False)  
+            self.check_extensions()
         else:
             self.push_button_3.setEnabled(True)
-     
+            self.check_extensions()
+
+        
+    
+
     # clear all files on the list
     def clear_all_items(self):
         self.list_widget_1.clear()
@@ -198,11 +247,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # select all files on the list
     def select_items(self):
-        self.list_widget_1.selectAll();
+        self.list_widget_1.selectAll()
         #print("\n" + str(listPaths)) # chcek list values: listPaths
         for x in range(self.list_widget_1.count()):
             print(self.list_widget_1.item(x).showPath())
 
+    def print_extensions(self):
+        for x in range (self.list_widget_1.count()):
+            print(self.list_widget_1.item(x).showExtension())
+        
     def dragEnterEvent(self, e):
         e.accept()
 
@@ -217,7 +270,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             item.setText(fileName[-1])
             item.setPath(str(path))
             self.list_widget_1.addItem(item)
-     
+        self.print_extensions() # for debugging
+        self.check_extensions()
+
  # << Load files on >> #
 
    
@@ -225,7 +280,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def load_files(self):
         listPaths = []
         files, _ = QFileDialog.getOpenFileNames(self, "Wybierz pliki", '',
-                                                "Wszystkie (*);;"+"commonmark (*.commonmark);;"+
+                                                "wszystkie (*);;"+"commonmark (*.commonmark);;"+
                                                 "docbook (*.docbook);;"+"docx (*.docx);;"+"epub (*.epub);;"+
                                                 "haddock (*.haddock);;"+"html (*.html);;"+"json (*.json);;"+
                                                 "latex (*.latex);;"+"markdown (*.markdown *.md);;"+"markdown_github (*.markdown_github);;"+
@@ -585,6 +640,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 if(templateFile!=""):
 
                     try:
+                        #check is temaplate of pdf
                         print (*[pandoc,inputFile,templateFile,*variables,outputFile])  # for debagging
                         subprocess.run([pandoc,inputFile,templateFile,*variables,outputFile])
                     except subprocess.errno:
