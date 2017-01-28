@@ -3,7 +3,7 @@
 import sys
 import logging
 import logic_ui
-
+import ui
 from ui import mainwindow_ui
 
 from PyQt5 import QtWidgets
@@ -24,7 +24,7 @@ class MainWindow(QtWidgets.QWidget):
         self.main_window.saveBtn.clicked[bool].connect(self.on_save)
 
     def on_save(self, check):
-      self.log.debug('on_save STUB') 
+      self.log.debug('on_save STUB')
 
 
 def main():
@@ -36,4 +36,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

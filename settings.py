@@ -1,19 +1,19 @@
 import configparser
-
-def saveConf():
+"""
+ #LOAD SETTINGS
+    sets = loadConf()
+    sets['user']['default-recipe']
+ #SAVE SETTINGS
+default
+"""
+font=""
+def saveConf(defaultRecipe,fontName,fontSize,bookName):
     config = configparser.ConfigParser()
-    config['DEFAULT'] = {'DeflautZips': '', 'BookName': 'book'}
-
-    with open('conf.ini', 'w') as configfile:
+    config['user'] = {'default-recipe': str(defaultRecipe),'font-name': str(fontName),'font-size': int(fontSize), 'default-book-name': str(bookName)}
+    with open('configuration.ini', 'w') as configfile:
         config.write(configfile)
 
-
 def loadConf():
-
-    with open('conf.ini', 'r') as configfile:
-        config.read(configfile)
-
     config = configparser.ConfigParser()
-    config['DEFAULT'] = {'SavedZips': '', 'BookName': 'book'}
-
-
+    config.read('configuration.ini')
+    return config
