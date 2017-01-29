@@ -5,7 +5,8 @@ import logging
 import logic_ui
 import ui
 from ui import mainwindow_ui
-
+import configparser
+import settings
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QListWidget
 
@@ -18,6 +19,10 @@ class MainWindow(QtWidgets.QWidget):
         self.main_window = Ui_MainWindow()
         self.main_window.setupUi(self)
         self._connect_signals()
+        sets = configparser.ConfigParser()
+        sets = settings.loadConf()
+        self.setFont(QFont(sets['user']['font-name'],int(sets['user']['font-size'])))
+
         self.show()
 
     def _connect_signals(self):

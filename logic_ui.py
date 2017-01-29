@@ -335,6 +335,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         global zipsFolder
         recipeDialog=None
         recipeDialog = RecipeDialog(recipeDialog, self.selectedRecipe,zipsFolder)
+        recipeDialog.exec_()
         self.selectedRecipe = recipeDialog.retRecipe()
         self.items_changed()
         print(self.selectedRecipe)   # for debugging
@@ -407,46 +408,45 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
     def __init__(self,app,selectedRecipe,zipsFolder):
         super(RecipeDialog, self).__init__()
         recipe_ui.Ui_Dialog.setupUi(self, self)
+
         self.zipPackages =[]
         self.loadedRecipe = selectedRecipe
         self.path = os.path.dirname(__file__)
-        self.dialog = QtWidgets.QDialog()
-        self.dialog.ui = recipe_ui.Ui_Dialog()
-        self.dialog.ui.setupUi(self.dialog)
-        self.dialog.ui.label_1.setScaledContents(True);
+        self.label_1.setScaledContents(True);
 
         self.zipPackages  = [os.path.basename(x) for x in glob.glob(self.path+zipsFolder+'*.zip')]
 
-        self.dialog.ui.combo_box_1.addItems(self.zipPackages)
-        self.dialog.ui.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)
-        self.dialog.ui.button_box_1.accepted.connect(self.accept)
-        self.dialog.ui.button_box_1.rejected.connect(self.reject)
+        self.combo_box_1.addItems(self.zipPackages)
+        self.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)
+        self.button_box_1.accepted.connect(self.accept)
+        self.button_box_1.rejected.connect(self.reject)
+        global sets
+        self.setFont(QFont(sets['user']['font-name'],int(sets['user']['font-size'])))
         self.showPreviewOfRecipe()
-        self.dialog.exec_()
 
     def accept(self):
-        self.loadedRecipe = str(self.path+ zipsFolder+ str(self.dialog.ui.combo_box_1.currentText()))
+        self.loadedRecipe = str(self.path+ zipsFolder+ str(self.combo_box_1.currentText()))
         print("Current loaded recipe: "+ self.loadedRecipe)   # for debugging
         self.retRecipe()
-        super().accept()
+        super(RecipeDialog, self).accept()
 
     def reject(self):
-        super().reject()
+        super(RecipeDialog, self).reject()
 
     def retRecipe(self):
         return (self.loadedRecipe)
 
     def setRecipe(self):
-        self.dialog.ui.combo_box_1.setCurrentText(str(self.loadedRecipe))
+        self.ui.combo_box_1.setCurrentText(str(self.loadedRecipe))
 
     def showPreviewOfRecipe(self):
-        zippedImgs = ZipFile(self.path+zipsFolder+str(self.dialog.ui.combo_box_1.currentText()))
+        zippedImgs = ZipFile(self.path+zipsFolder+str(self.combo_box_1.currentText()))
 
         for i in range(len(zippedImgs.namelist())):
 
             file_in_zip = zippedImgs.namelist()[i]
-            self.dialog.ui.label_2.setText("Brak podglądu")
-            self.dialog.ui.label_2.setScaledContents(True)
+            self.label_2.setText("Brak podglądu")
+            self.label_2.setScaledContents(True)
 
             if ("preview" in file_in_zip):
                 print ("Found image: ", file_in_zip, " -- ")  # for debugging
@@ -456,22 +456,24 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
                 qimage = ImageQt.ImageQt(dataImgEnc)      # create QtImage from Image
                 pixmap = QtGui.QPixmap.fromImage(qimage)  # convert QtImage to QPixmap
                 print(pixmap)     # for debugging
-                self.dialog.ui.label_2.setPixmap(pixmap)
+                self.label_2.setPixmap(pixmap)
 
     def changeRecipe(self):
-        print(self.dialog.ui.combo_box_1.currentText())
+        print(self.combo_box_1.currentText())
         self.showPreviewOfRecipe()
 
 class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     def __init__(self, loadedRecipe, gfiles, boxIsChecked, bookName):
         super(VariablesDialog,  self).__init__()
         variables_ui.Ui_Dialog.setupUi(self,self)
+        global sets
+        global pathDirectory
+        self.setFont(QFont(sets['user']['font-name'],int(sets['user']['font-size'])))
         self.tempFolder="/temp/"
         self.form=[]
         self.bookName = bookName
         self.attributes = {}
         self.getFiles = gfiles
-        global pathDirectory
         self.saveDir = pathDirectory
         self.boxIsChecked = boxIsChecked
         if (loadedRecipe==""):
@@ -599,6 +601,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
     def reject(self):
         self.clear_dir()
         super(VariablesDialog, self).reject()
+
 
     def accept(self):
 

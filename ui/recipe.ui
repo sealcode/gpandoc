@@ -75,6 +75,8 @@
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
+        <zorder>label_2</zorder>
+        <zorder>buttonBox</zorder>
        </widget>
       </widget>
      </item>

@@ -11,6 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
+        MainWindow.setWindowModality(QtCore.Qt.WindowModal)
         MainWindow.resize(520, 400)
         MainWindow.setMinimumSize(QtCore.QSize(520, 400))
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -133,7 +134,6 @@ class Ui_MainWindow(object):
         self.horizontal_layout_5.addWidget(self.push_button_5)
         self.vertical_layout_1.addLayout(self.horizontal_layout_5)
         self.gridLayout.addLayout(self.vertical_layout_1, 0, 0, 1, 1)
-        self.label_4.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 520, 19))
@@ -161,7 +161,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "gPandoc"))
         self.label_1.setText(_translate("MainWindow", "1. Zaimportuj pliki: "))
         self.push_button_1.setText(_translate("MainWindow", "Wybierz pliki"))
         self.label_2.setText(_translate("MainWindow", "Lista wybranych plików: "))
