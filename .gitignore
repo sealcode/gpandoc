@@ -92,8 +92,6 @@ ENV/
 # Idea IDE files
 *.idea/
 
-# Compiled Qt UI files
-ui/*.py
 
 # QtCreator meta files
 *.autosave
