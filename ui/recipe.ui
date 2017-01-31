@@ -11,15 +11,15 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Wybór przepisu</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <layout class="QVBoxLayout" name="vertical_layout_1">
      <item>
-      <widget class="QLabel" name="label_1">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>Wybór przepisu:</string>
+        <string>Lista przepisów:</string>
        </property>
       </widget>
      </item>
@@ -75,8 +75,6 @@
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
-        <zorder>label_2</zorder>
-        <zorder>buttonBox</zorder>
        </widget>
       </widget>
      </item>

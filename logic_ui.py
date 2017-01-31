@@ -57,6 +57,8 @@ class AboutDialog(QtWidgets.QDialog, about_ui.Ui_Dialog):
         self.dialog.ui = about_ui.Ui_Dialog()
         self.dialog.ui.setupUi(self.dialog)
         self.buttonBox.accepted.connect(self.accept)
+        global sets
+        self.setFont(QFont(sets['user']['font-name'],int(sets['user']['font-size'])))
         self.show()
 
     def accept(self):
@@ -668,7 +670,10 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
 
                 if(templateFile!=""):
                     try:
-                        #check is temaplate of pdf
+                        if (templateFile.split('.')[1].lower()=="pdf"):
+                            print ("PDF !")
+
+                        #check is temaplate of pdf [*]
                         print (*[pandoc,inputFile,templateFile,*variables,outputFile])  # for debagging
                         subprocess.run([pandoc,inputFile,templateFile,*variables,outputFile])
                     except subprocess.errno:

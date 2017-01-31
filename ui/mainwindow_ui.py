@@ -103,6 +103,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.line_edit_1.sizePolicy().hasHeightForWidth())
         self.line_edit_1.setSizePolicy(sizePolicy)
+        self.line_edit_1.setMinimumSize(QtCore.QSize(200, 0))
         self.line_edit_1.setObjectName("line_edit_1")
         self.horizontal_layout_4.addWidget(self.line_edit_1)
         self.vertical_layout_1.addLayout(self.horizontal_layout_4)

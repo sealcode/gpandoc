@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>509</width>
-    <height>350</height>
+    <width>300</width>
+    <height>160</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,17 +15,26 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;Instrukcja użycia:&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;1) Załaduj pliki&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;2) Wybierz przepis&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;3) Podaj nazwę pliku (domyślnie jest to data)&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;4) Wypełnij zmienne&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;5) Wygeneruj dokument&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Instrukcja użycia:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>1) Załaduj pliki
+2) Wybierz przepis
+3) Podaj nazwę pliku 
+4) Wypełnij zmienne
+5) Wygeneruj dokument</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QDialogButtonBox" name="buttonBox">

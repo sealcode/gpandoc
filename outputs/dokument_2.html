@@ -1,0 +1,537 @@
+<head>
+  <meta charset="utf-8">
+  <title>Wartość</title>
+</head>
+<body>
+  <h1>Wartość</h1>
+  Autorzy: 
+  <p>import io import os import sys import glob import shutil import recipe import zipfile import pypandoc import datetime import configparser</p>
+  <p>import subprocess from os import path from zipfile import ZipFile from subprocess import call from PIL import Image, ImageQt</p>
+  <p>import ui import zips import outputs import settings</p>
+  <p>from ui import about_ui from ui import settings_ui from ui import howToUse_ui from ui import recipe_ui from ui import variables_ui from ui.mainwindow_ui import Ui_MainWindow</p>
+  <p>from PyQt5 import QtCore, QtGui, QtWidgets from PyQt5.QtGui import QIcon,QPixmap,QRegExpValidator, QFont, QFontDatabase from PyQt5.QtCore import QFile,QFileDevice, QFileSelector, QFileInfo, QDirIterator, qDebug, Qt, QEvent,QRegExp, QCoreApplication from PyQt5.QtWidgets import QApplication, QFontDialog, QMainWindow, QFileDialog, QSlider, QTextEdit, QDialog, QDialogButtonBox,<br />
+  QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy,<br />
+  QSpacerItem, QAction, QDialog, QComboBox, QListView</p>
+  <h1 id="settings-variables">&lt;&lt;&lt; SETTINGS Variables &gt;&gt;&gt;</h1>
+  <p>pathDirectory = os.path.dirname(<strong>file</strong>) sets = configparser.ConfigParser() sets = settings.loadConf() zipsFolder=&quot;/zips/&quot; defaultRecipe=&quot;&quot; listPaths=[]</p>
+  <p>def saveConf(): pass def loadConf(): pass # &lt;&lt;&lt; END of: SETTINGS Variables &gt;&gt;&gt; #</p>
+  <p>class AboutDialog(QtWidgets.QDialog, about_ui.Ui_Dialog): def <strong>init</strong>(self): super(AboutDialog, self).<strong>init</strong>() self.dialog = QtWidgets.QDialog() about_ui.Ui_Dialog.setupUi(self, self) self.dialog.ui = about_ui.Ui_Dialog() self.dialog.ui.setupUi(self.dialog) self.buttonBox.accepted.connect(self.accept) self.show()</p>
+  <pre><code>def accept(self):
+      super(AboutDialog, self).accept()</code></pre>
+  <p>class UseDialog(QtWidgets.QDialog, howToUse_ui.Ui_Dialog): def <strong>init</strong>(self): super(UseDialog, self).<strong>init</strong>() self.dialog = QtWidgets.QDialog() howToUse_ui.Ui_Dialog.setupUi(self, self) self.dialog.ui = howToUse_ui.Ui_Dialog() self.dialog.ui.setupUi(self.dialog) self.buttonBox.accepted.connect(self.accept) self.show()</p>
+  <pre><code>def accept(self):
+      super(UseDialog, self).accept()</code></pre>
+  <p>class SettingsDialog(QtWidgets.QDialog, settings_ui.Ui_Dialog): def <strong>init</strong>(self, loadedRecipe): super(SettingsDialog, self).<strong>init</strong>() self.dialog = QtWidgets.QDialog() settings_ui.Ui_Dialog.setupUi(self, self) self.dialog.ui = settings_ui.Ui_Dialog() self.dialog.ui.setupUi(self.dialog)</p>
+  <pre><code>    self.spin_box_1.valueChanged.connect(self.setFontOnDialog)
+      self.font_box_1.currentFontChanged.connect(self.setFontOnDialog)
+      self.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.accept)
+      self.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.reject)
+      QFontDatabase().Latin
+  
+      path = os.path.dirname(__file__)
+      self.zipPackages  = [os.path.basename(x) for x in glob.glob(path+&#39;/zips/&#39;+&#39;*.zip&#39;)]
+      self.combo_box_1.addItems(self.zipPackages)
+  
+      #print(sets.sections()) # for debugging
+      sets = settings.loadConf()
+      self.combo_box_1.setCurrentText(sets[&#39;user&#39;][&#39;default-recipe&#39;])
+      self.font_box_1.setCurrentFont(QFont(sets[&#39;user&#39;][&#39;font-name&#39;]))
+      self.spin_box_1.setValue(int(sets[&#39;user&#39;][&#39;font-size&#39;]))
+      font = QFont.fromString(QFont(),sets[&#39;user&#39;][&#39;font-name&#39;])
+  
+      rx =QRegExp(&quot;(([\w\d])+([ ]||[-]||[_]))*&quot;);
+      self.reg = QRegExpValidator(rx)
+      self.line_edit_1.setValidator(self.reg)
+      self.line_edit_1.setText(sets[&#39;user&#39;][&#39;default-book-name&#39;])
+      self.show()
+  
+  def setFontOnDialog(self):
+      self.setFont(QFont(self.font_box_1.currentText(),int(self.spin_box_1.value())))
+  
+  def accept(self):
+      settings.saveConf(self.combo_box_1.currentText(), self.font_box_1.currentText(),self.spin_box_1.value(), self.line_edit_1.text())
+      global defaultRecipe
+      global path
+      global zips
+  
+      defaultRecipe=str(pathDirectory + zipsFolder + self.combo_box_1.currentText())
+      self.setFont(QFont(sets[&#39;user&#39;][&#39;font-name&#39;],int(sets[&#39;user&#39;][&#39;font-size&#39;])))
+      super(SettingsDialog, self).accept()
+  
+  def reject(self):
+      settings.loadConf()
+      super(SettingsDialog, self).reject()</code></pre>
+  <h1 id="mainwindow">&lt;&lt;&lt; MAINWINDOW &gt;&gt;&gt;</h1>
+  <p>class MyListWidgetItem(QListWidgetItem): # &lt;&lt; Custom Main Widget &gt;&gt; # def <strong>init</strong>(self, text): super(MyListWidgetItem, self).<strong>init</strong>() self.path=&quot;&quot; self.ext=&quot;&quot; self.setPath(text); self.setExtension(text);</p>
+  <pre><code>def setExtension(self, text):
+      self.ext = text
+      self.ext = self.ext.split(&#39;.&#39;)
+      self.ext = self.ext[-1]
+  
+  def setPath(self,text):
+      self.path = text
+  
+  def showPath(self):
+      return self.path
+  
+  def showExtension(self):
+      return self.ext</code></pre>
+  <p>class MainWindow(QMainWindow, Ui_MainWindow): # &lt;&lt; Custom Main Widget &gt;&gt; # def <strong>init</strong>(self, app): super(MainWindow, self).<strong>init</strong>() Ui_MainWindow.setupUi(self, self) self.setWindowIcon(QIcon(&quot;ui/sealcode-logo.ico&quot;)) self.actionUstawienia.triggered.connect(self.settings) self.actionO_GPandoc.triggered.connect(self.aboutGPadnoc) self.actionInstrukcja_uzycia.triggered.connect(self.instruction)</p>
+  <pre><code>    global zipsFolder
+      global sets
+      self.setFont(QFont(sets[&#39;user&#39;][&#39;font-name&#39;],int(sets[&#39;user&#39;][&#39;font-size&#39;])))
+      rx =QRegExp(&quot;(([\w\d])+([ ]||[-]||[_]))*&quot;);
+      self.reg = QRegExpValidator(rx)
+      self.line_edit_1.setValidator(self.reg)
+      self.line_edit_1.setText(sets[&#39;user&#39;][&#39;default-book-name&#39;])
+      self.line_edit_1.setToolTip(&quot;Wynik konwersji zostanie zapisany w folderze\&quot;/outputs\&quot;. &quot;+
+                                  &quot;Przy odznaczonej opcji \&quot;łącz dokumenty\&quot;,\n&quot;+
+                                  &quot;do nazw plików wynikowych dopisywany jest numer porządkowy według listy.&quot;)
+  
+      self.push_button_1.clicked.connect(self.load_files)
+      self.push_button_2.clicked.connect(self.select_recipe)
+      self.push_button_3.clicked.connect(self.conf_variables)
+      self.push_button_4.clicked.connect(self.clear_selected_items)
+      self.push_button_5.clicked.connect(self.clear_all_items)
+      self.show()
+  
+      self.list_widget_1.setAcceptDrops(True)
+      self.list_widget_1.setMouseTracking(True)
+      self.list_widget_1.verticalScrollBar()
+      self.list_widget_1.horizontalScrollBar()
+      self.list_widget_1.setDragDropMode(QAbstractItemView.InternalMove)
+      self.list_widget_1.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+      self.list_widget_1.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
+      self.list_widget_1.currentItemChanged.connect(self.items_changed)
+  
+  # Actions for mouse right click #
+      quit_action_1 = QAction(&quot;Zamknij&quot;, self, shortcut=&quot;Ctrl+Q&quot;, triggered=QApplication.instance().quit)
+      quit_action_2 = QAction(&quot;Czyść&quot;, self, triggered=self.clear_all_items)
+      quit_action_3 = QAction(&quot;Zaznacz wszystko&quot;, self, shortcut=&quot;Ctrl+A&quot;, triggered=self.select_items)
+      quit_action_4 = QAction(&quot;Usuń zaznaczone&quot;, self, shortcut=&quot;Del&quot;, triggered=self.clear_selected_items)
+      self.list_widget_1.addAction(quit_action_4)
+      self.list_widget_1.addAction(quit_action_3)
+      self.list_widget_1.addAction(quit_action_2)
+      self.list_widget_1.addAction(quit_action_1)
+  
+  # Info for users how to add files
+      self.list_widget_1.setContextMenuPolicy(Qt.ActionsContextMenu)
+  
+      self.push_button_1.setToolTip(&quot;Kliknij, aby dodać pliki do listy&quot;)
+      self.push_button_2.setToolTip(&quot;Kliknij, aby wybrać przepis&quot;)
+  
+      self.push_button_3.setToolTip(&quot;Kliknij, aby przejść do wygenerowania dokumentu&quot;)
+      self.push_button_4.setToolTip(&quot;Kliknij, aby usunać zaznaczone elementy&quot;)
+      self.push_button_5.setToolTip(&quot;Kliknij, aby wyczyścić liste&quot;)
+      sets = configparser.ConfigParser()
+      sets = settings.loadConf()
+      global pathDirectory
+      global zipsFolder
+  
+      self.returnedFiles = []
+      self.boxIsChecked = False
+      self.selectedRecipe = str(pathDirectory+zipsFolder+sets[&#39;user&#39;][&#39;default-recipe&#39;])
+      self.items_changed()</code></pre>
+  <p># &lt;&lt; END of: Custom Main Widget &gt;&gt; # def aboutGPadnoc(self): dialog = AboutDialog() dialog.exec_()</p>
+  <pre><code>def instruction(self):
+      dialog = UseDialog()
+      dialog.exec_()
+  
+  def settings(self,loadedRecipe):
+      dialog = SettingsDialog(loadedRecipe)
+      self.setFont(QFont(sets[&#39;user&#39;][&#39;font-name&#39;],int(sets[&#39;user&#39;][&#39;font-size&#39;])))
+      dialog.exec_()</code></pre>
+  <p># &lt;&lt; Listwidget handling &gt;&gt; #</p>
+  <pre><code># clear current selected item
+  def clear_selected_items(self):
+      for select in self.list_widget_1.selectedItems():
+          self.list_widget_1.takeItem(self.list_widget_1.row(select))
+      self.items_changed()
+  
+  def check_extensions(self):
+      if (self.list_widget_1.count()):
+          ext = self.list_widget_1.item(0).showExtension()
+          for x in range (self.list_widget_1.count()):
+              if(str(ext) != str(self.list_widget_1.item(x).showExtension())):
+                  #print (&quot;check_extension return: \nFalse, because list included different extensions.\nDisable checkBox&quot;)  # for debugging
+                  self.check_box_1.setChecked(False)
+                  self.check_box_1.setEnabled(False)
+                  return False
+          #print (&quot;check_extension return: \nTrue, because list included the same extensions.\nEnable checkBox&quot;)   # for debugging
+  
+          self.check_box_1.setEnabled(True)
+      self.check_box_1.setEnabled(True)
+      return True
+  
+  def items_changed(self):
+      if (self.selectedRecipe == None and defaultRecipe==None or self.list_widget_1.count()==0):
+          self.push_button_3.setEnabled(False)
+          self.check_extensions()
+      else:
+          self.push_button_3.setEnabled(True)
+          self.check_extensions()
+  
+  
+  
+  
+  # clear all files on the list
+  def clear_all_items(self):
+      self.list_widget_1.clear()
+      self.items_changed()
+  
+  # select all files on the list
+  def select_items(self):
+      self.list_widget_1.selectAll()
+      #print(&quot;\n&quot; + str(listPaths)) # chcek list values: listPaths
+      for x in range(self.list_widget_1.count()):
+          print(self.list_widget_1.item(x).showPath())
+  
+  def print_extensions(self):
+      for x in range (self.list_widget_1.count()):
+          print(self.list_widget_1.item(x).showExtension())
+  
+  def dragEnterEvent(self, e):
+      e.accept()
+  
+  def dropEvent(self, e):
+      self.items_changed()</code></pre>
+  <p># &lt;&lt; ADD paths on list_widget_1 from listPaths used pop() &gt;&gt; # def add_to_list_widget(self, listPaths): for path in listPaths: fileName = str(path).split(&quot;/&quot;) item = MyListWidgetItem(path) item.setText(fileName[-1]) item.setPath(str(path)) self.list_widget_1.addItem(item) self.print_extensions() # for debugging self.check_extensions()</p>
+  <p># &lt;&lt; Load files on &gt;&gt; #</p>
+  <pre><code>def load_files(self):
+      listPaths = []
+      files, _ = QFileDialog.getOpenFileNames(self, &quot;Wybierz pliki&quot;, &#39;&#39;,
+                                              &quot;wszystkie (*);;&quot;+&quot;commonmark (*.commonmark);;&quot;+
+                                              &quot;docbook (*.docbook);;&quot;+&quot;docx (*.docx);;&quot;+&quot;epub (*.epub);;&quot;+
+                                              &quot;haddock (*.haddock);;&quot;+&quot;html (*.html);;&quot;+&quot;json (*.json);;&quot;+
+                                              &quot;latex (*.latex);;&quot;+&quot;markdown (*.markdown *.md);;&quot;+&quot;markdown_github (*.markdown_github);;&quot;+
+                                              &quot;markdown_mmd (*.markdown_mmd);;&quot;+&quot;markdown_phpextra (*.markdown_phpextra);;&quot;+
+                                              &quot;markdown_strict (*.markdown_strict);;&quot;+&quot;mediawiki (*.mediawiki);;&quot;+
+                                              &quot;native (*.native);;&quot;+&quot;odt (*.odt);;&quot;+&quot;opml (*.opml);;&quot;+&quot;org (*.org);;&quot;+
+                                              &quot;rst (*.rst);;&quot;+&quot;t2t (*.t2t);;&quot;+&quot;textile (*.textile);;&quot;+&quot;twiki (*.twiki)&quot;)
+  
+      for file in files:
+          listPaths.append(file)
+      print(listPaths)  # for debugging
+      self.add_to_list_widget(listPaths)
+      self.items_changed()</code></pre>
+  <p># &lt;&lt; END of: Load files on &gt;&gt; # def return_boxIsChecked(self): self.isChecked = self.check_box_1.checkState() return self.isChecked</p>
+  <pre><code>def return_files(self):
+      self.returnedFiles = []
+      for x in range(self.list_widget_1.count()):
+          self.returnedFiles.append(self.list_widget_1.item(x).showPath())
+      return self.returnedFiles</code></pre>
+  <p># &lt;&lt; &gt;&gt;</p>
+  <p># &lt;&lt; Select recipe - handling &gt;&gt; # def select_recipe(self): global zipsFolder recipeDialog=None recipeDialog = RecipeDialog(recipeDialog, self.selectedRecipe,zipsFolder) recipeDialog.exec_() self.selectedRecipe = recipeDialog.retRecipe() self.items_changed() print(self.selectedRecipe) # for debugging</p>
+  <p># &lt;&lt; END of: Select recipe - handling &gt;&gt; #with ZipFile('spam.zip') as myzip:</p>
+  <pre><code>def conf_variables(self):
+      bookName = str(self.line_edit_1.text())
+      variablesDialog = VariablesDialog(self.selectedRecipe, self.return_files(), self.return_boxIsChecked(), bookName)
+      variablesDialog.exec_()
+      self.shellCommand()
+  
+  def shellCommand(self):
+      command = None</code></pre>
+  <h1 id="end-of-mainwindow">&lt;&lt;&lt; END OF MAINWINDOW &gt;&gt;&gt;</h1>
+  <h1 id="config-variables">&lt;&lt;&lt; CONFIG VARIABLES &gt;&gt;&gt;</h1>
+  <p>class Table(QtWidgets.QTableWidget):</p>
+  <pre><code>def __init__(self):
+      super(Table, self).__init__()
+      self.rows_number = 0
+      self.columns_number = 1
+      self.setRowCount(self.rows_number)
+      self.setColumnCount(self.columns_number)
+      self.setup_empty_table()
+  
+      # &lt; ADD PushButton and connect with function add_cell &gt; #
+      self.button_form = QtWidgets.QPushButton()
+      self.button_form.setText(&quot;Nowe pole&quot;)
+      self.button_form.clicked.connect(self.add_cell)
+  
+      self.button_form2 = QtWidgets.QPushButton()
+      self.button_form2.setText(&quot;Usuń pole&quot;)
+      self.button_form2.clicked.connect(self.remove_cell)
+  
+  
+  def setup_empty_table(self):
+      self.horizontalHeader().setStretchLastSection(True)
+      self.setMinimumHeight(120)
+      self.setMaximumHeight(180)
+      self.add_cell()
+      for x in range(self.rows_number):
+          self.setRowHeight(x, 30)
+  
+  def add_cell(self):
+      self.rows_number = (self.rowCount())
+      self.insertRow(self.rows_number)
+      self.setItem(self.rows_number, 0, QtWidgets.QTableWidgetItem(&quot;&quot;))
+      if int(self.rows_number) &gt; 3:
+          self.setMinimumHeight(150)
+          self.setMaximumHeight(300)
+          for x in range(self.rowCount()):
+              self.setRowHeight(x, 20)
+      self.show()
+  
+  def remove_cell(self):
+      self.current_row = self.currentRow()
+      self.removeRow(self.currentRow())
+      self.show()</code></pre>
+  <p>class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog): def <strong>init</strong>(self,app,selectedRecipe,zipsFolder): super(RecipeDialog, self).<strong>init</strong>() recipe_ui.Ui_Dialog.setupUi(self, self)</p>
+  <pre><code>    self.zipPackages =[]
+      self.loadedRecipe = selectedRecipe
+      self.path = os.path.dirname(__file__)
+      self.label_1.setScaledContents(True);
+  
+      self.zipPackages  = [os.path.basename(x) for x in glob.glob(self.path+zipsFolder+&#39;*.zip&#39;)]
+  
+      self.combo_box_1.addItems(self.zipPackages)
+      self.combo_box_1.currentIndexChanged[str].connect(self.changeRecipe)
+      self.button_box_1.accepted.connect(self.accept)
+      self.button_box_1.rejected.connect(self.reject)
+      global sets
+      self.setFont(QFont(sets[&#39;user&#39;][&#39;font-name&#39;],int(sets[&#39;user&#39;][&#39;font-size&#39;])))
+      self.showPreviewOfRecipe()
+  
+  def accept(self):
+      self.loadedRecipe = str(self.path+ zipsFolder+ str(self.combo_box_1.currentText()))
+      print(&quot;Current loaded recipe: &quot;+ self.loadedRecipe)   # for debugging
+      self.retRecipe()
+      super(RecipeDialog, self).accept()
+  
+  def reject(self):
+      super(RecipeDialog, self).reject()
+  
+  def retRecipe(self):
+      return (self.loadedRecipe)
+  
+  def setRecipe(self):
+      self.ui.combo_box_1.setCurrentText(str(self.loadedRecipe))
+  
+  def showPreviewOfRecipe(self):
+      zippedImgs = ZipFile(self.path+zipsFolder+str(self.combo_box_1.currentText()))
+  
+      for i in range(len(zippedImgs.namelist())):
+  
+          file_in_zip = zippedImgs.namelist()[i]
+          self.label_2.setText(&quot;Brak podglądu&quot;)
+          self.label_2.setScaledContents(True)
+  
+          if (&quot;preview&quot; in file_in_zip):
+              print (&quot;Found image: &quot;, file_in_zip, &quot; -- &quot;)  # for debugging
+              data = zippedImgs.read(file_in_zip)       # read bits to variable
+              dataEnc = io.BytesIO(data)                # save bytes like io
+              dataImgEnc = Image.open(dataEnc)          # convert bytes on Image file
+              qimage = ImageQt.ImageQt(dataImgEnc)      # create QtImage from Image
+              pixmap = QtGui.QPixmap.fromImage(qimage)  # convert QtImage to QPixmap
+              print(pixmap)     # for debugging
+              self.label_2.setPixmap(pixmap)
+  
+  def changeRecipe(self):
+      print(self.combo_box_1.currentText())
+      self.showPreviewOfRecipe()</code></pre>
+  <p>class VariablesDialog(QDialog, variables_ui.Ui_Dialog): def <strong>init</strong>(self, loadedRecipe, gfiles, boxIsChecked, bookName): super(VariablesDialog, self).<strong>init</strong>() variables_ui.Ui_Dialog.setupUi(self,self) global sets global pathDirectory self.setFont(QFont(sets['user']['font-name'],int(sets['user']['font-size']))) self.tempFolder=&quot;/temp/&quot; self.form=[] self.bookName = bookName self.attributes = {} self.getFiles = gfiles self.saveDir = pathDirectory self.boxIsChecked = boxIsChecked if (loadedRecipe==&quot;&quot;): self.loadedRecipe = defaultRecipe else: self.loadedRecipe=loadedRecipe self.names_of_lists = recipe.Recipe(loadedRecipe).list self.names_of_texts = recipe.Recipe(loadedRecipe).text self.names_of_variables = recipe.Recipe(loadedRecipe).string self.template_name = recipe.Recipe(loadedRecipe).template self.output_format = recipe.Recipe(loadedRecipe).outputFormat</p>
+  <pre><code>    self.load_table_of_lists(self.names_of_lists)
+      self.load_table_of_variables(self.names_of_variables)
+      self.load_table_of_texts(self.names_of_texts)
+  
+      self.unzip()
+  def get_values(self):
+      self.getsTable = []
+      for box in self.form:
+          items = (box.itemAt(i).widget() for i in range(box.count()))
+  
+          for w in items:
+              if isinstance (w, QtWidgets.QLabel):
+                  self.getsTable = []
+                  self.getsTable.append(w.text().encode(&#39;utf-8&#39;).decode(&#39;utf-8&#39;))
+                  key_value = True
+  
+              if isinstance (w, Table):
+                  for i in range(w.rowCount()):
+                      itm = w.item(i,0)
+                      self.getsTable.append(itm.text().encode(&#39;utf-8&#39;).decode(&#39;utf-8&#39;))
+  
+                  if key_value:
+                      self.attributes[self.getsTable[0]] = self.getsTable[1:]
+                      key_value = False
+  
+              if isinstance (w, QtWidgets.QLineEdit):
+                  self.getsTable.append(w.text().encode(&#39;utf-8&#39;).decode(&#39;utf-8&#39;))
+                  if key_value:
+                      self.attributes[self.getsTable[0]] = self.getsTable[1:]
+                      key_value = False
+  
+              if isinstance (w, QtWidgets.QPlainTextEdit):
+                  self.getsTable.append(w.toPlainText().encode(&#39;utf-8&#39;).decode(&#39;utf-8&#39;))
+                  if key_value:
+                      self.attributes[self.getsTable[0]] = self.getsTable[1:]
+                      key_value = False
+  
+  # &lt;&lt; Set elements on form &gt;&gt; #
+  def drawInterface(self):
+      for elem in self.form:
+          self.form_layout.addRow(elem)
+  
+  def load_table_of_lists(self,names_of_lists):
+      #for element in name_of_lists:
+      for name_of_list in names_of_lists:
+          self.label= QtWidgets.QLabel(name_of_list)
+          self.label.setMinimumWidth(100)
+          self.label.setText(str(name_of_list))
+          self.label.setObjectName(str(name_of_list) + &quot;_label&quot;)
+  
+          self.table_widget = Table()
+          self.table_widget.setHorizontalHeaderLabels([str(name_of_list)])
+          self.table_widget.setObjectName(self.label.text() + &quot;_table_widget&quot;)
+  
+          self.box = QtWidgets.QHBoxLayout()
+          self.box.addWidget(self.label)
+          self.box.addWidget(self.table_widget)
+  
+          self.b_box = QtWidgets.QHBoxLayout()
+          self.b_box.addSpacing(108)
+          self.b_box.addWidget(self.table_widget.button_form)
+          self.b_box.addWidget(self.table_widget.button_form2)
+          self.form.append(self.box)
+          self.form.append(self.b_box)
+  
+      self.drawInterface()
+  
+  def load_table_of_variables(self, names_of_variables):
+      for variable in names_of_variables:
+  
+          self.label= QtWidgets.QLabel(variable)
+          self.label.setMinimumWidth(100)
+          self.label.setText(str(variable))
+          self.label.setObjectName(self.label.text()+ &quot;_label&quot;)
+          self.line_edit= QtWidgets.QLineEdit(&quot;Wartość&quot;)
+          self.box = QtWidgets.QHBoxLayout()
+          self.box.addWidget(self.label)
+          self.box.addWidget(self.line_edit)
+          self.form.append(self.box)
+  
+      self.drawInterface()
+  
+  def load_table_of_texts(self, names_of_texts):
+  
+      for text in names_of_texts:
+  
+          self.label= QtWidgets.QLabel(text)
+          self.label.setText(str(text))
+          self.label.setMinimumWidth(100)
+          self.label.setMinimumHeight(100)
+          self.label.setScaledContents(True)
+          self.label.setObjectName(self.label.text()+ &quot;_label&quot;)
+  
+          self.plain_text= QtWidgets.QPlainTextEdit(&quot;Wartość tekstowa&quot;)
+  
+          # create layout vertical for label and list(at the moment still combobox)
+          self.box = QtWidgets.QHBoxLayout()
+          self.box.addWidget(self.label)
+          self.box.addWidget(self.plain_text)
+          self.form.append(self.box)
+  
+          #self.form.append(self.combobox)
+  
+      self.drawInterface()
+  
+  def unzip(self):
+      with zipfile.ZipFile(self.loadedRecipe) as zf:
+          zf.extractall(self.saveDir+self.tempFolder)
+  
+  def clear_dir(self):
+      shutil.rmtree(self.saveDir+self.tempFolder,True)
+  
+  def reject(self):
+      self.clear_dir()
+      super(VariablesDialog, self).reject()
+  
+  
+  def accept(self):
+  
+      variables = []
+      outputFile = &quot;&quot;
+      templateFile = &quot;&quot;
+  
+      self.get_values()
+      pandoc = pypandoc.get_pandoc_path()
+  
+      if(self.boxIsChecked):
+  
+          inputFile = []
+          for path in self.getFiles:
+              inputFile.append(str(path))    #input file
+          if(self.template_name): #template file
+              templateFile=&#39;--template=&#39;+self.saveDir+self.tempFolder + str(self.template_name[0])
+              print (templateFile)
+          for attr in self.attributes.keys():
+              for e in self.attributes[attr]:    #variables skime ex.: -V authors = &quot;Szymborska&quot;
+                  variables.append(&#39;-V&#39;)
+                  variables.append(attr+ &#39;=&#39; + e)
+  
+          outputFile+=&#39;--output=&#39;+ self.saveDir+&#39;/outputs/&#39;+self.bookName+&#39;.&#39;+self.output_format[0]
+  
+              #print([pandoc,inputFile,templateFile,variables,outputFile])
+  
+          if(templateFile!=&quot;&quot;):
+              try:
+                  print (*[pandoc,*inputFile,templateFile,*variables,outputFile])  # for debagging
+                  subprocess.run([pandoc,*inputFile,templateFile,*variables,outputFile])
+              except subprocess.errno:
+                  print(&quot;error until call to pandoc&quot;)
+              print(&quot;[*] Done&quot;)  # for debugging
+          else:
+              try:
+                  print (*[pandoc,*inputFile,*variables,outputFile])  # for debagging
+                  subprocess.run([pandoc,*inputFile,*variables,outputFile])
+              except subprocess.errno:
+                  print(&quot;error until call to pandoc&quot;)
+              print(&quot;[*] Done&quot;)  # for debugging
+  
+          inputFile = []
+          templateFile = &quot;&quot;
+          variables =[]
+          outputFile=&quot;&quot;
+  
+      else:
+  
+          num = 0
+          inputFile =&quot;&quot;
+          for path in self.getFiles:
+              num+=1
+              inputFile=str(path)    #input file
+  
+              if(self.template_name): #template file
+                  templateFile=&#39;--template=&#39;+self.saveDir+self.tempFolder + str(self.template_name[0])
+              for attr in self.attributes.keys():
+                  for e in self.attributes[attr]:    #variables skime ex.: -V authors = &quot;Szymborska&quot;
+                      variables.append(&#39;-V&#39;)
+                      variables.append(attr+ &#39;=&#39; + e)
+  
+              outputFile+=&#39;--output=&#39;+ self.saveDir+&#39;/outputs/&#39;+self.bookName+&quot;_&quot;+str(num)+&#39;.&#39;+self.output_format[0]
+  
+              if(templateFile!=&quot;&quot;):
+                  try:
+                      if (templateFile.split(&#39;.&#39;)[1].lower()==&quot;pdf&quot;):
+                          print (&quot;PDF !!!!!!!!&quot;)
+  
+                      #check is temaplate of pdf [*]
+                      print (*[pandoc,inputFile,templateFile,*variables,outputFile])  # for debagging
+                      subprocess.run([pandoc,inputFile,templateFile,*variables,outputFile])
+                  except subprocess.errno:
+                      print(&quot;error until call to pandoc&quot;)
+                  print(&quot;[*] Done&quot;)  # for debugging
+              else:
+                  try:
+                      print (*[pandoc,inputFile,*variables,outputFile])  # for debagging
+                      subprocess.run([pandoc,inputFile,*variables,outputFile])
+                  except subprocess.errno:
+                      print(&quot;error until call to pandoc&quot;)
+                  print(&quot;[*] Done&quot;)  # for debugging
+  
+              templateFile = &quot;&quot;
+              variables =[]
+              outputFile=&quot;&quot;
+  
+      super(VariablesDialog, self).accept()</code></pre>
+  <h1 id="end-of-config-variables">&lt;&lt;&lt; END of: CONFIG VARIABLES &gt;&gt;&gt;</h1>
+</body>
