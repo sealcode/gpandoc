@@ -4,6 +4,7 @@
 import os
 import sys
 import pip
+import subprocess
 from subprocess import check_call
 
 if (sys.platform == "linux" or sys.platform == "linux2"):

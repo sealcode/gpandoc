@@ -3,11 +3,29 @@
 
 import sys
 import logging
-import logic_ui
-import ui
-from ui import mainwindow_ui
 import configparser
 import settings
+import subprocess
+from subprocess import check_call
+
+
+import ui
+import logic_ui
+from ui import mainwindow_ui
+
+try:
+    import outputs
+except ImportError:
+    print ("Create outputs folder")
+    check_call(['mkdir','outputs'])
+
+try:
+    import temp
+except ImportError:
+    print ("Create temp folder")
+    check_call(['mkdir','temp'])
+
+
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QListWidget
 
