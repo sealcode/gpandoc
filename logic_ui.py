@@ -1,4 +1,4 @@
-﻿import io
+import io
 import os
 import sys
 import glob
@@ -12,13 +12,23 @@ import configparser
 import subprocess
 from os import path
 from zipfile import ZipFile
-from subprocess import call
+from subprocess import check_call
 from PIL import Image, ImageQt
 
-import ui
 import zips
-import outputs
 import settings
+
+try:
+    import outputs
+except ImportError:
+    print ("Create temp folder")
+    check_call(['mkdir','outputs'])
+try:
+    import temp
+except ImportError:
+    print ("Create temp folder")
+    check_call(['mkdir','temp'])
+
 
 from ui import about_ui
 from ui import settings_ui

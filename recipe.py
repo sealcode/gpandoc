@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 import configparser
 #import numpy as np
 from zipfile import ZipFile
