@@ -21,7 +21,7 @@ import settings
 try:
     import outputs
 except ImportError:
-    print ("Create temp folder")
+    print ("Create outputs folder")
     check_call(['mkdir','outputs'])
 try:
     import temp
