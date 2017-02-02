@@ -29,11 +29,14 @@ or
  ./install.py
 ```
 Running:
-From terminal:
+a) From terminal:
 ```
  python3 main.py
+ ```
+or
+```
  ./main.py
 ```
-From filemanager - just double click :)
+b) From filemanager - just double click :)
 
 
