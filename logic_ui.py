@@ -15,20 +15,14 @@ from zipfile import ZipFile
 from subprocess import check_call
 from PIL import Image, ImageQt
 
-import zips
-import settings
-
-try:
-    import outputs
-except ImportError:
+if(os.path.isdir("outputs")==False):
     print ("Create outputs folder")
-    check_call(['mkdir','outputs'])
-try:
-    import temp
-except ImportError:
-    print ("Create temp folder")
-    check_call(['mkdir','temp'])
+    os.mkdir('outputs')
 
+
+if(os.path.isdir("temp")==False):
+    print ("Create temp folder")
+    os.mkdir('temp')
 
 from ui import about_ui
 from ui import settings_ui
@@ -37,6 +31,8 @@ from ui import recipe_ui
 from ui import variables_ui
 from ui.mainwindow_ui import Ui_MainWindow
 
+
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon,QPixmap,QRegExpValidator, QFont, QFontDatabase
 from PyQt5.QtCore import QFile,QFileDevice, QFileSelector, QFileInfo, QDirIterator, qDebug, Qt, QEvent,QRegExp, QCoreApplication
@@ -44,6 +40,12 @@ from PyQt5.QtWidgets import QApplication, QFontDialog, QMainWindow,  QFileDialog
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy, \
                             QSpacerItem, QAction, QDialog, QComboBox, QListView
 
+
+# import folders
+import temp
+import zips
+import outputs
+import settings
 
 # <<< SETTINGS Variables >>> #
 pathDirectory = os.path.dirname(__file__)
