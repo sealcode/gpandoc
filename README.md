@@ -18,12 +18,24 @@ In order to run gPandoc successfully you should have at least to have:
 * setuptools==32.3.1
 
 
-installed on your system. Dependency setup:
+installed on your system. 
+
+Dependency setup:
 ```
-sudo pip3 install -r requirements.txt
+* sudo pip3 install -r requirements.txt
+or
+* ./install.py
 ```
 Running:
 ```
-python3 main.py or ./main.py 
-You can run gPandoc on double click too. 
+From terminal:
+* python3 main.py
+* ./main.py
+
+From filemanager:
+* double click
+
 ```
+
+You have to install texlive package from repository is needed to produce pdf documents.
+
