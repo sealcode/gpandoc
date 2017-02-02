@@ -17,9 +17,6 @@ In order to run gPandoc successfully you should have at least to have:
 * olefile==0.44
 * setuptools==32.3.1
 
-* Tou have to install TeX Live package from repository is needed to create PDF documents.
-
-
 installed on your system. Dependency setup:
 ```
  sudo pip3 install -r requirements.txt
@@ -28,8 +25,9 @@ or
 ```
  ./install.py
 ```
-Running:
-a) From terminal:
+* TeX Live package from repository is needed to create PDF documents!!
+
+Running from terminal:
 ```
  python3 main.py
  ```
@@ -37,6 +35,6 @@ or
 ```
  ./main.py
 ```
-b) From filemanager - just double click :)
+Running from filemanager - just double click :)
 
 
