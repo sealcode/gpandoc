@@ -26,8 +26,7 @@ or
 ```
 
 
-####Caution! TeX Live package from repository is needed to create PDF documents!!
-
+####Caution! gPandoc requires TeX Live package (pdflatex) to create PDF documents!!
 
 
 ####Running from terminal:
