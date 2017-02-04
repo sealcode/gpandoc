@@ -11,11 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>o programie</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="label_1">
      <property name="font">
       <font>
        <family>Carlito</family>
@@ -33,7 +33,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="label_2">
        <property name="font">
         <font>
          <family>Carlito</family>
@@ -64,7 +64,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="label_1">
+        <widget class="QLabel" name="label_3">
          <property name="font">
           <font>
            <family>Carlito</family>
@@ -83,7 +83,7 @@ Kuba Orlik</string>
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
          </property>
          <property name="buddy">
-          <cstring>label_1</cstring>
+          <cstring>label_3</cstring>
          </property>
         </widget>
        </item>
@@ -107,7 +107,7 @@ Kuba Orlik</string>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="label_4">
        <property name="font">
         <font>
          <family>Carlito</family>
@@ -123,7 +123,7 @@ Kuba Orlik</string>
         <enum>Qt::ActionsContextMenu</enum>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;www.sealcode.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Inicjatywa Naukowo Technologiczna &lt;br/&gt;Sealcode&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://www.sealcode.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Inicjatywa Naukowo Technologiczna Sealcode&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

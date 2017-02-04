@@ -69,6 +69,7 @@ class AboutDialog(QtWidgets.QDialog, about_ui.Ui_Dialog):
         self.dialog.ui = about_ui.Ui_Dialog()
         self.dialog.ui.setupUi(self.dialog)
         self.buttonBox.accepted.connect(self.accept)
+        self.dialog.ui.label_4.setOpenExternalLinks(True);
         global sets
         self.setFont(QFont(sets['user']['font-name'],int(sets['user']['font-size'])))
         self.show()

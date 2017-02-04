@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui/variables.ui'
+# Form implementation generated from reading ui file 'variables.ui'
 #
-# Created by: PyQt5 UI code generator 5.7
+# Created by: PyQt5 UI code generator 5.7.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -36,6 +36,6 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "Zmienne"))
         self.label.setText(_translate("Dialog", "Konfiguracja "))
 
