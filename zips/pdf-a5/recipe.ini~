@@ -1,0 +1,8 @@
+[Document]
+preview.png = image 
+template.txt = template
+pdf=output_format
+
+[Variables]
+title = string
+authors = list 

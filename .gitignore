@@ -95,3 +95,6 @@ ENV/
 
 # QtCreator meta files
 *.autosave
+
+outputs
+temp
