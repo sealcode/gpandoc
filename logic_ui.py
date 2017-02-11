@@ -457,12 +457,10 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
     def showPreviewOfRecipe(self):
         zippedImgs = ZipFile(self.path+zipsFolder+str(self.combo_box_1.currentText()))
 
-        for i in range(len(zippedImgs.namelist())):
+        self.label_2.setText("Brak podglądu")
+        self.label_2.setScaledContents(True)
 
-            file_in_zip = zippedImgs.namelist()[i]
-            self.label_2.setText("Brak podglądu")
-            self.label_2.setScaledContents(True)
-
+        for file_in_zip in zippedImgs.namelist():
             if ("preview" in file_in_zip):
                 print ("Found image: ", file_in_zip, " -- ")  # for debugging
                 data = zippedImgs.read(file_in_zip)       # read bits to variable
