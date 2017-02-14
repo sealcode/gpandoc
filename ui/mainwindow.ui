@@ -119,6 +119,13 @@
           </property>
          </spacer>
         </item>
+        <item>
+         <widget class="QCheckBox" name="check_box_2">
+          <property name="text">
+           <string>Dodaj spis treści</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item>
