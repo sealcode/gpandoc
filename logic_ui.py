@@ -38,7 +38,7 @@ from PyQt5.QtGui import QIcon,QPixmap,QRegExpValidator, QFont, QFontDatabase
 from PyQt5.QtCore import QFile,QFileDevice, QFileSelector, QFileInfo, QDirIterator, qDebug, Qt, QEvent,QRegExp, QCoreApplication
 from PyQt5.QtWidgets import QApplication, QFontDialog, QMainWindow,  QFileDialog, QSlider, QTextEdit, QDialog, QDialogButtonBox, \
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy, \
-                            QSpacerItem, QAction, QDialog, QComboBox, QListView
+                            QSpacerItem, QAction, QDialog, QComboBox, QListView, QMessageBox
 
 
 # import folders
@@ -126,6 +126,9 @@ class SettingsDialog(QtWidgets.QDialog, settings_ui.Ui_Dialog):
 
     def accept(self):
         settings.saveConf(self.combo_box_1.currentText(), self.font_box_1.currentText(),self.spin_box_1.value(), self.line_edit_1.text())
+        information = QMessageBox.information(self, 'Uwaga', "Ustawienia zostaną wprowadzone \npo ponownym uruchomieniu aplikacji", QMessageBox.Ok)
+        if information == QMessageBox.Ok:
+            print('inforamtion - QMessageBox say Ok')  # for debugging
         global defaultRecipe
         global path
         global zips
@@ -469,6 +472,7 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
                 qimage = ImageQt.ImageQt(dataImgEnc)      # create QtImage from Image
                 pixmap = QtGui.QPixmap.fromImage(qimage)  # convert QtImage to QPixmap
                 print(pixmap)     # for debugging
+
                 self.label_2.setPixmap(pixmap)
 
     def changeRecipe(self):
@@ -648,15 +652,19 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                     subprocess.run([pandoc,*inputFile,templateFile,*variables,outputFile])
                 except subprocess.errno:
                     print("error until call to pandoc")
-                print("[*] Done")  # for debugging
+                    messageBox = QMessageBox.error(self, 'Uwaga wykryto błąd!', "Błąd podczas odwołania do programu Pandoc napotkano na błąd: \n" + str(subprocess.errno), QMessageBox.Ok)
+                messageBox = QMessageBox.information(self, 'Informacja', "Konwersja pomyślnie wykonana :)!\n Sprawdź folder \'outputs\'", QMessageBox.Ok)
+                #print("[*] Done")  # for debugging
             else:
                 try:
                     print (*[pandoc,*inputFile,*variables,outputFile])  # for debagging
                     subprocess.run([pandoc,*inputFile,*variables,outputFile])
                 except subprocess.errno:
                     print("error until call to pandoc")
+                    messageBox = QMessageBox.error(self, 'Uwaga wykryto błąd!', "Błąd podczas odwołania do programu Pandoc napotkano na błąd: \n" + str(subprocess.errno), QMessageBox.Ok)
                 print("[*] Done")  # for debugging
-
+                messageBox = QMessageBox.information(self, 'Informacja', "Konwersja pomyślnie wykonana :)!\n Sprawdź folder \'outputs\'", QMessageBox.Ok)
+                #print("[*] Done")  # for debugging
             inputFile = []
             templateFile = ""
             variables =[]
@@ -689,19 +697,23 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                         subprocess.run([pandoc,inputFile,templateFile,*variables,outputFile])
                     except subprocess.errno:
                         print("error until call to pandoc")
-                    print("[*] Done")  # for debugging
+                        messageBox = QMessageBox.error(self, 'Uwaga wykryto błąd!', "Błąd podczas konwersji tego dokumentu:\n"+str(inputFile)+" napotkano na błąd:\n" + str(subprocess.errno), QMessageBox.Ok)
+                    print("[*] Done for "+str(inputFile))
                 else:
                     try:
                         print (*[pandoc,inputFile,*variables,outputFile])  # for debagging
                         subprocess.run([pandoc,inputFile,*variables,outputFile])
                     except subprocess.errno:
                         print("error until call to pandoc")
-                    print("[*] Done")  # for debugging
+                        messageBox = QMessageBox.error(self, 'Uwaga!', "Błąd podczas odwołania do programu Pandoc napotkano na błąd: \n" + str(subprocess.errno), QMessageBox.Ok)
+                    print("[*] Done for "+str(inputFile))  # for debugging
 
+                #print("[*] Done")  # for debugging
                 templateFile = ""
                 variables =[]
                 outputFile=""
-
+            messageBox = QMessageBox.information(self,'Uwaga', "Konwersja pomyślnie wykonana :)!\n Sprawdź folder \'outputs\'", QMessageBox.Ok)
+            
         super(VariablesDialog, self).accept()
 
 

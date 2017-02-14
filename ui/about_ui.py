@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'about.ui'
+# Form implementation generated from reading ui file 'ui/about.ui'
 #
 # Created by: PyQt5 UI code generator 5.7.1
 #
@@ -60,6 +60,7 @@ class Ui_Dialog(object):
         self.label_4.setFont(font)
         self.label_4.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.label_4.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.label_4.setText("<html><head/><body><p><a href=\"https://www.sealcode.org\"><span style=\" text-decoration: underline; color:#0000ff;\">Inicjatywa Naukowo Technologiczna Sealcode</span></a></p></body></html>")
         self.label_4.setAlignment(QtCore.Qt.AlignCenter)
         self.label_4.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
         self.label_4.setObjectName("label_4")
@@ -85,5 +86,4 @@ class Ui_Dialog(object):
         self.label_3.setText(_translate("Dialog", "Jakub Pieńkowski\n"
 "Jaroslaw Wieczorek\n"
 "Kuba Orlik"))
-        self.label_4.setText(_translate("Dialog", "<html><head/><body><p><a href=\"https://www.sealcode.org\"><span style=\" text-decoration: underline; color:#0000ff;\">Inicjatywa Naukowo Technologiczna Sealcode</span></a></p></body></html>"))
 
