@@ -55,10 +55,7 @@ zipsFolder="/zips/"
 defaultRecipe=""
 listPaths=[]
 
-def saveConf():
-    pass
-def loadConf():
-    pass
+
 # <<< END of: SETTINGS Variables >>> #
 
 class AboutDialog(QtWidgets.QDialog, about_ui.Ui_Dialog):
@@ -77,9 +74,9 @@ class AboutDialog(QtWidgets.QDialog, about_ui.Ui_Dialog):
     def accept(self):
         super(AboutDialog, self).accept()
 
-class UseDialog(QtWidgets.QDialog, howToUse_ui.Ui_Dialog):
+class InstructionDialog(QtWidgets.QDialog, howToUse_ui.Ui_Dialog):
     def __init__(self):
-        super(UseDialog, self).__init__()
+        super(InstructionDialog, self).__init__()
         self.dialog = QtWidgets.QDialog()
         howToUse_ui.Ui_Dialog.setupUi(self, self)
         self.dialog.ui = howToUse_ui.Ui_Dialog()
@@ -88,7 +85,7 @@ class UseDialog(QtWidgets.QDialog, howToUse_ui.Ui_Dialog):
         self.show()
 
     def accept(self):
-        super(UseDialog, self).accept()
+        super(InstructionDialog, self).accept()
 
 class SettingsDialog(QtWidgets.QDialog, settings_ui.Ui_Dialog):
     def __init__(self, loadedRecipe):
@@ -240,7 +237,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         dialog.exec_()
 
     def instruction(self):
-        dialog = UseDialog()
+        dialog = InstructionDialog()
         dialog.exec_()
 
     def settings(self,loadedRecipe):
@@ -713,7 +710,7 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 variables =[]
                 outputFile=""
             messageBox = QMessageBox.information(self,'Uwaga', "Konwersja pomyślnie wykonana :)!\n Sprawdź folder \'outputs\'", QMessageBox.Ok)
-            
+
         super(VariablesDialog, self).accept()
 
 

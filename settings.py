@@ -1,19 +1,45 @@
 import configparser
 """
- #LOAD SETTINGS
-    sets = loadConf()
-    sets['user']['default-recipe']
- #SAVE SETTINGS
-default
+
 """
 font=""
-def saveConf(defaultRecipe,fontName,fontSize,bookName):
-    config = configparser.ConfigParser()
-    config['user'] = {'default-recipe': str(defaultRecipe),'font-name': str(fontName),'font-size': int(fontSize), 'default-book-name': str(bookName)}
-    with open('configuration.ini', 'w') as configfile:
-        config.write(configfile)
 
-def loadConf():
-    config = configparser.ConfigParser()
-    config.read('configuration.ini')
-    return config
+def getDefaultRecipe():
+    return defaultRecipe
+
+def getDefaultFontName():
+    return defaultFontName
+
+def getDefaultFontSize():
+    return defaultFontSize
+
+def getDefaultOutputName():
+    return defaultOutputName
+
+def buildConfiguration():
+    confWriter = configparser.ConfigParser()
+
+    recipe = getDefaultRecipe()
+    size =  getDefaultFontSize()
+    font =  getDefaultFontName()
+    outputName = getDefaultOutputName()
+    confWriter['user'] = {
+        'default-recipe': recip,
+        'font-name': font,
+        'font-size': size,
+        'default-book-name': outputName
+    }
+    return confWriter
+
+def saveConfiguration(configfile = 'configuration.ini'):
+    #confWriter = configparser.ConfigParser()
+    confWriter = buildConfiguration()
+    with open('configuration.ini', 'w') as sets:
+        confWriter.write(sets)
+
+def loadConfiguration(configfile='configuration.ini'):
+    confReader = configparser.ConfigParser()
+    loadConf=confReader.read(configfile)
+    return loadConf
+
+currentConfiguration = loadConfiguration()
