@@ -10,8 +10,6 @@ from PyQt5.QtWidgets import QApplication, QFontDialog, QMainWindow,  QFileDialog
                             QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy, \
                             QSpacerItem, QAction, QDialog, QComboBox, QListView, QMessageBox
 
-sets = settings.loadConfiguration()
-
 
 class InstructionDialog(QtWidgets.QDialog, howToUse_ui.Ui_Dialog):
     def __init__(self):

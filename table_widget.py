@@ -1,5 +1,13 @@
+import PyQt5
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QTableWidget, QPushButton
+
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QListView
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QTableWidget
+from PyQt5.QtWidgets import QPlainTextEdit
+from PyQt5.QtWidgets import QTableWidgetItem
 
 
 class Table(QtWidgets.QTableWidget):
@@ -20,7 +28,6 @@ class Table(QtWidgets.QTableWidget):
         self.button_form2 = QPushButton()
         self.button_form2.setText("Usuń pole")
         self.button_form2.clicked.connect(self.remove_cell)
-
 
     def setup_empty_table(self):
         self.horizontalHeader().setStretchLastSection(True)

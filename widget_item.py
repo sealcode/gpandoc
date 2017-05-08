@@ -6,17 +6,17 @@ class MyListWidgetItem(QListWidgetItem):
     # << Custom Main Widget >> #
     def __init__(self, text):
         super(MyListWidgetItem, self).__init__()
-        self.path=""
-        self.ext=""
-        self.setPath(text);
-        self.setExtension(text);
+        self.path = " "
+        self.ext = ""
+        self.setPath(text)
+        self.setExtension(text)
 
     def setExtension(self, text):
         self.ext = text
         self.ext = self.ext.split('.')
         self.ext = self.ext[-1]
 
-    def setPath(self,text):
+    def setPath(self, text):
         self.path = text
 
     def showPath(self):
