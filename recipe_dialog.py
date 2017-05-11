@@ -10,7 +10,6 @@ from PyQt5.QtCore import QFile
 
 from PyQt5.QtGui import QFont
 
-
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtWidgets import QLineEdit
@@ -34,6 +33,7 @@ import main_dialog
 
 import zipfile
 from zipfile import ZipFile
+
 import subprocess
 from subprocess import check_call
 

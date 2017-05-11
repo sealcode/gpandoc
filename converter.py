@@ -21,11 +21,11 @@ def install_pandoc():
 
 def convert(source, to, format, outputfile=None,
             variables={}, encoding='utf-8', extra_args=()):
-    """Wrapper around pypandoc.convert()
-
-    :param dict variables: dictionary with values for template.
-            If some value of dictionary is list every argument
-            of it is passed separately to Pandoc"""
+    """
+     Wrapper around pypandoc.convert() :param dict variables: dictionary with
+     values for template. If some value of dictionary is list every argument
+     of it is passed separately to Pandoc.
+    """
     args = []
     args.extend(extra_args)
     for k, v in variables.items():
