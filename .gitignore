@@ -98,3 +98,7 @@ ENV/
 
 outputs
 temp
+tags
+
+# Don't save compiled ui files
+ui/*py

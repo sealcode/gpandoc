@@ -1,13 +1,5 @@
-import PyQt5
 from PyQt5 import QtWidgets
-
-from PyQt5.QtWidgets import QLabel
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtWidgets import QListView
 from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtWidgets import QTableWidget
-from PyQt5.QtWidgets import QPlainTextEdit
-from PyQt5.QtWidgets import QTableWidgetItem
 
 
 class Table(QtWidgets.QTableWidget):

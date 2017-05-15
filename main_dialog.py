@@ -1,80 +1,25 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-import PyQt5
-
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
-
-from PyQt5.QtCore import QFile
-from PyQt5.QtCore import QFileDevice
-from PyQt5.QtCore import QFileSelector
-from PyQt5.QtCore import QFileInfo
-from PyQt5.QtCore import QDirIterator
 from PyQt5.QtCore import Qt
-from PyQt5.QtCore import QEvent
 from PyQt5.QtCore import QRegExp
-from PyQt5.QtCore import QCoreApplication
-
 from PyQt5.QtGui import QIcon
-from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtGui import QFont
-from PyQt5.QtGui import QFontDatabase
-
 from PyQt5.QtWidgets import QAction
-from PyQt5.QtWidgets import QSlider
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtWidgets import QTextEdit
-from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtWidgets import QListView
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtWidgets import QListWidget
-from PyQt5.QtWidgets import QSizePolicy
-from PyQt5.QtWidgets import QSpacerItem
-from PyQt5.QtWidgets import QFontDialog
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QListWidget
-from PyQt5.QtWidgets import QListWidgetItem
-from PyQt5.QtWidgets import QDialogButtonBox
 from PyQt5.QtWidgets import QAbstractItemView
-from PyQt5.QtWidgets import QMouseEventTransition
 
 
-import os
-import sys
-import glob
-import shutil
-import recipe
-import pypandoc
-import datetime
 import settings
 import configparser
 
-import widget_item
-import table_widget
-import about_dialog
-import recipe_dialog
-import settings_dialog
-import variables_dialog
-import instruction_dialog
-
-from zipfile import ZipFile
-
 from about_dialog import AboutDialog
 from recipe_dialog import RecipeDialog
-from widget_item import MyListWidgetItem
 from settings_dialog import SettingsDialog
 from variables_dialog import VariablesDialog
 from instruction_dialog import InstructionDialog
-
-
-import ui
-from ui import mainwindow_ui
-from ui.mainwindow_ui import Ui_MainWindow
+from widget_item import MyListWidgetItem
+from ui.mainwindow import Ui_MainWindow
 
 settings.sets = configparser.ConfigParser()
 settings.sets = settings.loadConfiguration()
@@ -82,21 +27,21 @@ fixNameOfFile = QRegExp("(([\w\d])+([ ]||[-]||[_]))*")
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    # << Custom Main Widget >> #
     def __init__(self, app):
         super(MainWindow, self).__init__()
         Ui_MainWindow.setupUi(self, self)
         self.setWindowIcon(QIcon("ui/sealcode-logo.ico"))
-        self.actionUstawienia.triggered.connect(self.settings)
-        self.actionO_GPandoc.triggered.connect(self.aboutGPadnoc)
-        self.actionInstrukcja_uzycia.triggered.connect(self.instruction)
+        self.action_settings.triggered.connect(self.settings)
+        self.action_about.triggered.connect(self.aboutGPadnoc)
+        self.action_help.triggered.connect(self.instruction)
         self.setFont(QFont(settings.sets['user']['font-name'],
                            int(settings.sets['user']['font-size'])))
 
         self.reg = QRegExpValidator(fixNameOfFile)
-        self.line_edit_1.setValidator(self.reg)
-        self.line_edit_1.setText(settings.sets['user']['default-book-name'])
-        self.line_edit_1.setToolTip(
+        self.line_edit_document_name.setValidator(self.reg)
+        self.line_edit_document_name.setText(
+            settings.sets['user']['default-book-name'])
+        self.line_edit_document_name.setToolTip(
             "Wynik konwersji zostanie zapisany w folderze\"/outputs\". "
             + "Przy odznaczonej opcji \"łącz dokumenty\",\n" + "do nazw plików"
             + "wynikowych dopisywany jest numer porządkowy według listy.")
@@ -151,8 +96,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                   settings.sets['user']['default-recipe'])
         self.items_changed()
 
-
-# << END of: Custom Main Widget >> #
     def aboutGPadnoc(self):
         dialog = AboutDialog()
         dialog.exec_()
@@ -167,10 +110,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                            int(settings.sets['user']['font-size'])))
         dialog.exec_()
 
-
-# << Listwidget handling >> #
-
-    # clear current selected item
     def clear_selected_items(self):
         for select in self.list_widget_1.selectedItems():
             self.list_widget_1.takeItem(self.list_widget_1.row(select))
@@ -229,7 +168,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def dropEvent(self, e):
         self.items_changed()
 
-# << ADD paths on list_widget_1 from listPaths used pop()  >> #
     def add_to_list_widget(self, listPaths):
         for path in listPaths:
             fileName = str(path).split("/")
@@ -240,8 +178,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # for debugging
         self.print_extensions()
         self.check_extensions()
-
-# << Load files on >> #
 
     def load_files(self):
         listPaths = []
@@ -266,7 +202,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         print(listPaths)  # for debugging
         self.add_to_list_widget(listPaths)
         self.items_changed()
-# << END of: Load files on >> #
 
     def return_boxIsChecked(self):
         self.isChecked = self.check_box_1.checkState()
@@ -277,9 +212,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for x in range(self.list_widget_1.count()):
             self.returnedFiles.append(self.list_widget_1.item(x).showPath())
         return self.returnedFiles
-# << >>
 
-    # << Select recipe - handling >> #
     def select_recipe(self):
         recipeDialog = None
         recipeDialog = RecipeDialog(recipeDialog, self.selectedRecipe)
@@ -287,13 +220,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.selectedRecipe = recipeDialog.retRecipe()
         self.items_changed()
         print(self.selectedRecipe)
-        # for debugging
-
-    # << END of: Select recipe - handling >>
-    # with ZipFile('spam.zip') as myzip:
 
     def conf_variables(self):
-        bookName = str(self.line_edit_1.text())
+        bookName = str(self.line_edit_document_name.text())
         variablesDialog = VariablesDialog(self.selectedRecipe,
                                           self.return_files(),
                                           self.return_boxIsChecked(),
@@ -303,6 +232,3 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def shellCommand(self):
         command = None
-
-
-# <<< END OF MAINWINDOW >>> #

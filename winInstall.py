@@ -1,9 +1,3 @@
-#!/usr/bin/python3
+from subprocess import check_call
 
-# -*- coding: utf-8 -*-
-
-import os
-import sys
-import pip
-
-check_call(['pip3','install','-r','requirements.txt'])
+check_call(['pip3', 'install', '-r', 'requirements.txt'])

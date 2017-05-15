@@ -1,15 +1,9 @@
 import os
-import sys
 import configparser
 import settings_dialog
 
-import PyQt5
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
-
 from PyQt5.QtGui import QFont
 
-from PyQt5.QtWidgets import QLabel
 """
  Settings with global variables
 """

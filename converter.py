@@ -1,6 +1,4 @@
-import os
 import logging
-from sys import platform
 
 import pypandoc
 
@@ -12,7 +10,7 @@ def install_pandoc():
 
     try:
         log.info('Pandoc available with command: %s',
-        pypandoc.get_pandoc_path())
+                 pypandoc.get_pandoc_path())
     except:
         download_pandoc()
         log.info('Pandoc is installed and available with command: %s',

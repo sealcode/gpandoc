@@ -1,17 +1,9 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-import os
 import sys
-import logging
-import configparser
+
 import settings
 import main_dialog
-import table_widget
-from ui import mainwindow_ui
 
-import PyQt5
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QApplication
 
 settings.crateFolderAboutName("temp")
 settings.crateFolderAboutName("outputs")

@@ -1,34 +1,23 @@
-import PyQt5
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
-
-from PyQt5.QtGui import QFont
-
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtWidgets import QTableWidget
-from PyQt5.QtWidgets import QMessageBox
-
-from ui import variables_ui
-
-import os
-import sys
-import glob
 import shutil
-import recipe
 import zipfile
-import pypandoc
-import datetime
-import settings
 import subprocess
 
-import table_widget
+import pypandoc
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QMessageBox
+
+import recipe
+import settings
+from ui.variables import Ui_Variables
 from table_widget import Table
 
-class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
+
+class VariablesDialog(QDialog, Ui_Variables):
     def __init__(self, loadedRecipe, gfiles, boxIsChecked, bookName):
         super(VariablesDialog,  self).__init__()
-        variables_ui.Ui_Dialog.setupUi(self, self)
+        Ui_Variables.setupUi(self, self)
         settings.sets = settings.loadConfiguration()
         settings.localPath
         self.setFont(QFont(settings.sets['user']['font-name'],
@@ -184,7 +173,10 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
             for path in self.getFiles:
                 inputFile.append(str(path))  # input file
             if(self.template_name):  # template file
-                templateFile = '--template=' + settings.localPath + settings.tempFolder + self.template_name[0]
+                templateFile = '--template=' \
+                               + settings.localPath \
+                               + settings.tempFolder \
+                               + self.template_name[0]
                 print(templateFile)
             for attr in self.attributes.keys():
                 for e in self.attributes[attr]:
@@ -192,7 +184,12 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                     variables.append('-V')
                     variables.append(attr + '=' + e)
 
-            outputFile += '--output=' + settings.localPath + '/outputs/' + self.bookName + '.' + self.output_format[0]
+            outputFile += '--output=' \
+                          + settings.localPath \
+                          + '/outputs/' \
+                          + self.bookName \
+                          + '.' \
+                          + self.output_format[0]
 
             print([pandoc, inputFile, templateFile, variables, outputFile])
             if(templateFile != ""):
@@ -254,7 +251,10 @@ class VariablesDialog(QDialog, variables_ui.Ui_Dialog):
                 inputFile = str(path)  # input file
 
                 if(self.template_name):  # template file
-                    templateFile = '--template=' + settings.localPath + settings.tempFolder + self.template_name[0]
+                    templateFile = '--template=' \
+                                   + settings.localPath \
+                                   + settings.tempFolder \
+                                   + self.template_name[0]
 
                 for attr in self.attributes.keys():
                     for e in self.attributes[attr]:

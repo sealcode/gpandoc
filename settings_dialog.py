@@ -1,33 +1,10 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
-import io
 import os
-import sys
 import glob
-import shutil
-import recipe
-import zipfile
-import pypandoc
-import datetime
-import subprocess
-import configparser
 
-
-from os import path
-from zipfile import ZipFile
-from subprocess import check_call
-from PIL import Image, ImageQt
-
-
-import PyQt5
 from PyQt5 import QtWidgets
-from PyQt5 import QtGui
-from PyQt5 import QtCore
 
 from PyQt5.QtCore import QRegExp
 
-from PyQt5.QtWidgets import QDialog
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QDialogButtonBox
 
@@ -37,16 +14,16 @@ from PyQt5.QtGui import QFontDatabase
 from PyQt5.QtGui import QRegExpValidator
 
 import settings
-from ui import settings_ui
+from ui.settings import Ui_Settings
 
 
 # Settings Dialog
-class SettingsDialog(QtWidgets.QDialog, settings_ui.Ui_Dialog):
+class SettingsDialog(QtWidgets.QDialog, Ui_Settings):
     def __init__(self, loadedRecipe):
         super(SettingsDialog, self).__init__()
         self.dialog = QtWidgets.QDialog()
-        settings_ui.Ui_Dialog.setupUi(self, self)
-        self.dialog.ui = settings_ui.Ui_Dialog()
+        Ui_Settings.setupUi(self, self)
+        self.dialog.ui = Ui_Settings()
         self.dialog.ui.setupUi(self.dialog)
         self.spin_box_1.valueChanged.connect(self.setFontOnDialog)
         self.font_box_1.currentFontChanged.connect(self.setFontOnDialog)

@@ -1,28 +1,26 @@
-
 import settings
 
-from ui import about_ui
+from ui.about import Ui_About
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QIcon,QPixmap,QRegExpValidator, QFont, QFontDatabase
-from PyQt5.QtCore import qDebug, Qt, QEvent,QRegExp, QCoreApplication
-from PyQt5.QtWidgets import QApplication, QFontDialog, QMainWindow,  QFileDialog, QSlider, QTextEdit, QDialog, QDialogButtonBox, \
-                            QPushButton, QListWidget, QListWidgetItem, QAbstractItemView,QMouseEventTransition, QSizePolicy, \
-                            QSpacerItem, QAction, QDialog, QComboBox, QListView, QMessageBox
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QFont
 
 sets = settings.loadConfiguration()
 
-class AboutDialog(QtWidgets.QDialog, about_ui.Ui_Dialog):
+
+class AboutDialog(QtWidgets.QDialog, Ui_About):
     def __init__(self):
         super(AboutDialog, self).__init__()
         self.dialog = QtWidgets.QDialog()
-        about_ui.Ui_Dialog.setupUi(self, self)
-        self.dialog.ui = about_ui.Ui_Dialog()
+        Ui_About.setupUi(self, self)
+        self.dialog.ui = Ui_About()
         self.dialog.ui.setupUi(self.dialog)
         self.buttonBox.accepted.connect(self.accept)
-        self.dialog.ui.label_4.setOpenExternalLinks(True);
+        self.dialog.ui.label_4.setOpenExternalLinks(True)
         global sets
-        self.setFont(QFont(sets['user']['font-name'],int(sets['user']['font-size'])))
+        self.setFont(QFont(
+            sets['user']['font-name'],
+            int(sets['user']['font-size'])))
         self.show()
 
     def accept(self):

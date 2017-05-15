@@ -1,52 +1,25 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
-import PyQt5
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
-
-from PyQt5.QtCore import QFile
-
-from PyQt5.QtGui import QFont
-
-from PyQt5.QtWidgets import QLabel
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtWidgets import QTextEdit
-from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtWidgets import QListWidget
-from PyQt5.QtWidgets import QListWidgetItem
-
-from ui import recipe_ui
-
+import glob
 import io
 import os
-from os import path
-
-import sys
-import glob
-import zips
-import recipe
-import settings
-import main_dialog
-
-import zipfile
 from zipfile import ZipFile
 
-import subprocess
-from subprocess import check_call
-
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QFont, QPixmap
 from PIL import Image
 from PIL import ImageQt
+
+from ui.recipe import Ui_Recipe
+
+import settings
 
 
 settings.loadConfiguration()
 
-class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
+
+class RecipeDialog(QtWidgets.QDialog, Ui_Recipe):
     def __init__(self, app, selectedRecipe):
         super(RecipeDialog, self).__init__()
-        recipe_ui.Ui_Dialog.setupUi(self, self)
+        Ui_Recipe.setupUi(self, self)
 
         self.zipPackages = []
         self.loadedRecipe = selectedRecipe
@@ -103,7 +76,7 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
                 # convert bytes on Image file
                 qimage = ImageQt.ImageQt(dataImgEnc)
                 # create QtImage from Image
-                pixmap = QtGui.QPixmap.fromImage(qimage)
+                pixmap = QPixmap.fromImage(qimage)
                 # convert QtImage to QPixmap
                 print(pixmap)     # for debugging
 

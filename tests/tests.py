@@ -1,9 +1,8 @@
 import unittest
-import os
 import sys
-from os.path import isfile
 
 sys.path.append('..')
+
 
 class TemplateTest(unittest.TestCase):
     '''Test Pandoc templates'''
@@ -20,8 +19,11 @@ class TemplateTest(unittest.TestCase):
                                                'var1': 'value1',
                                                'var2': 'value2',
                                                'var3': 'value3'
-                                        }, extra_args=['--template=%s' % (IN_FILE),
-                                                      '--standalone'])
+                                        },
+                                        extra_args=[
+                                            '--template=%s' % (IN_FILE),
+                                            '--standalone'
+                                        ])
         self.assertEqual(OUT, result)
 
     def test_variable_lists(self):
@@ -31,13 +33,21 @@ class TemplateTest(unittest.TestCase):
             IN = test_file.read()
         result = self.converter.convert(IN, 'markdown', 'markdown',
                                         variables={
-                                            'var1': ['value1', 'value2', 'value3']
-                                        }, extra_args=['--template=%s' % (IN_FILE),
-                                                       '--standalone'])
+                                            'var1': [
+                                                'value1',
+                                                'value2',
+                                                'value3'
+                                            ]
+                                        },
+                                        extra_args=[
+                                            '--template=%s' % (IN_FILE),
+                                            '--standalone'
+                                        ])
         OUT.sort()
         result = result.rstrip().split(',')
         result.sort()
         self.assertEqual(OUT, result)
+
 
 class RecipeTest(unittest.TestCase):
     '''Test recipe interpratating'''
@@ -55,10 +65,10 @@ class RecipeTest(unittest.TestCase):
 
     def test_strings(self):
         self.assertEqual(self.in_recipe.strings, ['title'])
-    
+
     def test_texts(self):
         self.assertEqual(self.in_recipe.texts, ['preamble'])
 
-    
+
 if __name__ == '__main__':
     unittest.main()

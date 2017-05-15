@@ -177,7 +177,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="line_edit_1">
+         <widget class="QLineEdit" name="line_edit_document_name">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -247,32 +247,32 @@
      <x>0</x>
      <y>0</y>
      <width>520</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPomoc">
     <property name="title">
      <string>Pomoc</string>
     </property>
-    <addaction name="actionUstawienia"/>
-    <addaction name="actionInstrukcja_uzycia"/>
+    <addaction name="action_settings"/>
+    <addaction name="action_help"/>
     <addaction name="separator"/>
-    <addaction name="actionO_GPandoc"/>
+    <addaction name="action_about"/>
    </widget>
    <addaction name="menuPomoc"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionUstawienia">
+  <action name="action_settings">
    <property name="text">
     <string>Ustawienia</string>
    </property>
   </action>
-  <action name="actionInstrukcja_uzycia">
+  <action name="action_help">
    <property name="text">
     <string>Instrukcja użycia</string>
    </property>
   </action>
-  <action name="actionO_GPandoc">
+  <action name="action_about">
    <property name="text">
     <string>O gPandoc</string>
    </property>
