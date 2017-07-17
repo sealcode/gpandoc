@@ -43,6 +43,7 @@ from PIL import ImageQt
 
 settings.loadConfiguration()
 
+
 class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
     def __init__(self, app, selectedRecipe):
         super(RecipeDialog, self).__init__()
@@ -74,8 +75,8 @@ class RecipeDialog(QtWidgets.QDialog, recipe_ui.Ui_Dialog):
     def reject(self):
         super(RecipeDialog, self).reject()
 
-    def retRecipe(self):
-        return (self.loadedRecipe)
+    def getRecipe(self):
+        return self.loadedRecipe
 
     def setRecipe(self):
         self.ui.combo_box_1.setCurrentText(str(self.loadedRecipe))

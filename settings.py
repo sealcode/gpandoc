@@ -5,11 +5,9 @@ import settings_dialog
 
 import PyQt5
 from PyQt5 import QtGui
-from PyQt5 import QtWidgets
 
 from PyQt5.QtGui import QFont
 
-from PyQt5.QtWidgets import QLabel
 """
  Settings with global variables
 """
@@ -26,26 +24,18 @@ sets = ""
 font = ""
 
 
-def isFolderExist(name):
-    isFolderExist = (os.path.isdir(name))
-    return isFolderExist
 
+def getValue(form_field):
+    value = form_field
+    print("GET defalut Value: ", value)
+    return value
 
-def crateFolderAboutName(name):
-    try:
-        os.mkdir(name)
-    except FileExistsError as error:
-        print("Directory \"" + name + "\" exist")
-        return True
-    print("Create \"" + name + "\" directory")
-
-
-def getDefaultRecipe():
-    defaultRecipe = settings_dialog.settings_ui.combo_box_1.currentText()
+def getDefaultRecipe(form_field): # settings_dialog.settings_ui.combo_box_1.currentText()
+    defaultRecipe = form_field
     print(defaultRecipe)
     return defaultRecipe
 
-
+"""
 def getDefaultFontName():
     return defaultFontName
 
@@ -56,13 +46,19 @@ def getDefaultFontSize():
 
 def getDefaultOutputName():
     return defaultOutputName
+    """
 
-
+"""
 def buildConfiguration():
     confWriter = configparser.ConfigParser()
+    recipe = str(getValue(settings_dialog.settings_ui.combo_box_1.currentText()))
+    size = int(getValue(settings_dialog.settings_ui.spin_box_1.currentText()))
 
-    recipe = getDefaultRecipe()
-    size = getDefaultFontSize()
+    recipe = str(getValue(settings_dialog.settings_ui.combo_box_1.currentText()))
+    size = int(getValue(settings_dialog.settings_ui.spin_box_1.value()))
+    font = size = int(getValue(settings_dialog.settings_ui.spin_box_1.currentText()))
+
+    size = getDefaultValue()
     font = getDefaultFontName()
     outputName = getDefaultOutputName()
     confWriter['user'] = {
@@ -72,7 +68,7 @@ def buildConfiguration():
         'default-book-name': outputName
     }
     return confWriter
-
+"""
 
 def saveConfiguration(defaultRecipe, fontName, fontSize, bookName):
         config = configparser.ConfigParser()
@@ -87,17 +83,13 @@ def saveConfiguration(defaultRecipe, fontName, fontSize, bookName):
 def loadConfiguration(configfile='configuration.ini'):
     confReader = configparser.ConfigParser()
     confReader.read(configfile)
-    global sets
-    sets = confReader
     return confReader
 
 
 def prepareGlobalVariables():
     global localPath
     localPath = os.path.dirname(__file__)
-
     global sets
-    sets = configparser.ConfigParser()
     sets = loadConfiguration()
     global pathsOfDocuments
     pathsOfDocuments = []
@@ -112,7 +104,6 @@ def prepareGlobalVariables():
                          + sets['user']['default-recipe'])
     global defaultRecipe
     defaultRecipe = str(sets['user']['default-recipe'])
-
     global font
     font = QFont(sets['user']['font-name'],
                  int(sets['user']['font-size']))

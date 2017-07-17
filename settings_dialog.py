@@ -94,8 +94,8 @@ class SettingsDialog(QtWidgets.QDialog, settings_ui.Ui_Dialog):
         if information == QMessageBox.Ok:
             print('inforamtion - QMessageBox say Ok')  # for debugging
 
-        defaultRecipe = str(settings.localPath + settings.zipsFolder +
-                            self.combo_box_1.currentText())
+        settings.defaultRecipe = str(settings.localPath + settings.zipsFolder +
+                                     self.combo_box_1.currentText())
         self.setFont(QFont(settings.sets['user']['font-name'],
                            int(settings.sets['user']['font-size'])))
 

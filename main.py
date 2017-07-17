@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+
 import os
 import sys
-import logging
-import configparser
+import util
 import settings
 import main_dialog
 import table_widget
@@ -13,8 +13,9 @@ import PyQt5
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
 
-settings.crateFolderAboutName("temp")
-settings.crateFolderAboutName("outputs")
+util.createDir("temp")
+util.createDir("outputs")
+
 settings.prepareGlobalVariables()
 print("settings zipsFolder:", settings.zipsFolder)
 

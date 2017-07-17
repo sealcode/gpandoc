@@ -76,9 +76,9 @@ import ui
 from ui import mainwindow_ui
 from ui.mainwindow_ui import Ui_MainWindow
 
-settings.sets = configparser.ConfigParser()
+# settings.sets = configparser.ConfigParser()
 settings.sets = settings.loadConfiguration()
-fixNameOfFile = QRegExp("(([\w\d])+([ ]||[-]||[_]))*")
+fixNameOfFile = QRegExp("([\w\d])^+([ ]|[-]|[_])")
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -146,7 +146,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         settings.zipsFolder
 
         self.returnedFiles = []
-        self.boxIsChecked = False
+        self.boxChecked = False
         self.selectedRecipe = str(settings.localPath + settings.zipsFolder +
                                   settings.sets['user']['default-recipe'])
         self.items_changed()
@@ -268,11 +268,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.items_changed()
 # << END of: Load files on >> #
 
-    def return_boxIsChecked(self):
-        self.isChecked = self.check_box_1.checkState()
-        return self.isChecked
+    def isBoxChecked(self):
+        self.boxState = self.check_box_1.checkState()
+        return self.boxState
 
-    def return_files(self):
+    def get_files(self):
         self.returnedFiles = []
         for x in range(self.list_widget_1.count()):
             self.returnedFiles.append(self.list_widget_1.item(x).showPath())
@@ -284,7 +284,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         recipeDialog = None
         recipeDialog = RecipeDialog(recipeDialog, self.selectedRecipe)
         recipeDialog.exec_()
-        self.selectedRecipe = recipeDialog.retRecipe()
+        self.selectedRecipe = recipeDialog.getRecipe()
         self.items_changed()
         print(self.selectedRecipe)
         # for debugging
@@ -295,8 +295,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def conf_variables(self):
         bookName = str(self.line_edit_1.text())
         variablesDialog = VariablesDialog(self.selectedRecipe,
-                                          self.return_files(),
-                                          self.return_boxIsChecked(),
+                                          self.get_files(),
+                                          self.isBoxChecked(),
                                           bookName)
         variablesDialog.exec_()
         self.shellCommand()
